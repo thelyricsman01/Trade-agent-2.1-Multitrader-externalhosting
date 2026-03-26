@@ -1,15 +1,12 @@
-from dotenv import load_dotenv
-load_dotenv()
-
 import anthropic
 import json
 import os
 import time
 import yfinance as yf
 import pandas as pd
+import base64
+import requests as req
 from datetime import datetime
-
-import os
 
 api_key = os.environ.get("ANTHROPIC_API_KEY")
 client  = anthropic.Anthropic(api_key=api_key)
