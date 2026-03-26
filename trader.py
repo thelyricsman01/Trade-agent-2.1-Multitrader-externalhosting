@@ -8,11 +8,14 @@ import base64
 import requests as req
 from datetime import datetime
 
-api_key = os.environ.get("ANTHROPIC_API_KEY")
-client  = anthropic.Anthropic(api_key=api_key)
+api_key        = os.environ.get("ANTHROPIC_API_KEY")
+GITHUB_TOKEN   = os.environ.get("GITHUB_TOKEN")
+GITHUB_REPO    = "thelyricsman01/Trade-agent-2.1-Multitrader-externalhosting"
+GITHUB_BRANCH  = "main"
 
-INTERVAL     = 30 * 60  # 30 minutter
-TRADES_FILE  = "trades.json"
+client = anthropic.Anthropic(api_key=api_key)
+
+TRADES_FILE    = "trades.json"
 PORTFOLIO_FILE = "portfolio.json"
 START_BALANCE  = 2000.0
 
@@ -27,6 +30,31 @@ ASSETS = {
     "AVAX": "AVAX-USD",
     "LINK": "LINK-USD",
 }
+
+# ── GITHUB PUSH ──────────────────────────────────────────
+def push_to_github(filename):
+    try:
+        url     = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{filename}"
+        headers = {
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept":        "application/vnd.github.v3+json"
+        }
+        with open(filename, "r") as f:
+            content = f.read()
+        encoded  = base64.b64encode(content.encode()).decode()
+        response = req.get(url, headers=headers)
+        sha      = response.json().get("sha") if response.status_code == 200 else None
+        data     = {
+            "message": f"Update {filename}",
+            "content": encoded,
+            "branch":  GITHUB_BRANCH,
+        }
+        if sha:
+            data["sha"] = sha
+        req.put(url, headers=headers, json=data)
+        print(f"  📤 Pushed {filename} to GitHub")
+    except Exception as e:
+        print(f"  Error pushing {filename}: {e}")
 
 # ── TEKNISKE INDIKATORER ─────────────────────────────────
 def get_rsi(data, period=14):
@@ -64,12 +92,12 @@ def get_market_data(ticker):
         macd, signal = get_macd(data)
         change_24h   = round(float((data["Close"].iloc[-1] - data["Close"].iloc[-2]) / data["Close"].iloc[-2] * 100), 2)
         return {
-            "ticker":    ticker,
-            "price":     price,
-            "rsi":       rsi,
-            "trend":     trend,
-            "macd":      macd,
-            "signal":    signal,
+            "ticker":     ticker,
+            "price":      price,
+            "rsi":        rsi,
+            "trend":      trend,
+            "macd":       macd,
+            "signal":     signal,
             "change_24h": change_24h,
         }
     except Exception as e:
@@ -79,15 +107,20 @@ def get_market_data(ticker):
 # ── PORTEFØLJE ───────────────────────────────────────────
 def load_portfolio():
     try:
-        with open(PORTFOLIO_FILE, "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        portfolio = {
-            "cash":      START_BALANCE,
-            "positions": {}
+        url     = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{PORTFOLIO_FILE}"
+        headers = {
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept":        "application/vnd.github.v3+json"
         }
-        save_portfolio(portfolio)
-        return portfolio
+        response = req.get(url, headers=headers)
+        if response.status_code == 200:
+            content = base64.b64decode(response.json()["content"]).decode()
+            return json.loads(content)
+    except Exception:
+        pass
+    portfolio = {"cash": START_BALANCE, "positions": {}}
+    save_portfolio(portfolio)
+    return portfolio
 
 def save_portfolio(portfolio):
     with open(PORTFOLIO_FILE, "w") as f:
@@ -105,10 +138,18 @@ def get_total_balance(portfolio, market_data):
 
 def load_trades():
     try:
-        with open(TRADES_FILE, "r") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return []
+        url     = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{TRADES_FILE}"
+        headers = {
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept":        "application/vnd.github.v3+json"
+        }
+        response = req.get(url, headers=headers)
+        if response.status_code == 200:
+            content = base64.b64decode(response.json()["content"]).decode()
+            return json.loads(content)
+    except Exception:
+        pass
+    return []
 
 def save_trades(trades):
     with open(TRADES_FILE, "w") as f:
@@ -196,8 +237,8 @@ def execute_actions(portfolio, actions, market_data):
         if not market:
             continue
 
-        price      = market["price"]
-        timestamp  = datetime.now().strftime("%Y-%m-%d %H:%M")
+        price     = market["price"]
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         if act == "open_long" and symbol not in portfolio["positions"]:
             invest_pct = min(action["invest_pct"], 40)
@@ -205,19 +246,19 @@ def execute_actions(portfolio, actions, market_data):
             if amount_usd < 10:
                 continue
             amount = amount_usd / price
-            portfolio["cash"]                -= amount_usd
-            portfolio["positions"][symbol]    = {
+            portfolio["cash"]              -= amount_usd
+            portfolio["positions"][symbol]  = {
                 "type":        "long",
                 "entry_price": price,
                 "amount":      amount,
                 "amount_usd":  amount_usd,
+                "opened_at":   timestamp,
             }
-            trade = {
+            trades.append({
                 "time": timestamp, "symbol": symbol, "ticker": ASSETS[symbol],
                 "action": "open_long", "price": price, "amount_usd": amount_usd,
                 "confidence": action["confidence"], "reason": action["reason"],
-            }
-            trades.append(trade)
+            })
             executed.append(f"LONG {symbol} ${amount_usd}")
             print(f"  ✅ LONG {symbol} | ${amount_usd} at ${price}")
 
@@ -227,19 +268,19 @@ def execute_actions(portfolio, actions, market_data):
             if amount_usd < 10:
                 continue
             amount = amount_usd / price
-            portfolio["cash"]                -= amount_usd
-            portfolio["positions"][symbol]    = {
+            portfolio["cash"]              -= amount_usd
+            portfolio["positions"][symbol]  = {
                 "type":        "short",
                 "entry_price": price,
                 "amount":      amount,
                 "amount_usd":  amount_usd,
+                "opened_at":   timestamp,
             }
-            trade = {
+            trades.append({
                 "time": timestamp, "symbol": symbol, "ticker": ASSETS[symbol],
                 "action": "open_short", "price": price, "amount_usd": amount_usd,
                 "confidence": action["confidence"], "reason": action["reason"],
-            }
-            trades.append(trade)
+            })
             executed.append(f"SHORT {symbol} ${amount_usd}")
             print(f"  ✅ SHORT {symbol} | ${amount_usd} at ${price}")
 
@@ -254,22 +295,16 @@ def execute_actions(portfolio, actions, market_data):
                 portfolio["cash"] += pos["amount_usd"] + pnl
 
             del portfolio["positions"][symbol]
-            trade = {
+            trades.append({
                 "time": timestamp, "symbol": symbol, "ticker": ASSETS[symbol],
                 "action": "close", "price": price, "amount_usd": pos["amount_usd"],
                 "pnl": pnl, "confidence": action["confidence"], "reason": action["reason"],
-            }
-            trades.append(trade)
+            })
             executed.append(f"CLOSE {symbol} PnL=${pnl}")
             print(f"  ✅ CLOSE {symbol} | PnL: ${pnl} at ${price}")
 
     save_trades(trades)
     return portfolio, executed
-
-# ── HOVEDLOOP ────────────────────────────────────────────
-print("🚀 Multi-Asset Crypto Trader started")
-print(f"   Analyzing {len(ASSETS)} assets every 30 minutes")
-print("   Press Ctrl+C to stop.\n")
 
 # ── KJØR ÉN GANG ─────────────────────────────────────────
 print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Running analysis...")
