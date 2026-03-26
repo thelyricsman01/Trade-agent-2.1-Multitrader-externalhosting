@@ -12,7 +12,6 @@ from datetime import datetime
 api_key = "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"
 client  = anthropic.Anthropic(api_key=api_key)
 
-
 INTERVAL     = 30 * 60  # 30 minutter
 TRADES_FILE  = "trades.json"
 PORTFOLIO_FILE = "portfolio.json"
