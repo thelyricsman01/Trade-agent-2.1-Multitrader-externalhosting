@@ -27,7 +27,6 @@ ASSETS = {
     "ADA":  "ADA-USD",
     "AVAX": "AVAX-USD",
     "LINK": "LINK-USD",
-    "MATIC":"MATIC-USD",
 }
 
 # ── TEKNISKE INDIKATORER ─────────────────────────────────
