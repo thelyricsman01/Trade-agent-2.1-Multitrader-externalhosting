@@ -17,7 +17,7 @@ print("DEBUG KEY:", repr(key))
 # legg gjerne en hard stop for å teste
 exit()
 
-api_key = "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"
+api_key = os.environ.get("ANTHROPIC_API_KEY")
 client  = anthropic.Anthropic(api_key=api_key)
 
 INTERVAL     = 30 * 60  # 30 minutter
