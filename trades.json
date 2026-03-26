@@ -28,5 +28,57 @@
     "amount_usd": 318.5,
     "confidence": 62,
     "reason": "RSI at 41.33 (early oversold), MACD negative but improving. Sideways consolidation with -2.57% loss smallest in market. Good value play with upside potential."
+  },
+  {
+    "time": "2026-03-26 22:07",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 68925.820312,
+    "amount_usd": 700.0,
+    "pnl": -1.1,
+    "confidence": 75,
+    "reason": "Down 3.34% in 24h, RSI 45.93 (neutral), MACD below signal line (bearish divergence). Sideways trend with downside bias. Cut loss and redeploy capital."
+  },
+  {
+    "time": "2026-03-26 22:07",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 2068.348633,
+    "amount_usd": 390.0,
+    "pnl": -0.57,
+    "confidence": 78,
+    "reason": "Down 4.6% in 24h, RSI 49.7 (neutral-weak), MACD above signal but weakening. Sideways trend masking weakness. Reduce exposure."
+  },
+  {
+    "time": "2026-03-26 22:07",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 86.735374,
+    "amount_usd": 419.96,
+    "confidence": 55,
+    "reason": "RSI 49.8 (neutral, near support), MACD near zero (potential reversal setup). Down 5.42% presents dip-buy opportunity. Moderate conviction given sideways trend."
+  },
+  {
+    "time": "2026-03-26 22:07",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.366672,
+    "amount_usd": 251.97,
+    "confidence": 52,
+    "reason": "RSI 47.91 (neutral), MACD near zero with signal aligned. Down 3.36% with sideways trend. Moderate risk/reward for dip entry with capital freed from closes."
+  },
+  {
+    "time": "2026-03-26 22:07",
+    "symbol": "AVAX",
+    "ticker": "AVAX-USD",
+    "action": "open_long",
+    "price": 9.099928,
+    "amount_usd": 151.18,
+    "confidence": 48,
+    "reason": "Largest 24h decline at -5.91%, RSI 42.19 (oversold-adjacent), MACD negative but potential inflection. Highest risk/reward if reversal occurs. Smaller position sizing."
   }
 ]
