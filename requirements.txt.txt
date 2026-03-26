@@ -1,0 +1,4 @@
+anthropic
+yfinance
+pandas
+requests
