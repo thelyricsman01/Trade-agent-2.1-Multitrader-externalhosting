@@ -5,6 +5,9 @@ on:
     - cron: '0 */2 * * *'  # Hver 2. time
   workflow_dispatch:         # Manuell kjøring ved behov
 
+permissions:
+  contents: write
+
 jobs:
   trade:
     runs-on: ubuntu-latest
