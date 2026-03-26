@@ -11,12 +11,6 @@ from datetime import datetime
 
 import os
 
-key = os.getenv("ANTHROPIC_API_KEY")
-print("DEBUG KEY:", repr(key))
-
-# legg gjerne en hard stop for å teste
-exit()
-
 api_key = os.environ.get("ANTHROPIC_API_KEY")
 client  = anthropic.Anthropic(api_key=api_key)
 
