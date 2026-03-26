@@ -271,41 +271,35 @@ print("🚀 Multi-Asset Crypto Trader started")
 print(f"   Analyzing {len(ASSETS)} assets every 30 minutes")
 print("   Press Ctrl+C to stop.\n")
 
-while True:
-    try:
-        print(f"\n[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Fetching market data...")
+# ── KJØR ÉN GANG ─────────────────────────────────────────
+print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Running analysis...")
 
-        market_data = []
-        for symbol, ticker in ASSETS.items():
-            data = get_market_data(ticker)
-            if data:
-                market_data.append(data)
-                print(f"  {symbol}: ${data['price']} | RSI: {data['rsi']} | {data['trend']}")
+market_data = []
+for symbol, ticker in ASSETS.items():
+    data = get_market_data(ticker)
+    if data:
+        market_data.append(data)
+        print(f"  {symbol}: ${data['price']} | RSI: {data['rsi']} | {data['trend']}")
 
-        portfolio     = load_portfolio()
-        total_balance = get_total_balance(portfolio, market_data)
+portfolio     = load_portfolio()
+total_balance = get_total_balance(portfolio, market_data)
 
-        print(f"\n  Cash: ${portfolio['cash']} | Balance: ${total_balance} | Positions: {len(portfolio['positions'])}")
-        print("\n  Analyzing with AI...")
+print(f"\n  Cash: ${portfolio['cash']} | Balance: ${total_balance} | Positions: {len(portfolio['positions'])}")
+print("\n  Analyzing with AI...")
 
-        analysis              = analyze_all(market_data, portfolio, total_balance)
-        portfolio, executed   = execute_actions(portfolio, analysis, market_data)
-        total_balance         = get_total_balance(portfolio, market_data)
+analysis            = analyze_all(market_data, portfolio, total_balance)
+portfolio, executed = execute_actions(portfolio, analysis, market_data)
+total_balance       = get_total_balance(portfolio, market_data)
 
-        save_portfolio(portfolio)
+save_portfolio(portfolio)
 
-        print(f"\n  Outlook: {analysis['market_outlook'].upper()}")
-        print(f"  Summary: {analysis['summary']}")
-        print(f"  New balance: ${total_balance}")
-        if executed:
-            print(f"  Executed: {', '.join(executed)}")
-        else:
-            print("  No trades executed this round.")
+push_to_github("trades.json")
+push_to_github("portfolio.json")
 
-    except Exception as e:
-        print(f"Error: {e}")
-        import traceback
-        traceback.print_exc()
-
-    print(f"\n  Next analysis in 30 minutes...")
-    time.sleep(INTERVAL)
+print(f"\n  Outlook: {analysis['market_outlook'].upper()}")
+print(f"  Summary: {analysis['summary']}")
+print(f"  New balance: ${total_balance}")
+if executed:
+    print(f"  Executed: {', '.join(executed)}")
+else:
+    print("  No trades executed this round.")
