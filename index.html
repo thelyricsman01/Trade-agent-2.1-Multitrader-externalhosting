@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trading Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: monospace; background: #0d1117; color: #e6edf3; padding: 24px; }
+    h1 { font-size: 20px; color: #e6edf3; margin-bottom: 20px; letter-spacing: 1px; }
+
+    .topbar {
+      display: flex; gap: 32px; align-items: center;
+      background: #161b22; border: 1px solid #30363d;
+      border-radius: 10px; padding: 18px 28px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .topbar .item { display: flex; flex-direction: column; }
+    .topbar .label { font-size: 11px; color: #8b949e; margin-bottom: 4px; }
+    .topbar .value { font-size: 22px; font-weight: bold; }
+    .topbar .updated { margin-left: auto; font-size: 11px; color: #8b949e; align-self: center; }
+
+    .positive { color: #3fb950; }
+    .negative { color: #f85149; }
+    .neutral  { color: #8b949e; }
+
+    .main { display: flex; gap: 24px; align-items: flex-start; }
+    .panel { flex: 1; }
+    .panel h2 {
+      font-size: 12px; color: #8b949e;
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      background: #161b22; color: #8b949e;
+      padding: 10px 12px; text-align: left;
+      border-bottom: 1px solid #30363d; white-space: nowrap;
+    }
+    td { padding: 8px 12px; border-bottom: 1px solid #21262d; white-space: nowrap; }
+    tr:hover td { background: #161b22; }
+
+    .tag {
+      display: inline-block; font-size: 11px;
+      font-weight: bold; padding: 2px 10px; border-radius: 20px;
+    }
+    .tag-open_long   { background: #1a3a24; color: #3fb950; }
+    .tag-open_short  { background: #3a2e00; color: #d29922; }
+    .tag-close       { background: #1a2a3a; color: #58a6ff; }
+    .tag-long        { background: #1a3a24; color: #3fb950; }
+    .tag-short       { background: #3a2e00; color: #d29922; }
+
+    .empty { color: #8b949e; font-size: 13px; padding: 16px 0; }
+    .log-row { cursor: pointer; }
+    .log-row:hover td { background: #1c2128; }
+    .keywords { color: #8b949e; font-size: 12px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7); z-index: 100;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #161b22; border: 1px solid #30363d;
+      border-radius: 12px; padding: 28px;
+      max-width: 620px; width: 90%;
+      position: relative; max-height: 90vh; overflow-y: auto;
+    }
+    .modal .close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer;
+    }
+    .modal .close:hover { color: #e6edf3; }
+    .modal-row {
+      display: flex; justify-content: space-between;
+      padding: 8px 0; border-bottom: 1px solid #21262d; font-size: 13px;
+    }
+    .modal-row:last-child { border-bottom: none; }
+    .modal-row .mlabel { color: #8b949e; }
+    .modal-row .mvalue { text-align: right; max-width: 340px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+  <h1>Trading Dashboard</h1>
+
+  <div class="topbar">
+    <div class="item"><div class="label">Total Balance</div><div class="value" id="balance">–</div></div>
+    <div class="item"><div class="label">PnL ($)</div><div class="value" id="pnl-usd">–</div></div>
+    <div class="item"><div class="label">PnL (%)</div><div class="value" id="pnl-pct">–</div></div>
+    <div class="item"><div class="label">Open Positions</div><div class="value" id="open-positions">–</div></div>
+    <div class="item"><div class="label">Cash</div><div class="value" id="cash">–</div></div>
+    <div class="updated" id="updated">Last updated: –</div>
+  </div>
+
+  <div class="main">
+
+    <div class="panel" style="flex:1.3">
+      <h2>Holdings</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Position</th>
+            <th>Amount</th>
+            <th>Avg. Entry</th>
+            <th>Current Price</th>
+            <th>Market Value</th>
+            <th>PnL ($)</th>
+            <th>PnL (%)</th>
+          </tr>
+        </thead>
+        <tbody id="holdings-body">
+          <tr><td colspan="8" class="empty">No open positions.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel" style="flex:1">
+      <h2>Transaction Log</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Keywords</th>
+          </tr>
+        </thead>
+        <tbody id="log-body">
+          <tr><td colspan="5" class="empty">No transactions yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal">
+      <button class="close" onclick="closeModalDirect()">✕</button>
+
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+        <span id="modal-ticker" style="font-size:15px; font-weight:bold; color:#e6edf3;"></span>
+        <span id="modal-action-tag"></span>
+        <span id="modal-time" style="font-size:11px; color:#8b949e;"></span>
+        <a id="modal-yahoo-link" href="#" target="_blank" style="
+          font-size:11px; padding:3px 10px;
+          border:1px solid #30363d; border-radius:6px;
+          color:#8b949e; text-decoration:none; background:#0d1117;
+        " onmouseover="this.style.color='#e6edf3';this.style.borderColor='#8b949e'"
+           onmouseout="this.style.color='#8b949e';this.style.borderColor='#30363d'">
+          ↗ Yahoo Finance
+        </a>
+      </div>
+
+      <div id="modal-content"></div>
+      <div id="modal-chart"></div>
+    </div>
+  </div>
+
+  <script>
+    const START_BALANCE = 2000;
+    let tradesData = [];
+
+    const LIVE_PRICES = {
+      "BTC":  "BTCUSDT",
+      "ETH":  "ETHUSDT",
+      "SOL":  "SOLUSDT",
+      "BNB":  "BNBUSDT",
+      "XRP":  "XRPUSDT",
+      "DOGE": "DOGEUSDT",
+      "ADA":  "ADAUSDT",
+      "AVAX": "AVAXUSDT",
+      "LINK": "LINKUSDT",
+      "MATIC":"MATICUSDT",
+    };
+
+    const TV_SYMBOLS = {
+      "BTC":  "BINANCE:BTCUSDT",
+      "ETH":  "BINANCE:ETHUSDT",
+      "SOL":  "BINANCE:SOLUSDT",
+      "BNB":  "BINANCE:BNBUSDT",
+      "XRP":  "BINANCE:XRPUSDT",
+      "DOGE": "BINANCE:DOGEUSDT",
+      "ADA":  "BINANCE:ADAUSDT",
+      "AVAX": "BINANCE:AVAXUSDT",
+      "LINK": "BINANCE:LINKUSDT",
+      "MATIC":"BINANCE:MATICUSDT",
+    };
+
+    const YAHOO_TICKERS = {
+      "BTC":  "BTC-USD",
+      "ETH":  "ETH-USD",
+      "SOL":  "SOL-USD",
+      "BNB":  "BNB-USD",
+      "XRP":  "XRP-USD",
+      "DOGE": "DOGE-USD",
+      "ADA":  "ADA-USD",
+      "AVAX": "AVAX-USD",
+      "LINK": "LINK-USD",
+      "MATIC":"MATIC-USD",
+    };
+
+    async function getLivePrices() {
+      const prices = {};
+      await Promise.all(Object.entries(LIVE_PRICES).map(async ([symbol, pair]) => {
+        try {
+          const res  = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${pair}`);
+          const data = await res.json();
+          prices[symbol] = parseFloat(data.price);
+        } catch(e) { prices[symbol] = null; }
+      }));
+      return prices;
+    }
+
+    async function loadPortfolio() {
+      try {
+        const res = await fetch("portfolio.json?ts=" + Date.now());
+        return await res.json();
+      } catch(e) { return null; }
+    }
+
+    async function loadTrades() {
+      try {
+        const res = await fetch("trades.json?ts=" + Date.now());
+        return await res.json();
+      } catch(e) { return []; }
+    }
+
+    function sign(val)   { return val >= 0 ? "+" : ""; }
+    function cls(val)    { return val > 0 ? "positive" : val < 0 ? "negative" : "neutral"; }
+    function fmt(n, d=2) { return n.toLocaleString(undefined, {minimumFractionDigits: d, maximumFractionDigits: d}); }
+
+    function getKeywords(reason) {
+      const words = reason.split(" ").slice(0, 5).join(" ");
+      return words + (reason.split(" ").length > 5 ? "..." : "");
+    }
+
+    function setChart(symbol, interval, btn) {
+      document.querySelectorAll("#chart-btns button").forEach(b => {
+        b.style.color = "#8b949e"; b.style.borderColor = "#30363d"; b.classList.remove("active");
+      });
+      btn.style.color = "#e6edf3"; btn.style.borderColor = "#8b949e"; btn.classList.add("active");
+      document.getElementById("chart-frame").src =
+        `https://s.tradingview.com/widgetembed/?symbol=${symbol}&interval=${interval}&theme=dark&style=1&locale=en&hide_top_toolbar=1&hide_legend=1&save_image=0&calendar=0`;
+    }
+
+    function openModal(index) {
+      const t = tradesData[index];
+      if (!t) return;
+
+      const symbol     = t.symbol;
+      const tvSymbol   = TV_SYMBOLS[symbol]   || "BINANCE:BTCUSDT";
+      const yahooTicker= YAHOO_TICKERS[symbol] || "BTC-USD";
+
+      document.getElementById("modal-ticker").textContent   = symbol;
+      document.getElementById("modal-time").textContent     = t.time;
+      document.getElementById("modal-action-tag").innerHTML = `<span class="tag tag-${t.action}">${t.action.replace("_", " ").toUpperCase()}</span>`;
+      document.getElementById("modal-yahoo-link").href      = `https://finance.yahoo.com/quote/${yahooTicker}/chart/`;
+
+      const rows = [
+        ["Price",       "$" + fmt(t.price)],
+        ["Amount ($)",  t.amount_usd > 0 ? "$" + fmt(t.amount_usd) : "–"],
+        ["PnL",         t.pnl != null ? `<span class="${cls(t.pnl)}">${sign(t.pnl)}$${fmt(Math.abs(t.pnl))}</span>` : "–"],
+        ["Confidence",  t.confidence + "%"],
+        ["Reason",      t.reason],
+      ];
+
+      document.getElementById("modal-content").innerHTML = rows.map(([label, value]) => `
+        <div class="modal-row">
+          <span class="mlabel">${label}</span>
+          <span class="mvalue">${value}</span>
+        </div>
+      `).join("");
+
+      document.getElementById("modal-chart").innerHTML = `
+        <div style="margin-top:16px;">
+          <div style="display:flex; gap:8px; margin-bottom:8px;" id="chart-btns">
+            ${[["1H","60"],["1D","D"],["3D","120"],["1W","W"],["1M","M"],["3M","3M"]].map(([label, interval], i) => `
+              <button onclick="setChart('${tvSymbol}', '${interval}', this)" style="
+                font-size:11px; padding:3px 10px;
+                border:1px solid ${i === 0 ? "#8b949e" : "#30363d"};
+                border-radius:6px; background:#0d1117;
+                color:${i === 0 ? "#e6edf3" : "#8b949e"}; cursor:pointer;
+              " onmouseover="this.style.color='#e6edf3';this.style.borderColor='#8b949e'"
+                 onmouseout="if(!this.classList.contains('active')){this.style.color='#8b949e';this.style.borderColor='#30363d'}"
+              >${label}</button>
+            `).join("")}
+          </div>
+          <div style="border-radius:8px; overflow:hidden;">
+            <iframe id="chart-frame"
+              src="https://s.tradingview.com/widgetembed/?symbol=${tvSymbol}&interval=60&theme=dark&style=1&locale=en&hide_top_toolbar=1&hide_legend=1&save_image=0&calendar=0"
+              width="100%" height="200" frameborder="0" allowtransparency="true" scrolling="no">
+            </iframe>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("modal-overlay").classList.add("open");
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById("modal-overlay"))
+        document.getElementById("modal-overlay").classList.remove("open");
+    }
+    function closeModalDirect() {
+      document.getElementById("modal-overlay").classList.remove("open");
+    }
+
+    async function loadData() {
+      const [portfolio, trades, livePrices] = await Promise.all([
+        loadPortfolio(), loadTrades(), getLivePrices()
+      ]);
+
+      if (!portfolio) return;
+      tradesData = [...trades].reverse();
+
+      // Total balanse
+      let totalBalance = portfolio.cash;
+      for (const [symbol, pos] of Object.entries(portfolio.positions || {})) {
+        const price = livePrices[symbol] || pos.entry_price;
+        if (pos.type === "long") {
+          totalBalance += pos.amount * price;
+        } else {
+          totalBalance += pos.amount_usd + (pos.entry_price - price) * pos.amount;
+        }
+      }
+
+      const pnlUsd = totalBalance - START_BALANCE;
+      const pnlPct = (pnlUsd / START_BALANCE) * 100;
+
+      document.getElementById("balance").textContent       = "$" + fmt(totalBalance);
+      document.getElementById("cash").textContent          = "$" + fmt(portfolio.cash);
+      document.getElementById("open-positions").textContent= Object.keys(portfolio.positions || {}).length;
+      document.getElementById("updated").textContent       = "Last updated: " + new Date().toLocaleTimeString();
+
+      const pnlUsdEl = document.getElementById("pnl-usd");
+      pnlUsdEl.textContent = sign(pnlUsd) + "$" + fmt(Math.abs(pnlUsd));
+      pnlUsdEl.className   = "value " + cls(pnlUsd);
+
+      const pnlPctEl = document.getElementById("pnl-pct");
+      pnlPctEl.textContent = sign(pnlPct) + fmt(pnlPct) + "%";
+      pnlPctEl.className   = "value " + cls(pnlPct);
+
+      // Holdings
+      const holdingsBody = document.getElementById("holdings-body");
+      const positions = Object.entries(portfolio.positions || {});
+
+      if (!positions.length) {
+        holdingsBody.innerHTML = `<tr><td colspan="8" class="empty">No open positions.</td></tr>`;
+      } else {
+        holdingsBody.innerHTML = positions.map(([symbol, pos]) => {
+          const price = livePrices[symbol] || pos.entry_price;
+          let pnlUsdPos, pnlPctPos, marketValue;
+          if (pos.type === "long") {
+            marketValue = pos.amount * price;
+            pnlUsdPos   = (price - pos.entry_price) * pos.amount;
+            pnlPctPos   = ((price - pos.entry_price) / pos.entry_price) * 100;
+          } else {
+            marketValue = pos.amount_usd;
+            pnlUsdPos   = (pos.entry_price - price) * pos.amount;
+            pnlPctPos   = ((pos.entry_price - price) / pos.entry_price) * 100;
+          }
+          return `
+            <tr>
+              <td>${symbol}</td>
+              <td><span class="tag tag-${pos.type}">${pos.type.toUpperCase()}</span></td>
+              <td>${pos.amount.toFixed(6)}</td>
+              <td>$${fmt(pos.entry_price)}</td>
+              <td>$${fmt(price)}</td>
+              <td>$${fmt(marketValue)}</td>
+              <td class="${cls(pnlUsdPos)}">${sign(pnlUsdPos)}$${fmt(Math.abs(pnlUsdPos))}</td>
+              <td class="${cls(pnlPctPos)}">${sign(pnlPctPos)}${fmt(pnlPctPos)}%</td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      // Transaction log
+      const logBody = document.getElementById("log-body");
+      if (!trades.length) {
+        logBody.innerHTML = `<tr><td colspan="5" class="empty">No transactions yet.</td></tr>`;
+        return;
+      }
+
+      logBody.innerHTML = tradesData.map((t, i) => `
+        <tr class="log-row" onclick="openModal(${i})">
+          <td>${t.time}</td>
+          <td><span class="tag tag-${t.action}">${t.action.replace("_", " ").toUpperCase()}</span></td>
+          <td>${t.symbol}</td>
+          <td>$${fmt(t.price)}</td>
+          <td class="keywords">${getKeywords(t.reason)}</td>
+        </tr>
+      `).join("");
+    }
+
+    loadData();
+    setInterval(loadData, 10000);
+  </script>
+
+</body>
+</html>
