@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-03-26 21:39",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 69034.3125,
+    "amount_usd": 700.0,
+    "confidence": 65,
+    "reason": "RSI at 46.19 (neutral zone), MACD positive at 12.59 but above signal. Sideways trend with -3.19% pullback creates entry opportunity. Most stable large-cap in weak market."
+  },
+  {
+    "time": "2026-03-26 21:39",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 2071.379395,
+    "amount_usd": 390.0,
+    "confidence": 60,
+    "reason": "RSI at 49.89 (neutral), MACD at 12.4 approaching crossover with signal at 14.85. Sideways trend with -4.46% dip offers risk/reward. Second-largest asset for diversification."
+  },
+  {
+    "time": "2026-03-26 21:39",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 630.690369,
+    "amount_usd": 318.5,
+    "confidence": 62,
+    "reason": "RSI at 41.33 (early oversold), MACD negative but improving. Sideways consolidation with -2.57% loss smallest in market. Good value play with upside potential."
+  }
+]
