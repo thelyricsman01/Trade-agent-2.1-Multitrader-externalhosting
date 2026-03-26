@@ -2,7 +2,7 @@ name: Run Trader
 
 on:
   schedule:
-    - cron: '0 */4 * * *'    # Hver 4. time
+    - cron: '0 */2 * * *'    # Hver 2. time
     #- cron: '*/5 * * * *'   # Hvert 5. min
   workflow_dispatch:         # Manuell kjøring ved behov
 
