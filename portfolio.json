@@ -1,0 +1,26 @@
+{
+  "cash": 591.5,
+  "positions": {
+    "BTC": {
+      "type": "long",
+      "entry_price": 69034.3125,
+      "amount": 0.010139885147693765,
+      "amount_usd": 700.0,
+      "opened_at": "2026-03-26 21:39"
+    },
+    "ETH": {
+      "type": "long",
+      "entry_price": 2071.379395,
+      "amount": 0.18828033190896928,
+      "amount_usd": 390.0,
+      "opened_at": "2026-03-26 21:39"
+    },
+    "BNB": {
+      "type": "long",
+      "entry_price": 630.690369,
+      "amount": 0.505002162162397,
+      "amount_usd": 318.5,
+      "opened_at": "2026-03-26 21:39"
+    }
+  }
+}
