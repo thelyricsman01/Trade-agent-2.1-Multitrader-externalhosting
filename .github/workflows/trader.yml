@@ -2,7 +2,8 @@ name: Run Trader
 
 on:
   schedule:
-    - cron: '0 */2 * * *'  # Hver 2. time
+    #- cron: '0 */2 * * *'  # Hver 2. time
+    - cron: '*/5 * * * *'   # Hvert 5. min
   workflow_dispatch:         # Manuell kjøring ved behov
 
 permissions:
@@ -11,7 +12,7 @@ permissions:
 jobs:
   trade:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
 
