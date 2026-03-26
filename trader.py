@@ -9,6 +9,9 @@ import yfinance as yf
 import pandas as pd
 from datetime import datetime
 
+import os
+print("Key exists:", bool(os.getenv("ANTHROPIC_API_KEY")))
+
 api_key = "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"
 client  = anthropic.Anthropic(api_key=api_key)
 
