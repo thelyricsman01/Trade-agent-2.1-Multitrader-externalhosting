@@ -301,5 +301,68 @@
     "amount_usd": 188.85,
     "confidence": 50,
     "reason": "RSI 37.25 (lowest among alts, near oversold), -4.59% down. MACD near zero with positive signal 0.01 suggests potential upside reversal. Small allocation (~$160) for speculative rebound."
+  },
+  {
+    "time": "2026-03-27 20:05",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 66044.632812,
+    "amount_usd": 677.92,
+    "pnl": 2.65,
+    "confidence": 75,
+    "reason": "RSI 38.63 (oversold but weak), MACD deeply negative (-338.46), sideways trend with 24h loss of -3.99%. Position is underwater; better to redeploy capital into stronger opportunities."
+  },
+  {
+    "time": "2026-03-27 20:05",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 1992.037109,
+    "amount_usd": 314.75,
+    "pnl": 1.65,
+    "confidence": 70,
+    "reason": "RSI 44.19 (neutral-bearish), MACD near zero showing momentum loss, sideways trend with -3.28% decline. Underperforming; capital needed for better setups."
+  },
+  {
+    "time": "2026-03-27 20:05",
+    "symbol": "AVAX",
+    "ticker": "AVAX-USD",
+    "action": "close",
+    "price": 8.758202,
+    "amount_usd": 188.85,
+    "pnl": 1.65,
+    "confidence": 65,
+    "reason": "RSI 37.95 (weakly oversold), MACD negative (-0.07), sideways trend with -3.76% loss. Smallest position but still dragging; exit to free up capital."
+  },
+  {
+    "time": "2026-03-27 20:05",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 82.776146,
+    "amount_usd": 485.71,
+    "confidence": 55,
+    "reason": "RSI 42.51 (neutral, room to recover), MACD slightly negative but crossover potential, -4.24% dip provides entry point. Moderate conviction given sideways market."
+  },
+  {
+    "time": "2026-03-27 20:05",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 609.871765,
+    "amount_usd": 437.14,
+    "confidence": 60,
+    "reason": "RSI 33.66 (oversold territory), MACD -5.5 but approaching signal line (-2.93) for potential bullish cross, -3.04% decline offers value. Stronger oversold signal than peers."
+  },
+  {
+    "time": "2026-03-27 20:05",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.325216,
+    "amount_usd": 204.0,
+    "confidence": 50,
+    "reason": "RSI 41.94 (neutral), MACD extremely tight (-0.01 vs -0.01 signal), only -2.57% decline. Lower conviction but smallest position size; diversification hedge."
   }
 ]
