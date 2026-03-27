@@ -165,5 +165,47 @@
     "amount_usd": 414.15,
     "confidence": 65,
     "reason": "RSI 46.52 (neutral zone), MACD near 0 suggesting potential reversal point. Lower price point offers volatility upside if market turns bullish. Avoid oversaturated BTC."
+  },
+  {
+    "time": "2026-03-27 11:31",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 1995.329468,
+    "amount_usd": 696.9,
+    "pnl": -23.29,
+    "confidence": 75,
+    "reason": "Down 3.12% in 24h, RSI 44.36 (neutral-bearish), MACD barely positive with weak signal. Current price $1995.33 vs entry $2064.30 = -3.3% loss. Market is sideways with no upside momentum. Cut loss to redeploy capital."
+  },
+  {
+    "time": "2026-03-27 11:31",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 83.336479,
+    "amount_usd": 414.15,
+    "pnl": -12.2,
+    "confidence": 72,
+    "reason": "Down 3.59% in 24h (worst performer), RSI 43.19 (bearish), MACD negative at -0.19. Current price $83.34 vs entry $85.87 = -3.0% loss. No recovery signal visible. Exit to preserve capital."
+  },
+  {
+    "time": "2026-03-27 11:31",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 66684.882812,
+    "amount_usd": 684.48,
+    "confidence": 68,
+    "reason": "RSI 39.81 (oversold zone), sideways trend suggests accumulation. MACD negative but signal turning up. Largest cap asset with $700 allocation (35% of $2000). Risk-aware entry at weakness."
+  },
+  {
+    "time": "2026-03-27 11:31",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 610.98938,
+    "amount_usd": 317.79,
+    "confidence": 65,
+    "reason": "RSI 33.93 (oversold), lowest RSI in market = buy signal. Sideways trend with potential bounce. $500 position (25% of $2000) for diversification away from losing ETH/SOL."
   }
 ]
