@@ -427,5 +427,58 @@
     "amount_usd": 221.1,
     "confidence": 60,
     "reason": "RSI 42.7 (neutral), MACD -0.05 with signal -0.01 (tight range = potential reversal). Specialty asset with -4.17% drop. Lower allocation due to moderate confidence."
+  },
+  {
+    "time": "2026-03-27 23:56",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 66325.492188,
+    "amount_usd": 680.3,
+    "pnl": 3.15,
+    "confidence": 75,
+    "reason": "Negative MACD (-316.08) with weak signal, sideways trend, and -3.58% 24h loss. Entry at $66019.62 vs current $66325.49 shows minimal gains with deteriorating momentum. Cut loss and redeploy capital."
+  },
+  {
+    "time": "2026-03-27 23:56",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 1992.076416,
+    "amount_usd": 379.03,
+    "pnl": 1.55,
+    "confidence": 70,
+    "reason": "Neutral MACD (0.04) barely above signal (11.8), sideways trend, RSI 44.2 mid-range with -3.28% daily decline. No bullish catalyst; preserve capital for better opportunities."
+  },
+  {
+    "time": "2026-03-27 23:56",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "close",
+    "price": 8.564619,
+    "amount_usd": 221.1,
+    "pnl": 0.57,
+    "confidence": 65,
+    "reason": "Entry $8.542747 vs current $8.564619 shows minimal +0.26% gain, negative MACD (-0.05), sideways trend with -3.92% 24h weakness. Risk/reward unfavorable."
+  },
+  {
+    "time": "2026-03-27 23:56",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 612.98584,
+    "amount_usd": 682.15,
+    "confidence": 62,
+    "reason": "Lowest RSI (34.42) approaching oversold territory, smallest 24h decline (-2.55%), relative strength vs peers. Entry at $612.99 with $663 available cash allows 35% allocation ($231)."
+  },
+  {
+    "time": "2026-03-27 23:56",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 82.990616,
+    "amount_usd": 354.72,
+    "confidence": 58,
+    "reason": "RSI 42.77 neutral-low, moderate -3.99% decline, sideways trend suggests consolidation. Secondary position with remaining capital ($186) for diversification."
   }
 ]
