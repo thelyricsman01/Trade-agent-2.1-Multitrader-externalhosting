@@ -207,5 +207,47 @@
     "amount_usd": 317.79,
     "confidence": 65,
     "reason": "RSI 33.93 (oversold), lowest RSI in market = buy signal. Sideways trend with potential bounce. $500 position (25% of $2000) for diversification away from losing ETH/SOL."
+  },
+  {
+    "time": "2026-03-27 15:10",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 66094.679688,
+    "amount_usd": 684.48,
+    "pnl": -6.06,
+    "confidence": 75,
+    "reason": "Down 3.92% in 24h, RSI 38.72 (weak), MACD negative at -334.47 with positive signal divergence suggests potential further downside. Cut loss to preserve capital."
+  },
+  {
+    "time": "2026-03-27 15:10",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 609.781433,
+    "amount_usd": 317.79,
+    "pnl": -0.63,
+    "confidence": 70,
+    "reason": "RSI deeply oversold at 33.64, MACD strongly negative at -5.51. While oversold presents buy opportunity, current position is losing. Sell to redeploy capital into fresher opportunities."
+  },
+  {
+    "time": "2026-03-27 15:10",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 83.200768,
+    "amount_usd": 682.14,
+    "confidence": 65,
+    "reason": "RSI 43.02 (neutral, room to climb), MACD turning positive (0.17 signal), sideways trend with low entry point. Aggressive but measured position with $653 deployment."
+  },
+  {
+    "time": "2026-03-27 15:10",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.333475,
+    "amount_usd": 380.05,
+    "confidence": 60,
+    "reason": "RSI 42.71 (neutral), MACD neutral, least damaged on 24h (-1.96%). Smallest position size but momentum could build from oversold conditions market-wide."
   }
 ]
