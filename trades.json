@@ -364,5 +364,68 @@
     "amount_usd": 204.0,
     "confidence": 50,
     "reason": "RSI 41.94 (neutral), MACD extremely tight (-0.01 vs -0.01 signal), only -2.57% decline. Lower conviction but smallest position size; diversification hedge."
+  },
+  {
+    "time": "2026-03-27 22:01",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 82.741302,
+    "amount_usd": 485.71,
+    "pnl": -0.2,
+    "confidence": 75,
+    "reason": "Entry at $82.776, current $82.741 = minimal loss. RSI 42.47 (neutral), MACD negative at -0.24. Sideways trend offers no upside catalyst. Free up capital for better opportunities."
+  },
+  {
+    "time": "2026-03-27 22:01",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 610.575378,
+    "amount_usd": 437.14,
+    "pnl": 0.5,
+    "confidence": 70,
+    "reason": "Entry $609.87, current $610.58 = +$0.71 small gain. RSI 33.83 (oversold but weakening), MACD deeply negative at -5.44. No momentum to sustain position. Redeploy capital."
+  },
+  {
+    "time": "2026-03-27 22:01",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "close",
+    "price": 1.328928,
+    "amount_usd": 204.0,
+    "pnl": 0.57,
+    "confidence": 65,
+    "reason": "Slight gain at entry $1.325, current $1.329. RSI 42.28 (neutral), MACD near zero with no clear direction. Sideways trend = opportunity cost. Cut to raise cash for aggressive positioning."
+  },
+  {
+    "time": "2026-03-27 22:01",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 66019.617188,
+    "amount_usd": 680.3,
+    "confidence": 72,
+    "reason": "RSI 38.59 (approaching oversold), MACD negative but signal positive at 10.64 (potential crossover). -4.03% 24h = capitulation sign. Major support likely. Aggressive entry on weakness."
+  },
+  {
+    "time": "2026-03-27 22:01",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 1983.93811,
+    "amount_usd": 379.03,
+    "confidence": 68,
+    "reason": "RSI 43.79 (depressed), MACD -0.61 with signal 11.68 (bullish divergence forming). -3.67% decline presents buying opportunity on second-tier asset."
+  },
+  {
+    "time": "2026-03-27 22:01",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "open_long",
+    "price": 8.542747,
+    "amount_usd": 221.1,
+    "confidence": 60,
+    "reason": "RSI 42.7 (neutral), MACD -0.05 with signal -0.01 (tight range = potential reversal). Specialty asset with -4.17% drop. Lower allocation due to moderate confidence."
   }
 ]
