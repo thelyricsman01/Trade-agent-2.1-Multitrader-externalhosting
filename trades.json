@@ -249,5 +249,57 @@
     "amount_usd": 380.05,
     "confidence": 60,
     "reason": "RSI 42.71 (neutral), MACD neutral, least damaged on 24h (-1.96%). Smallest position size but momentum could build from oversold conditions market-wide."
+  },
+  {
+    "time": "2026-03-27 18:38",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 82.195702,
+    "amount_usd": 682.14,
+    "pnl": -8.24,
+    "confidence": 75,
+    "reason": "SOL down 4.91% in 24h, RSI 41.84 (neutral-low), MACD negative at -0.29. Entry at $83.20, current $82.20 = -1.2% loss. Sideways trend with no bullish catalyst. Cut loss and redeploy capital."
+  },
+  {
+    "time": "2026-03-27 18:38",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "close",
+    "price": 1.320091,
+    "amount_usd": 380.05,
+    "pnl": -3.81,
+    "confidence": 70,
+    "reason": "XRP down 2.94% in 24h, RSI 41.47 (neutral), MACD flat at -0.01. Entry at $1.3335, current $1.3201 = -1% loss. Sideways trend offers no alpha. Close position to reduce drag on portfolio."
+  },
+  {
+    "time": "2026-03-27 18:38",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 65787.0,
+    "amount_usd": 677.92,
+    "confidence": 60,
+    "reason": "RSI 38.18 (approaching oversold), sideways trend suggests consolidation before recovery. -4.37% drawdown creates buying opportunity. Conservative entry with 35% allocation (~$310) to establish BTC exposure."
+  },
+  {
+    "time": "2026-03-27 18:38",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 1981.668945,
+    "amount_usd": 314.75,
+    "confidence": 55,
+    "reason": "RSI 43.67 (neutral-low), -3.78% down. MACD -0.79 with signal 11.64 shows potential crossover bullish divergence. Smaller allocation (~$200) as secondary position after BTC."
+  },
+  {
+    "time": "2026-03-27 18:38",
+    "symbol": "AVAX",
+    "ticker": "AVAX-USD",
+    "action": "open_long",
+    "price": 8.682541,
+    "amount_usd": 188.85,
+    "confidence": 50,
+    "reason": "RSI 37.25 (lowest among alts, near oversold), -4.59% down. MACD near zero with positive signal 0.01 suggests potential upside reversal. Small allocation (~$160) for speculative rebound."
   }
 ]
