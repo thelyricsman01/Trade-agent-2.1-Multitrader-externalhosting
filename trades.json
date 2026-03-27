@@ -123,5 +123,47 @@
     "amount_usd": 435.09,
     "confidence": 65,
     "reason": "RSI 47.59 (oversold entry zone approaching), sideways trend, -5.13% pullback provides entry. $500 position at $8.89; defensive play with recovery potential."
+  },
+  {
+    "time": "2026-03-27 08:10",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "close",
+    "price": 1.358209,
+    "amount_usd": 251.97,
+    "pnl": -1.56,
+    "confidence": 72,
+    "reason": "Position down -0.6% with sideways trend and neutral RSI (45.2). MACD near zero with no momentum. Better opportunities exist; lock in capital for redeployment."
+  },
+  {
+    "time": "2026-03-27 08:10",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "close",
+    "price": 8.901257,
+    "amount_usd": 435.09,
+    "pnl": 0.36,
+    "confidence": 68,
+    "reason": "Position down -0.09% with weak momentum (MACD -0.02, RSI 47.23). Sideways trend offers no upside catalyst. Free up $435 for more promising entries."
+  },
+  {
+    "time": "2026-03-27 08:10",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 2064.30249,
+    "amount_usd": 696.9,
+    "confidence": 71,
+    "reason": "Most attractive risk/reward: positive MACD (5.8 > 12.96 signal yet rising), RSI neutral (48.24), slight positive momentum (+0.23% 24h). Large liquid market reduces slippage."
+  },
+  {
+    "time": "2026-03-27 08:10",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 85.866257,
+    "amount_usd": 414.15,
+    "confidence": 65,
+    "reason": "RSI 46.52 (neutral zone), MACD near 0 suggesting potential reversal point. Lower price point offers volatility upside if market turns bullish. Avoid oversaturated BTC."
   }
 ]
