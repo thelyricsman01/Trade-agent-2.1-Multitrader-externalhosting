@@ -522,5 +522,57 @@
     "amount_usd": 315.86,
     "confidence": 60,
     "reason": "RSI 42.28 neutral, MACD flat near zero, only -2.29% decline. Low volatility setup with decent liquidity; $500 position for sideways-to-bullish breakout potential."
+  },
+  {
+    "time": "2026-03-28 07:58",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 2003.972656,
+    "amount_usd": 680.31,
+    "pnl": 5.46,
+    "confidence": 75,
+    "reason": "Position in slight profit (+0.76%). RSI 44.68 (neutral), MACD barely positive but trend sideways. Lock in gains and redeploy capital to higher-conviction setups."
+  },
+  {
+    "time": "2026-03-28 07:58",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "close",
+    "price": 1.339048,
+    "amount_usd": 315.86,
+    "pnl": 2.4,
+    "confidence": 65,
+    "reason": "Position underwater. RSI 42.63 (neutral), sideways trend, no momentum. Cut loss and reallocate to better opportunities."
+  },
+  {
+    "time": "2026-03-28 07:58",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 66449.367188,
+    "amount_usd": 683.06,
+    "confidence": 72,
+    "reason": "RSI 38.77 (approaching oversold), major support zone. Despite negative MACD, sideways trend offers entry point before potential recovery. Strong fundamental asset."
+  },
+  {
+    "time": "2026-03-28 07:58",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 83.460251,
+    "amount_usd": 380.56,
+    "confidence": 68,
+    "reason": "RSI 43.6 (neutral-low), sideways trend, 0.53% positive momentum. Strong alt-coin with institutional backing, good risk/reward at current levels."
+  },
+  {
+    "time": "2026-03-28 07:58",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 613.097412,
+    "amount_usd": 222.0,
+    "confidence": 60,
+    "reason": "RSI 33.51 (oversold territory), slight negative MACD but extreme RSI presents contrarian buy opportunity. Exchange token with utility value."
   }
 ]
