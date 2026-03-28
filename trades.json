@@ -826,5 +826,68 @@
     "amount_usd": 190.33,
     "confidence": 65,
     "reason": "RSI at 40.11 (oversold territory approaching), +1.41% 24h performance, MACD negative but stabilizing, sideways trend. Lower price point allows meaningful accumulation. $400 position."
+  },
+  {
+    "time": "2026-03-28 19:47",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 2018.540894,
+    "amount_usd": 683.24,
+    "pnl": -2.08,
+    "confidence": 75,
+    "reason": "Small loss (-$5.65), sideways trend with neutral RSI 45.58. MACD turning positive but price showing weakness. Cut loss to redeploy capital."
+  },
+  {
+    "time": "2026-03-28 19:47",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "close",
+    "price": 1.343929,
+    "amount_usd": 317.22,
+    "pnl": -1.4,
+    "confidence": 70,
+    "reason": "Small loss (-$3.68), sideways trend, RSI neutral 43.23. Position not performing; free up capital for better opportunities."
+  },
+  {
+    "time": "2026-03-28 19:47",
+    "symbol": "AVAX",
+    "ticker": "AVAX-USD",
+    "action": "close",
+    "price": 8.870141,
+    "amount_usd": 190.33,
+    "pnl": -0.88,
+    "confidence": 65,
+    "reason": "Minor loss (-$0.79), sideways trend with low RSI 39.5 showing weakness. Better entry points likely ahead."
+  },
+  {
+    "time": "2026-03-28 19:47",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 66828.273438,
+    "amount_usd": 486.94,
+    "confidence": 68,
+    "reason": "RSI 39.85 approaching oversold, sideways consolidation before potential breakup. MACD negative but stabilizing. Strong 24h momentum 0.74%."
+  },
+  {
+    "time": "2026-03-28 19:47",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 83.204514,
+    "amount_usd": 292.17,
+    "confidence": 62,
+    "reason": "RSI 43.2 mid-range, sideways trend showing strength. Lower volatility asset for stability. MACD near zero, bullish setup potential."
+  },
+  {
+    "time": "2026-03-28 19:47",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 616.032532,
+    "amount_usd": 175.3,
+    "confidence": 55,
+    "reason": "RSI 34.88 approaching oversold, sideways trend. MACD negative but stabilizing. Opportunistic entry on potential reversal."
   }
 ]
