@@ -774,5 +774,57 @@
     "amount_usd": 317.4,
     "confidence": 62,
     "reason": "RSI at 44.04 near midpoint with 0.87% gains. Sideways trend offers accumulation opportunity before breakout."
+  },
+  {
+    "time": "2026-03-28 17:05",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 616.522522,
+    "amount_usd": 683.63,
+    "pnl": -0.35,
+    "confidence": 75,
+    "reason": "Position underwater (-0.31% from entry), RSI at 35.11 (oversold but declining), MACD negative and below signal line, sideways trend with no upside catalyst. Cut loss to preserve capital."
+  },
+  {
+    "time": "2026-03-28 17:05",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 83.540108,
+    "amount_usd": 317.4,
+    "pnl": -0.77,
+    "confidence": 70,
+    "reason": "Position near break-even (-0.24%), RSI at 43.73 (neutral), MACD flat at -0.58, sideways trend. No momentum to justify holding; redeploy capital to stronger opportunities."
+  },
+  {
+    "time": "2026-03-28 17:05",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 2024.69043,
+    "amount_usd": 683.24,
+    "confidence": 72,
+    "reason": "Best technical setup in market: RSI at 45.96 (neutral, room to run), MACD crossing above signal line (+8.24 vs -6.35), strongest 24h gain at +1.68%, sideways trend breaking bullish. $700 position."
+  },
+  {
+    "time": "2026-03-28 17:05",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.349874,
+    "amount_usd": 317.22,
+    "confidence": 68,
+    "reason": "Second-best momentum with +1.88% 24h gain, RSI at 43.94 (neutral, room to buy), MACD near zero suggests reversal potential, sideways trend. $500 position for diversification."
+  },
+  {
+    "time": "2026-03-28 17:05",
+    "symbol": "AVAX",
+    "ticker": "AVAX-USD",
+    "action": "open_long",
+    "price": 8.911466,
+    "amount_usd": 190.33,
+    "confidence": 65,
+    "reason": "RSI at 40.11 (oversold territory approaching), +1.41% 24h performance, MACD negative but stabilizing, sideways trend. Lower price point allows meaningful accumulation. $400 position."
   }
 ]
