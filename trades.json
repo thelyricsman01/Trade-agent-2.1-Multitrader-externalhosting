@@ -732,5 +732,47 @@
     "amount_usd": 317.27,
     "confidence": 68,
     "reason": "Strong 24h performance at +1.86%. RSI at 43.92 (neutral). MACD neutral with slight upside bias. Momentum building in sideways market. Invest $500 (~370 coins)."
+  },
+  {
+    "time": "2026-03-28 15:59",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 2024.271973,
+    "amount_usd": 683.34,
+    "pnl": 0.23,
+    "confidence": 75,
+    "reason": "Position nearly at breakeven with sideways trend and negative MACD. Lock in liquidity for better opportunities."
+  },
+  {
+    "time": "2026-03-28 15:59",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "close",
+    "price": 1.352214,
+    "amount_usd": 317.27,
+    "pnl": 0.59,
+    "confidence": 70,
+    "reason": "Small unrealized gain (+0.19%), sideways trend, MACD near zero. Exit to redeploy capital into stronger setups."
+  },
+  {
+    "time": "2026-03-28 15:59",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 616.83429,
+    "amount_usd": 683.63,
+    "confidence": 65,
+    "reason": "Lowest RSI (35.25) signals oversold condition with strongest recovery potential. MACD shows divergence setup forming."
+  },
+  {
+    "time": "2026-03-28 15:59",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 83.742676,
+    "amount_usd": 317.4,
+    "confidence": 62,
+    "reason": "RSI at 44.04 near midpoint with 0.87% gains. Sideways trend offers accumulation opportunity before breakout."
   }
 ]
