@@ -889,5 +889,58 @@
     "amount_usd": 175.3,
     "confidence": 55,
     "reason": "RSI 34.88 approaching oversold, sideways trend. MACD negative but stabilizing. Opportunistic entry on potential reversal."
+  },
+  {
+    "time": "2026-03-28 21:02",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 66908.625,
+    "amount_usd": 486.94,
+    "pnl": 0.59,
+    "confidence": 75,
+    "reason": "Sideways trend with negative MACD (-507.3) and RSI at 40 shows weak momentum. Minimal gains (0.86% 24h). Cut position to reduce exposure to consolidation risk and redeploy capital."
+  },
+  {
+    "time": "2026-03-28 21:02",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 83.379044,
+    "amount_usd": 292.17,
+    "pnl": 0.61,
+    "confidence": 70,
+    "reason": "Sideways trend, RSI 43.48 (neutral-low), MACD near zero with no directional bias. Holding weak position; better opportunities available."
+  },
+  {
+    "time": "2026-03-28 21:02",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 617.51123,
+    "amount_usd": 175.3,
+    "pnl": 0.42,
+    "confidence": 72,
+    "reason": "Weakest RSI in portfolio (35.56, approaching oversold) with negative MACD (-6.36). Trend sideways but momentum deteriorating. Exit to free capital."
+  },
+  {
+    "time": "2026-03-28 21:02",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 2023.367554,
+    "amount_usd": 682.28,
+    "confidence": 65,
+    "reason": "Best relative strength: RSI 45.88, positive MACD crossover (signal 8.21 > MACD -6.46), strongest 24h gains (1.61%), sideways trend ready to break up. Solid entry point with recovery potential."
+  },
+  {
+    "time": "2026-03-28 21:02",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.346003,
+    "amount_usd": 380.13,
+    "confidence": 62,
+    "reason": "RSI 43.48 (neutral), 1.58% 24h gains, MACD near zero showing stabilization. Sideways trend with positive price action. Lower volatility provides stability while generating returns."
   }
 ]
