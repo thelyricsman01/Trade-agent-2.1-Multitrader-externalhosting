@@ -1,19 +1,19 @@
 {
-  "cash": 951.7988193775259,
+  "cash": 952.2036356257082,
   "positions": {
-    "ETH": {
+    "BNB": {
       "type": "long",
-      "entry_price": 2023.57666,
-      "amount": 0.33768920817657583,
-      "amount_usd": 683.34,
-      "opened_at": "2026-03-28 14:04"
+      "entry_price": 616.83429,
+      "amount": 1.1082879325661354,
+      "amount_usd": 683.63,
+      "opened_at": "2026-03-28 15:59"
     },
-    "XRP": {
+    "SOL": {
       "type": "long",
-      "entry_price": 1.349704,
-      "amount": 235.0663552897524,
-      "amount_usd": 317.27,
-      "opened_at": "2026-03-28 14:04"
+      "entry_price": 83.742676,
+      "amount": 3.790182200530587,
+      "amount_usd": 317.4,
+      "opened_at": "2026-03-28 15:59"
     }
   }
 }
