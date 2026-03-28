@@ -574,5 +574,58 @@
     "amount_usd": 222.0,
     "confidence": 60,
     "reason": "RSI 33.51 (oversold territory), slight negative MACD but extreme RSI presents contrarian buy opportunity. Exchange token with utility value."
+  },
+  {
+    "time": "2026-03-28 09:55",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 66236.859375,
+    "amount_usd": 683.06,
+    "pnl": -2.18,
+    "confidence": 75,
+    "reason": "RSI 38.27 (oversold but not recovery signal), MACD deeply negative at -560.84, price below entry, sideways trend with no bullish confirmation. Cut loss to free capital."
+  },
+  {
+    "time": "2026-03-28 09:55",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 82.949242,
+    "amount_usd": 380.56,
+    "pnl": -2.33,
+    "confidence": 70,
+    "reason": "RSI 42.82 (neutral-bearish), MACD near zero with no upside divergence, price slightly below entry, sideways trend offers no edge. Exit to redeploy capital."
+  },
+  {
+    "time": "2026-03-28 09:55",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 611.476196,
+    "amount_usd": 222.0,
+    "pnl": -0.59,
+    "confidence": 80,
+    "reason": "RSI 33.11 (lowest of portfolio), MACD negative, price below entry, 24h loss -0.3%. Weakest position - close to raise dry powder."
+  },
+  {
+    "time": "2026-03-28 09:55",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 1997.012451,
+    "amount_usd": 681.28,
+    "confidence": 65,
+    "reason": "RSI 44.23 (mid-range, room to run), MACD positive crossover signal (+7.79), +0.29% 24h showing minor strength, sideways trend into recovery. Best risk/reward among available assets."
+  },
+  {
+    "time": "2026-03-28 09:55",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.336272,
+    "amount_usd": 316.31,
+    "confidence": 60,
+    "reason": "RSI 42.28 (neutral), +0.85% 24h momentum, MACD near zero suggesting potential upside breakout, lowest relative volatility provides safer entry than others."
   }
 ]
