@@ -679,5 +679,58 @@
     "amount_usd": 175.14,
     "confidence": 55,
     "reason": "RSI at 38.24 near oversold, extremely low price point ($8.79) offers high leverage potential. Sideways trend with minimal downside. $300 speculative position."
+  },
+  {
+    "time": "2026-03-28 14:04",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 83.316681,
+    "amount_usd": 486.52,
+    "pnl": 2.15,
+    "confidence": 75,
+    "reason": "Small profit available ($2.83). RSI at 43.38 (neutral), MACD negative at -0.6. Sideways trend with no momentum. Lock in gains and redeploy capital to higher-conviction setups."
+  },
+  {
+    "time": "2026-03-28 14:04",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 615.641296,
+    "amount_usd": 291.91,
+    "pnl": 2.21,
+    "confidence": 80,
+    "reason": "Small profit available ($10.83). RSI at 34.69 (approaching oversold but not yet) and MACD deeply negative at -6.51. Weak momentum in sideways market. Exit to free capital."
+  },
+  {
+    "time": "2026-03-28 14:04",
+    "symbol": "AVAX",
+    "ticker": "AVAX-USD",
+    "action": "close",
+    "price": 8.88721,
+    "amount_usd": 175.14,
+    "pnl": 1.98,
+    "confidence": 70,
+    "reason": "Minor loss (-$0.95). RSI at 39.75 with MACD negative at -0.1. Sideways trend offers no edge. Cut loss and redeploy the ~$175 to better opportunities."
+  },
+  {
+    "time": "2026-03-28 14:04",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 2023.57666,
+    "amount_usd": 683.34,
+    "confidence": 72,
+    "reason": "RSI at 45.89 (neutral, room to run). MACD showing bullish cross (+8.22 signal vs -6.44 MACD convergence). Best 24h performance at +1.62%. Sideways market ready to break. Invest $700 (~34.6 shares)."
+  },
+  {
+    "time": "2026-03-28 14:04",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.349704,
+    "amount_usd": 317.27,
+    "confidence": 68,
+    "reason": "Strong 24h performance at +1.86%. RSI at 43.92 (neutral). MACD neutral with slight upside bias. Momentum building in sideways market. Invest $500 (~370 coins)."
   }
 ]
