@@ -480,5 +480,47 @@
     "amount_usd": 354.72,
     "confidence": 58,
     "reason": "RSI 42.77 neutral-low, moderate -3.99% decline, sideways trend suggests consolidation. Secondary position with remaining capital ($186) for diversification."
+  },
+  {
+    "time": "2026-03-28 05:16",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 610.567505,
+    "amount_usd": 682.15,
+    "pnl": -2.69,
+    "confidence": 75,
+    "reason": "RSI 33.83 (oversold) but MACD deeply negative (-5.43) with negative signal, sideways trend offers no upside catalyst. Price down 2.93%, cutting loss to redeploy capital into better opportunities."
+  },
+  {
+    "time": "2026-03-28 05:16",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 82.393227,
+    "amount_usd": 354.72,
+    "pnl": -2.55,
+    "confidence": 70,
+    "reason": "RSI 42.07 neutral-bearish, MACD negative (-0.27), price down 4.69% recently. Sideways trend with weak momentum; better to reallocate this $354 to stronger setups."
+  },
+  {
+    "time": "2026-03-28 05:16",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 1988.022339,
+    "amount_usd": 680.31,
+    "confidence": 65,
+    "reason": "RSI 43.99 (neutral, not overbought), MACD near zero with positive signal (11.83), strong liquid asset. Allocate $700 on sideways consolidation before potential recovery."
+  },
+  {
+    "time": "2026-03-28 05:16",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.328964,
+    "amount_usd": 315.86,
+    "confidence": 60,
+    "reason": "RSI 42.28 neutral, MACD flat near zero, only -2.29% decline. Low volatility setup with decent liquidity; $500 position for sideways-to-bullish breakout potential."
   }
 ]
