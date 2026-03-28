@@ -1,19 +1,26 @@
 {
-  "cash": 952.2036356257082,
+  "cash": 761.3303372855509,
   "positions": {
-    "BNB": {
+    "ETH": {
       "type": "long",
-      "entry_price": 616.83429,
-      "amount": 1.1082879325661354,
-      "amount_usd": 683.63,
-      "opened_at": "2026-03-28 15:59"
+      "entry_price": 2024.69043,
+      "amount": 0.33745405711232607,
+      "amount_usd": 683.24,
+      "opened_at": "2026-03-28 17:05"
     },
-    "SOL": {
+    "XRP": {
       "type": "long",
-      "entry_price": 83.742676,
-      "amount": 3.790182200530587,
-      "amount_usd": 317.4,
-      "opened_at": "2026-03-28 15:59"
+      "entry_price": 1.349874,
+      "amount": 234.99971108414564,
+      "amount_usd": 317.22,
+      "opened_at": "2026-03-28 17:05"
+    },
+    "AVAX": {
+      "type": "long",
+      "entry_price": 8.911466,
+      "amount": 21.35787759275522,
+      "amount_usd": 190.33,
+      "opened_at": "2026-03-28 17:05"
     }
   }
 }
