@@ -627,5 +627,57 @@
     "amount_usd": 316.31,
     "confidence": 60,
     "reason": "RSI 42.28 (neutral), +0.85% 24h momentum, MACD near zero suggesting potential upside breakout, lowest relative volatility provides safer entry than others."
+  },
+  {
+    "time": "2026-03-28 11:04",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 1995.300171,
+    "amount_usd": 681.28,
+    "pnl": -0.58,
+    "confidence": 72,
+    "reason": "ETH nearly at entry ($1995.30 vs $1997.01), sideways trend with negative MACD (-8.69), minimal upside. Lock in near break-even and redeploy capital to better opportunities."
+  },
+  {
+    "time": "2026-03-28 11:04",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "close",
+    "price": 1.336883,
+    "amount_usd": 316.31,
+    "pnl": 0.14,
+    "confidence": 65,
+    "reason": "XRP slightly positive (+0.04%) at entry, but sideways trend with no momentum. MACD near zero shows exhaustion. Close to redeploy $316.31 cash."
+  },
+  {
+    "time": "2026-03-28 11:04",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 82.949554,
+    "amount_usd": 486.52,
+    "confidence": 68,
+    "reason": "RSI at 42.82 (neutral-low territory), sideways trend offers reversal potential. MACD near zero but positive signal suggests possible upswing. Allocate $500 for aggressive entry."
+  },
+  {
+    "time": "2026-03-28 11:04",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 611.018921,
+    "amount_usd": 291.91,
+    "confidence": 62,
+    "reason": "RSI severely oversold at 33.0 (buy signal threshold), negative MACD but sideways trend suggests consolidation bottom. $400 position for bounce play."
+  },
+  {
+    "time": "2026-03-28 11:04",
+    "symbol": "AVAX",
+    "ticker": "AVAX-USD",
+    "action": "open_long",
+    "price": 8.787655,
+    "amount_usd": 175.14,
+    "confidence": 55,
+    "reason": "RSI at 38.24 near oversold, extremely low price point ($8.79) offers high leverage potential. Sideways trend with minimal downside. $300 speculative position."
   }
 ]
