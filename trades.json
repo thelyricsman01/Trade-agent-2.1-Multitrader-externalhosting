@@ -1173,5 +1173,47 @@
     "pnl": 2.29,
     "confidence": 60,
     "reason": "Position slightly green (+$2.29), RSI=35.34 mid-range, sideways trend offers no conviction - reduce exposure and raise cash for better opportunities"
+  },
+  {
+    "time": "2026-03-29 14:05",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 609.862549,
+    "amount_usd": 409.98,
+    "pnl": -2.39,
+    "confidence": 75,
+    "reason": "RSI at 24.05 (oversold) but price declining (-0.14%), MACD deeply negative, entry at $613.44 now trading at $609.86 (slight loss). Sideways trend with weak signals suggests exit before further deterioration."
+  },
+  {
+    "time": "2026-03-29 14:05",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "close",
+    "price": 8.430974,
+    "amount_usd": 215.24,
+    "pnl": -1.85,
+    "confidence": 65,
+    "reason": "RSI at 34.8 (approaching oversold) but sideways trend with negative MACD (-0.12). Position at $8.50 entry vs $8.43 current shows minor loss. Better opportunities available with fresh capital."
+  },
+  {
+    "time": "2026-03-29 14:05",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 81.860054,
+    "amount_usd": 678.48,
+    "confidence": 72,
+    "reason": "RSI at 34.05 (oversold territory), sideways trend with potential reversal, MACD near crossover (-1.08 vs -0.21 signal). Strong technical setup for bounce-back entry at $81.86."
+  },
+  {
+    "time": "2026-03-29 14:05",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 66464.726562,
+    "amount_usd": 252.01,
+    "confidence": 68,
+    "reason": "RSI at 33.95 (oversold), MACD negative but stabilizing, sideways consolidation pattern. Conservative position sizing given macro uncertainty, but oversold conditions warrant entry."
   }
 ]
