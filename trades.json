@@ -984,5 +984,47 @@
     "amount_usd": 378.95,
     "confidence": 60,
     "reason": "RSI 34.5 (oversold territory), MACD negative but bouncing. Sideways trend. $600 position for alt-recovery play if market reverses. High risk/reward."
+  },
+  {
+    "time": "2026-03-29 05:55",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 66682.195312,
+    "amount_usd": 680.16,
+    "pnl": -0.12,
+    "confidence": 75,
+    "reason": "Position underwater -$11.16. RSI 39.44 (neutral), MACD deeply negative (-524.03), sideways trend with no upside catalyst. Cut loss to redeploy capital."
+  },
+  {
+    "time": "2026-03-29 05:55",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 613.004944,
+    "amount_usd": 378.95,
+    "pnl": -1.37,
+    "confidence": 80,
+    "reason": "Position underwater -$47.01. RSI 33.49 (oversold but weakening), MACD -6.7 below signal, downtrend forming. Exit before further deterioration."
+  },
+  {
+    "time": "2026-03-29 05:55",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 2004.064331,
+    "amount_usd": 679.64,
+    "confidence": 72,
+    "reason": "Best technical setup: RSI 44.68 (room to run), MACD positive crossover signal (+8.0 above -7.93), sideways trend with 0.64% 24h strength. Strongest momentum among large caps."
+  },
+  {
+    "time": "2026-03-29 05:55",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 82.684296,
+    "amount_usd": 353.41,
+    "confidence": 65,
+    "reason": "RSI 42.5 neutral, MACD near zero (-0.65), sideways trend. Secondary position for diversification; reasonable entry on oversold technicals relative to peers."
   }
 ]
