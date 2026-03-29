@@ -1131,5 +1131,47 @@
     "pnl": -0.4,
     "confidence": 65,
     "reason": "Position nearly flat with minor loss (-$0.32). RSI at 36.05 (neutral), MACD negative. While 24h is +0.83%, technical setup lacks conviction. Redeploy into stronger oversold assets."
+  },
+  {
+    "time": "2026-03-29 11:56",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 613.444702,
+    "amount_usd": 409.98,
+    "confidence": 75,
+    "reason": "RSI=25.88 (oversold), sideways trend with potential bounce, MACD negative but BNB showing relative strength vs peers"
+  },
+  {
+    "time": "2026-03-29 11:56",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "open_long",
+    "price": 8.504143,
+    "amount_usd": 215.24,
+    "confidence": 70,
+    "reason": "RSI=36.15 approaching oversold, strongest 24h performer at +0.9%, sideways trend ready for reversal, good entry point"
+  },
+  {
+    "time": "2026-03-29 11:56",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 2002.020874,
+    "amount_usd": 312.89,
+    "pnl": 0.91,
+    "confidence": 65,
+    "reason": "Position near breakeven (+$2.89), RSI=38.93 showing weakness, MACD barely positive - lock in exit before further decline"
+  },
+  {
+    "time": "2026-03-29 11:56",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 82.581352,
+    "amount_usd": 601.71,
+    "pnl": 2.29,
+    "confidence": 60,
+    "reason": "Position slightly green (+$2.29), RSI=35.34 mid-range, sideways trend offers no conviction - reduce exposure and raise cash for better opportunities"
   }
 ]
