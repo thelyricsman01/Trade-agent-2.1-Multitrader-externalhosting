@@ -1320,5 +1320,57 @@
     "amount_usd": 403.0,
     "confidence": 68,
     "reason": "RSI 34.71 (oversold), flat on day showing consolidation. Low volatility asset, stable entry point for capital deployment."
+  },
+  {
+    "time": "2026-03-29 19:49",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 81.594368,
+    "amount_usd": 678.13,
+    "pnl": 0.85,
+    "confidence": 75,
+    "reason": "Position slightly underwater (-$0.14), RSI at 33.77 (oversold but no recovery), sideways trend with negative momentum. Cut loss to redeploy capital to better opportunities."
+  },
+  {
+    "time": "2026-03-29 19:49",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "close",
+    "price": 8.415122,
+    "amount_usd": 403.0,
+    "pnl": -0.44,
+    "confidence": 70,
+    "reason": "Minimal loss (-$0.09), RSI 34.61 showing weakness, MACD negative, sideways trend. Free up $403 capital for more promising entries."
+  },
+  {
+    "time": "2026-03-29 19:49",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 66332.898438,
+    "amount_usd": 678.27,
+    "confidence": 65,
+    "reason": "RSI 33.5 (deeply oversold), strong buy signal despite sideways trend. MACD still negative but recovering from extreme lows. At key support level with high risk/reward potential. Invest $700 (35% of $2000)."
+  },
+  {
+    "time": "2026-03-29 19:49",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 1993.813843,
+    "amount_usd": 314.91,
+    "confidence": 60,
+    "reason": "RSI 38.29 approaching oversold, MACD showing early bullish divergence (Signal: 3.12 positive). More stable than BTC. Invest $500 (25% of $2000)."
+  },
+  {
+    "time": "2026-03-29 19:49",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 608.74469,
+    "amount_usd": 188.95,
+    "confidence": 70,
+    "reason": "RSI 23.83 (most oversold on board = strongest buy signal), sideways trend suggests accumulation phase. High risk but highest reward potential. Invest $400 (20% of $2000)."
   }
 ]
