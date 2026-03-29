@@ -1026,5 +1026,57 @@
     "amount_usd": 353.41,
     "confidence": 65,
     "reason": "RSI 42.5 neutral, MACD near zero (-0.65), sideways trend. Secondary position for diversification; reasonable entry on oversold technicals relative to peers."
+  },
+  {
+    "time": "2026-03-29 08:03",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 2004.423828,
+    "amount_usd": 679.64,
+    "pnl": 0.12,
+    "confidence": 75,
+    "reason": "Position at breakeven ($2004.42 vs $2004.06 entry). RSI 39.11 is neutral-bearish, MACD still negative. Market sideways with no upside catalyst. Lock in capital for better opportunities."
+  },
+  {
+    "time": "2026-03-29 08:03",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 82.476791,
+    "amount_usd": 353.41,
+    "pnl": -0.89,
+    "confidence": 70,
+    "reason": "Minor loss position ($82.48 vs $82.68 entry). RSI 35.13 showing weakness, MACD negative. Sideways trend offers no edge. Redeploy capital to oversold assets."
+  },
+  {
+    "time": "2026-03-29 08:03",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 613.268127,
+    "amount_usd": 679.37,
+    "confidence": 80,
+    "reason": "RSI 25.77 is deeply oversold (<30), strongest buy signal in market. Price $613.27 offers accumulation opportunity. MACD negative but recovery likely from oversold conditions."
+  },
+  {
+    "time": "2026-03-29 08:03",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 66614.203125,
+    "amount_usd": 378.51,
+    "confidence": 65,
+    "reason": "RSI 34.44 approaching oversold, strong support structure. MACD divergence negative but stabilizing. Major asset with $66.6k price offers stability. Sideways trend suggests consolidation before upside."
+  },
+  {
+    "time": "2026-03-29 08:03",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "open_long",
+    "price": 8.513931,
+    "amount_usd": 220.8,
+    "confidence": 72,
+    "reason": "RSI 36.33 oversold, best daily performer at +1.02%. MACD negative but price momentum positive. Lower market cap provides higher upside potential from recovery."
   }
 ]
