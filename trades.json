@@ -1215,5 +1215,57 @@
     "amount_usd": 252.01,
     "confidence": 68,
     "reason": "RSI at 33.95 (oversold), MACD negative but stabilizing, sideways consolidation pattern. Conservative position sizing given macro uncertainty, but oversold conditions warrant entry."
+  },
+  {
+    "time": "2026-03-29 16:03",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 66459.0,
+    "amount_usd": 252.01,
+    "pnl": -0.02,
+    "confidence": 75,
+    "reason": "RSI 33.93 (oversold) but negative MACD (-724.0) with weak signal (-220.7) indicates downside momentum. Sideways trend offers no clear upside. Cut position to reduce losses and free capital."
+  },
+  {
+    "time": "2026-03-29 16:03",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 81.736702,
+    "amount_usd": 678.48,
+    "pnl": -1.02,
+    "confidence": 70,
+    "reason": "RSI 33.92 (oversold) but price trending down with negative MACD (-1.09). Position underwater. Close to preserve remaining capital and redeploy."
+  },
+  {
+    "time": "2026-03-29 16:03",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 609.061829,
+    "amount_usd": 678.11,
+    "confidence": 72,
+    "reason": "RSI 23.89 (deeply oversold) is strongest buy signal on board. Sideways trend provides low-risk entry point. Allocate $700 (35% of available cash after closing positions)."
+  },
+  {
+    "time": "2026-03-29 16:03",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 1990.970947,
+    "amount_usd": 314.84,
+    "confidence": 65,
+    "reason": "RSI 38.12 approaching oversold, MACD showing slight bullish crossover signal (+3.08). Sideways trend with $1990 support level. Allocate $500 for recovery play."
+  },
+  {
+    "time": "2026-03-29 16:03",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.324685,
+    "amount_usd": 141.68,
+    "confidence": 60,
+    "reason": "RSI 35.53 (oversold), sideways trend. Low allocation ($300) for reversal bounce given macro weakness across board."
   }
 ]
