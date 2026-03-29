@@ -1435,5 +1435,68 @@
     "amount_usd": 174.81,
     "confidence": 55,
     "reason": "RSI 35.25 (oversold), MACD near zero, sideways trend. Conservative position in established asset during market bottom."
+  },
+  {
+    "time": "2026-03-29 23:06",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 80.965248,
+    "amount_usd": 485.58,
+    "pnl": -5.45,
+    "confidence": 75,
+    "reason": "Position underwater (-$0.92), RSI at 33.14 (oversold but not recovering), sideways trend with negative MACD. Cut loss to preserve capital."
+  },
+  {
+    "time": "2026-03-29 23:06",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "close",
+    "price": 1.319729,
+    "amount_usd": 291.35,
+    "pnl": -0.8,
+    "confidence": 70,
+    "reason": "Minor loss (-$0.03), RSI at 35.12, sideways trend with MACD near zero showing no momentum. Exit to redeploy capital."
+  },
+  {
+    "time": "2026-03-29 23:06",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "close",
+    "price": 8.396355,
+    "amount_usd": 174.81,
+    "pnl": -1.22,
+    "confidence": 65,
+    "reason": "Slight loss (-$1.20), RSI at 34.43, sideways with weak negative MACD. No clear recovery signal. Close to free up capital."
+  },
+  {
+    "time": "2026-03-29 23:06",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 66033.96875,
+    "amount_usd": 619.15,
+    "confidence": 72,
+    "reason": "RSI at 32.97 (oversold), strong recovery setup despite negative MACD. Major support level near $66K. Allocate $640 for reversal play."
+  },
+  {
+    "time": "2026-03-29 23:06",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 1983.226685,
+    "amount_usd": 328.92,
+    "confidence": 68,
+    "reason": "RSI at 37.75, MACD just crossed above signal line (+2.95), sideways consolidation before potential breakup. Allocate $500."
+  },
+  {
+    "time": "2026-03-29 23:06",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "open_long",
+    "price": 604.380676,
+    "amount_usd": 177.62,
+    "confidence": 70,
+    "reason": "RSI at 23.02 (deeply oversold), strongest oversold signal across all assets. High risk/reward. Allocate $360 for mean reversion."
   }
 ]
