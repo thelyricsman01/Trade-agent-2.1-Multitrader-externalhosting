@@ -1372,5 +1372,68 @@
     "amount_usd": 188.95,
     "confidence": 70,
     "reason": "RSI 23.83 (most oversold on board = strongest buy signal), sideways trend suggests accumulation phase. High risk but highest reward potential. Invest $400 (20% of $2000)."
+  },
+  {
+    "time": "2026-03-29 21:05",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 66606.703125,
+    "amount_usd": 678.27,
+    "pnl": 2.8,
+    "confidence": 75,
+    "reason": "Negative MACD (-712.22 vs signal -218.34), RSI at 34.42 (oversold but no recovery sign), sideways trend with minimal gain (0.43%). Cutting loss to redeploy capital into better opportunities."
+  },
+  {
+    "time": "2026-03-29 21:05",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 2002.970581,
+    "amount_usd": 314.91,
+    "pnl": 1.45,
+    "confidence": 70,
+    "reason": "MACD bearish crossover (-14.92 vs signal 3.27 flipping negative), RSI 39 stuck in neutral, no momentum. Exiting to preserve capital in weak sideways market."
+  },
+  {
+    "time": "2026-03-29 21:05",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 609.234314,
+    "amount_usd": 188.95,
+    "pnl": 0.15,
+    "confidence": 80,
+    "reason": "Critically oversold RSI (23.93), negative MACD (-8.25), downward momentum despite sideways label. Better to exit and redeploy than catch falling knife."
+  },
+  {
+    "time": "2026-03-29 21:05",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 81.884323,
+    "amount_usd": 485.58,
+    "confidence": 65,
+    "reason": "RSI at 34.07 (oversold territory), MACD near zero suggesting potential bottoming, sideways trend offers low-risk entry for oversold recovery play."
+  },
+  {
+    "time": "2026-03-29 21:05",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.32336,
+    "amount_usd": 291.35,
+    "confidence": 60,
+    "reason": "RSI 35.42 (oversold), MACD minimal but not strongly negative, sideways trend. Lightweight position for potential recovery from oversold conditions."
+  },
+  {
+    "time": "2026-03-29 21:05",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "open_long",
+    "price": 8.455211,
+    "amount_usd": 174.81,
+    "confidence": 55,
+    "reason": "RSI 35.25 (oversold), MACD near zero, sideways trend. Conservative position in established asset during market bottom."
   }
 ]
