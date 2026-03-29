@@ -1267,5 +1267,58 @@
     "amount_usd": 141.68,
     "confidence": 60,
     "reason": "RSI 35.53 (oversold), sideways trend. Low allocation ($300) for reversal bounce given macro weakness across board."
+  },
+  {
+    "time": "2026-03-29 17:50",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 608.893982,
+    "amount_usd": 678.11,
+    "pnl": -0.19,
+    "confidence": 75,
+    "reason": "RSI 23.86 (oversold) but negative MACD (-8.28) with sideways trend. Position down slightly. Lock in capital for better opportunities."
+  },
+  {
+    "time": "2026-03-29 17:50",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "close",
+    "price": 1.322602,
+    "amount_usd": 141.68,
+    "pnl": -0.22,
+    "confidence": 70,
+    "reason": "Down 0.77% with RSI 35.35 declining. MACD near zero showing momentum loss. Cut loss and redeploy capital."
+  },
+  {
+    "time": "2026-03-29 17:50",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 1993.827271,
+    "amount_usd": 314.84,
+    "pnl": 0.45,
+    "confidence": 65,
+    "reason": "Minimal gains (0.06%) with RSI 38.29 mid-range. Sideways trend offers no conviction. Preserve capital for stronger setups."
+  },
+  {
+    "time": "2026-03-29 17:50",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 81.492165,
+    "amount_usd": 678.13,
+    "confidence": 72,
+    "reason": "RSI 33.67 (oversold territory), down 0.64% creating entry opportunity. Low absolute price enables larger position size with good risk/reward."
+  },
+  {
+    "time": "2026-03-29 17:50",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "open_long",
+    "price": 8.424417,
+    "amount_usd": 403.0,
+    "confidence": 68,
+    "reason": "RSI 34.71 (oversold), flat on day showing consolidation. Low volatility asset, stable entry point for capital deployment."
   }
 ]
