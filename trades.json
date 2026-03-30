@@ -1,0 +1,22 @@
+[
+  {
+    "time": "2026-03-30 20:01",
+    "symbol": "MKR",
+    "ticker": "MKR-USD",
+    "action": "open_long",
+    "price": 1719.02453613,
+    "amount_usd": 800.0,
+    "confidence": 68,
+    "reason": "Weekly uptrend + MACD histogram rising (turning positive) + RSI 25.8 (deeply oversold, room to recover into 35-55 range) + BB% 0.33 (near support) + 30d +7.6% momentum. Best confluence in scan despite vol_ratio 0.97 (just under 1.2 threshold). High liquidity ($183M/day). Target structural recovery to $1900\u2013$1980."
+  },
+  {
+    "time": "2026-03-30 20:01",
+    "symbol": "RENDER",
+    "ticker": "RENDER-USD",
+    "action": "open_long",
+    "price": 1.69370067,
+    "amount_usd": 480.0,
+    "confidence": 66,
+    "reason": "Weekly sideways (acceptable per rules) + MACD histogram rising from deeply negative (-0.016) + RSI 36.4 (in sweet 35\u201355 zone) + BB% 0.41 (mid-band, near support) + strong 30d +20.4% trend. Vol_ratio 0.63 is weak, but RSI + MACD confluence + daily uptrend compensate. Lower risk position."
+  }
+]
