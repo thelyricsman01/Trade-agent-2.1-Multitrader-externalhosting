@@ -1603,5 +1603,47 @@
     "amount_usd": 191.58,
     "confidence": 73,
     "reason": "RSI=28.33 (oversold), strongest 24h gain at +3.45%, sideways trend could break upward. Good risk/reward micro-cap play."
+  },
+  {
+    "time": "2026-03-30 14:55",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 67252.34375,
+    "amount_usd": 319.31,
+    "pnl": -0.63,
+    "confidence": 75,
+    "reason": "RSI=30.13 (oversold but not deeply), MACD=-816.35 far below signal, negative divergence. Position down -$132.87. Sideways trend with weak technicals suggests exit to preserve capital and redeploy."
+  },
+  {
+    "time": "2026-03-30 14:55",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 2051.802979,
+    "amount_usd": 687.74,
+    "pnl": 0.51,
+    "confidence": 70,
+    "reason": "RSI=28.27 (oversold), but MACD=-16.83 well below signal=-0.94 shows bearish momentum. Position barely positive (+$1.02). Close to lock gains and redeploy into stronger setups."
+  },
+  {
+    "time": "2026-03-30 14:55",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "open_long",
+    "price": 8.797107,
+    "amount_usd": 620.64,
+    "confidence": 78,
+    "reason": "RSI=33.5 (approaching oversold but not yet), strongest 24h gain (+4.66%), MACD=-0.12 near signal=-0.06 (positive divergence forming). Sideways trend with momentum. Deploy $700 for recovery play."
+  },
+  {
+    "time": "2026-03-30 14:55",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 83.829269,
+    "amount_usd": 345.79,
+    "confidence": 72,
+    "reason": "RSI=30.29 (oversold boundary), 24h gain +2.96%, MACD=-1.24 close to signal=-0.42 suggests potential reversal. Sideways consolidation before uptrend. Deploy $600 for bounce trade."
   }
 ]
