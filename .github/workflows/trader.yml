@@ -1,29 +1,22 @@
 name: Run Trader
-
 on:
   schedule:
-    - cron: '0 */1 * * *'    # Hver 1. time
-    #- cron: '*/5 * * * *'   # Hvert 5. min
-  workflow_dispatch:         # Manuell kjøring ved behov
-
+    - cron: '0 */6 * * *'   # Every 6 hours — swing trading doesn't need hourly checks
+  workflow_dispatch:          # Manual trigger when needed
 permissions:
   contents: write
-
 jobs:
   trade:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
       - name: Install dependencies
-        run: pip install anthropic yfinance pandas requests python-dotenv
-
+        run: pip install anthropic yfinance pandas numpy requests python-dotenv
       - name: Run trader
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
