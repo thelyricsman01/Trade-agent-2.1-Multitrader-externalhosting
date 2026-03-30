@@ -1,0 +1,23 @@
+{
+  "cash": 720.0,
+  "positions": {
+    "MKR": {
+      "type": "long",
+      "entry_price": 1719.02453613,
+      "amount": 0.4653802102214442,
+      "amount_usd": 800.0,
+      "opened_at": "2026-03-30 20:01",
+      "peak_price": 1719.02453613,
+      "target_pct": 12
+    },
+    "RENDER": {
+      "type": "long",
+      "entry_price": 1.69370067,
+      "amount": 283.4030879848445,
+      "amount_usd": 480.0,
+      "opened_at": "2026-03-30 20:01",
+      "peak_price": 1.69370067,
+      "target_pct": 11
+    }
+  }
+}
