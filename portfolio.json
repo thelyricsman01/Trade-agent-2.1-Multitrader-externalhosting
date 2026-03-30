@@ -1,26 +1,26 @@
 {
-  "cash": 766.3328919855818,
+  "cash": 806.8336043534623,
   "positions": {
-    "ETH": {
-      "type": "long",
-      "entry_price": 2050.282959,
-      "amount": 0.33543662692072346,
-      "amount_usd": 687.74,
-      "opened_at": "2026-03-30 10:49"
-    },
-    "BTC": {
-      "type": "long",
-      "entry_price": 67385.117188,
-      "amount": 0.00473858343392275,
-      "amount_usd": 319.31,
-      "opened_at": "2026-03-30 10:49"
-    },
     "AVAX": {
       "type": "long",
       "entry_price": 8.891956,
       "amount": 21.54531578878708,
       "amount_usd": 191.58,
       "opened_at": "2026-03-30 10:49"
+    },
+    "LINK": {
+      "type": "long",
+      "entry_price": 8.797107,
+      "amount": 70.55046619303369,
+      "amount_usd": 620.64,
+      "opened_at": "2026-03-30 14:55"
+    },
+    "SOL": {
+      "type": "long",
+      "entry_price": 83.829269,
+      "amount": 4.124931591613903,
+      "amount_usd": 345.79,
+      "opened_at": "2026-03-30 14:55"
     }
   }
 }
