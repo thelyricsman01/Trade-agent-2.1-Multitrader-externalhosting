@@ -1498,5 +1498,58 @@
     "amount_usd": 177.62,
     "confidence": 70,
     "reason": "RSI at 23.02 (deeply oversold), strongest oversold signal across all assets. High risk/reward. Allocate $360 for mean reversion."
+  },
+  {
+    "time": "2026-03-30 06:25",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "close",
+    "price": 67281.46875,
+    "amount_usd": 619.15,
+    "pnl": 11.7,
+    "confidence": 75,
+    "reason": "RSI 36.58 (neutral), MACD deeply negative (-657.16), sideways trend with minimal upside. Position down slightly; exit to redeploy capital into better opportunities."
+  },
+  {
+    "time": "2026-03-30 06:25",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 2042.578735,
+    "amount_usd": 328.92,
+    "pnl": 9.84,
+    "confidence": 70,
+    "reason": "RSI 41.9 (neutral), MACD turning positive but still weak signal, sideways trend. Reduce exposure to free up capital for oversold assets."
+  },
+  {
+    "time": "2026-03-30 06:25",
+    "symbol": "BNB",
+    "ticker": "BNB-USD",
+    "action": "close",
+    "price": 615.917419,
+    "amount_usd": 177.62,
+    "pnl": 3.39,
+    "confidence": 80,
+    "reason": "RSI 27.32 (oversold but weakening), MACD deeply negative (-7.7), smallest position with poorest momentum. Exit to reallocate."
+  },
+  {
+    "time": "2026-03-30 06:25",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "open_long",
+    "price": 83.50457,
+    "amount_usd": 685.92,
+    "confidence": 72,
+    "reason": "RSI 37.1 (approaching oversold), sideways trend with positive 24h momentum (1.82%), good entry point before potential bounce. Use freed-up capital."
+  },
+  {
+    "time": "2026-03-30 06:25",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "open_long",
+    "price": 8.653866,
+    "amount_usd": 382.16,
+    "confidence": 68,
+    "reason": "RSI 38.75 (neutral-low), strongest 24h gain (2.68%), MACD -0.11 showing stabilization. Good risk/reward for sideways-to-bullish play."
   }
 ]
