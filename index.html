@@ -9,7 +9,7 @@
     h1 { font-size: 20px; color: #e6edf3; margin-bottom: 20px; letter-spacing: 1px; }
 
     .topbar {
-      display: flex; gap: 32px; align-items: center;
+      display: flex; gap: 28px; align-items: center;
       background: #161b22; border: 1px solid #30363d;
       border-radius: 10px; padding: 18px 28px;
       margin-bottom: 24px; flex-wrap: wrap;
@@ -17,6 +17,7 @@
     .topbar .item { display: flex; flex-direction: column; }
     .topbar .label { font-size: 11px; color: #8b949e; margin-bottom: 4px; }
     .topbar .value { font-size: 22px; font-weight: bold; }
+    .topbar .divider { width: 1px; background: #30363d; align-self: stretch; margin: 0 4px; }
     .topbar .updated { margin-left: auto; font-size: 11px; color: #8b949e; align-self: center; }
 
     .positive { color: #3fb950; }
@@ -43,16 +44,16 @@
       display: inline-block; font-size: 11px;
       font-weight: bold; padding: 2px 10px; border-radius: 20px;
     }
-    .tag-open_long   { background: #1a3a24; color: #3fb950; }
-    .tag-open_short  { background: #3a2e00; color: #d29922; }
-    .tag-close       { background: #1a2a3a; color: #58a6ff; }
-    .tag-long        { background: #1a3a24; color: #3fb950; }
-    .tag-short       { background: #3a2e00; color: #d29922; }
+    .tag-open_long  { background: #1a3a24; color: #3fb950; }
+    .tag-open_short { background: #3a2e00; color: #d29922; }
+    .tag-close      { background: #1a2a3a; color: #58a6ff; }
+    .tag-long       { background: #1a3a24; color: #3fb950; }
+    .tag-short      { background: #3a2e00; color: #d29922; }
 
     .empty { color: #8b949e; font-size: 13px; padding: 16px 0; }
     .log-row { cursor: pointer; }
     .log-row:hover td { background: #1c2128; }
-    .keywords { color: #8b949e; font-size: 12px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+    .keywords { color: #8b949e; font-size: 12px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     .modal-overlay {
       display: none; position: fixed; inset: 0;
@@ -63,7 +64,7 @@
     .modal {
       background: #161b22; border: 1px solid #30363d;
       border-radius: 12px; padding: 28px;
-      max-width: 620px; width: 90%;
+      max-width: 640px; width: 90%;
       position: relative; max-height: 90vh; overflow-y: auto;
     }
     .modal .close {
@@ -77,329 +78,387 @@
     }
     .modal-row:last-child { border-bottom: none; }
     .modal-row .mlabel { color: #8b949e; }
-    .modal-row .mvalue { text-align: right; max-width: 340px; line-height: 1.5; }
+    .modal-row .mvalue { text-align: right; max-width: 360px; line-height: 1.5; word-break: break-word; }
+
+    .ext-btn {
+      font-size: 11px; padding: 3px 10px;
+      border: 1px solid #30363d; border-radius: 6px;
+      color: #8b949e; text-decoration: none; background: #0d1117;
+      transition: color .15s, border-color .15s;
+    }
+    .ext-btn:hover { color: #e6edf3; border-color: #8b949e; }
   </style>
 </head>
 <body>
 
-  <h1>Trading Dashboard</h1>
+<h1>Trading Dashboard</h1>
 
-  <div class="topbar">
-    <div class="item"><div class="label">Total Balance</div><div class="value" id="balance">–</div></div>
-    <div class="item"><div class="label">PnL ($)</div><div class="value" id="pnl-usd">–</div></div>
-    <div class="item"><div class="label">PnL (%)</div><div class="value" id="pnl-pct">–</div></div>
-    <div class="item"><div class="label">Open Positions</div><div class="value" id="open-positions">–</div></div>
-    <div class="item"><div class="label">Cash</div><div class="value" id="cash">–</div></div>
-    <div class="updated" id="updated">Last updated: –</div>
+<div class="topbar">
+  <div class="item"><div class="label">Total Balance</div><div class="value" id="balance">–</div></div>
+  <div class="item"><div class="label">PnL ($)</div><div class="value" id="pnl-usd">–</div></div>
+  <div class="item"><div class="label">PnL (%)</div><div class="value" id="pnl-pct">–</div></div>
+  <div class="item"><div class="label">Open Positions</div><div class="value" id="open-positions">–</div></div>
+  <div class="item"><div class="label">Cash</div><div class="value" id="cash">–</div></div>
+  <div class="divider"></div>
+  <div class="item"><div class="label">Win Rate</div><div class="value" id="win-rate">–</div></div>
+  <div class="item"><div class="label">Wins / Losses</div><div class="value" id="win-loss">–</div></div>
+  <div class="item"><div class="label">Avg Win</div><div class="value positive" id="avg-win">–</div></div>
+  <div class="item"><div class="label">Avg Loss</div><div class="value negative" id="avg-loss">–</div></div>
+  <div class="item"><div class="label">Total Trades</div><div class="value" id="total-trades">–</div></div>
+  <div class="updated" id="updated">Last updated: –</div>
+</div>
+
+<div class="main">
+
+  <div class="panel" style="flex:1.3">
+    <h2>Holdings</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Position</th>
+          <th>Amount</th>
+          <th>Avg. Entry</th>
+          <th>Current Price</th>
+          <th>Market Value</th>
+          <th>PnL ($)</th>
+          <th>PnL (%)</th>
+        </tr>
+      </thead>
+      <tbody id="holdings-body">
+        <tr><td colspan="8" class="empty">No open positions.</td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <div class="main">
-
-    <div class="panel" style="flex:1.3">
-      <h2>Holdings</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Symbol</th>
-            <th>Position</th>
-            <th>Amount</th>
-            <th>Avg. Entry</th>
-            <th>Current Price</th>
-            <th>Market Value</th>
-            <th>PnL ($)</th>
-            <th>PnL (%)</th>
-          </tr>
-        </thead>
-        <tbody id="holdings-body">
-          <tr><td colspan="8" class="empty">No open positions.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="panel" style="flex:1">
-      <h2>Transaction Log</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Type</th>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Keywords</th>
-          </tr>
-        </thead>
-        <tbody id="log-body">
-          <tr><td colspan="5" class="empty">No transactions yet.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
+  <div class="panel" style="flex:1">
+    <h2>Transaction Log</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Type</th>
+          <th>Symbol</th>
+          <th>Price</th>
+          <th>PnL</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody id="log-body">
+        <tr><td colspan="6" class="empty">No transactions yet.</td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-    <div class="modal">
-      <button class="close" onclick="closeModalDirect()">✕</button>
+</div>
 
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
-        <span id="modal-ticker" style="font-size:15px; font-weight:bold; color:#e6edf3;"></span>
-        <span id="modal-action-tag"></span>
-        <span id="modal-time" style="font-size:11px; color:#8b949e;"></span>
-        <a id="modal-yahoo-link" href="#" target="_blank" style="
-          font-size:11px; padding:3px 10px;
-          border:1px solid #30363d; border-radius:6px;
-          color:#8b949e; text-decoration:none; background:#0d1117;
-        " onmouseover="this.style.color='#e6edf3';this.style.borderColor='#8b949e'"
-           onmouseout="this.style.color='#8b949e';this.style.borderColor='#30363d'">
-          ↗ Yahoo Finance
-        </a>
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="close" onclick="closeModalDirect()">✕</button>
+
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+      <span id="modal-ticker" style="font-size:15px; font-weight:bold; color:#e6edf3;"></span>
+      <span id="modal-action-tag"></span>
+      <span id="modal-time" style="font-size:11px; color:#8b949e;"></span>
+      <a id="modal-yahoo-link"  href="#" target="_blank" class="ext-btn">↗ Yahoo Finance</a>
+      <a id="modal-cg-link"     href="#" target="_blank" class="ext-btn">↗ CoinGecko</a>
+    </div>
+
+    <div id="modal-content"></div>
+    <div id="modal-chart"></div>
+  </div>
+</div>
+
+<script>
+  const GITHUB_RAW  = "https://raw.githubusercontent.com/thelyricsman01/Trade-agent-2.1-Multitrader-externalhosting/main/";
+  const START_BALANCE = 2000;
+  let tradesData = [];
+  let livePricesCache = {};
+
+  // ── Dynamic symbol helpers ──────────────────────────────
+  // Works for any symbol — no hardcoded lookup needed.
+
+  function toBinancePair(symbol) {
+    // Most crypto pairs on Binance are SYMBOLUSDT
+    // A few exceptions:
+    const overrides = { "USDT": "USDTBUSD", "BUSD": "BUSDUSDT" };
+    return overrides[symbol] || symbol + "USDT";
+  }
+
+  function toTVSymbol(symbol) {
+    return "BINANCE:" + toBinancePair(symbol);
+  }
+
+  function toYahooTicker(symbol) {
+    return symbol + "-USD";
+  }
+
+  function toCoinGeckoSlug(symbol) {
+    // CoinGecko uses lowercase symbol in the URL (works for most major coins)
+    const overrides = {
+      BTC: "bitcoin", ETH: "ethereum", SOL: "solana", BNB: "binancecoin",
+      XRP: "ripple", DOGE: "dogecoin", ADA: "cardano", AVAX: "avalanche-2",
+      LINK: "chainlink", MATIC: "matic-network", DOT: "polkadot",
+      NEAR: "near", ATOM: "cosmos", ARB: "arbitrum", OP: "optimism",
+      UNI: "uniswap", AAVE: "aave", MKR: "maker", CRV: "curve-dao-token",
+      LTC: "litecoin", XLM: "stellar", SHIB: "shiba-inu", PEPE: "pepe",
+      WIF: "dogwifcoin", BONK: "bonk", JTO: "jito-governance-token",
+      FET: "fetch-ai", RENDER: "render-token", INJ: "injective-protocol",
+      SEI: "sei-network", TIA: "celestia", SUI: "sui", APT: "aptos",
+      IMX: "immutable-x",
+    };
+    return overrides[symbol] || symbol.toLowerCase();
+  }
+
+  // ── Live prices — fully dynamic ─────────────────────────
+  async function getLivePrices(symbols) {
+    const prices = {};
+    await Promise.all(symbols.map(async (symbol) => {
+      try {
+        const pair = toBinancePair(symbol);
+        const res  = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${pair}`);
+        const data = await res.json();
+        if (data.price) prices[symbol] = parseFloat(data.price);
+      } catch(e) { /* symbol might not be on Binance */ }
+    }));
+    return prices;
+  }
+
+  async function loadPortfolio() {
+    try {
+      const res = await fetch(GITHUB_RAW + "portfolio.json?ts=" + Date.now());
+      return await res.json();
+    } catch(e) { return null; }
+  }
+
+  async function loadTrades() {
+    try {
+      const res = await fetch(GITHUB_RAW + "trades.json?ts=" + Date.now());
+      return await res.json();
+    } catch(e) { return []; }
+  }
+
+  function sign(val)   { return val >= 0 ? "+" : ""; }
+  function cls(val)    { return val > 0 ? "positive" : val < 0 ? "negative" : "neutral"; }
+  function fmt(n, d=2) { return Number(n).toLocaleString(undefined, {minimumFractionDigits: d, maximumFractionDigits: d}); }
+
+  // ── Stats from trade history ────────────────────────────
+  function calcStats(trades) {
+    const closed = trades.filter(t => t.action === "close" && t.pnl != null);
+    if (!closed.length) return null;
+    const wins   = closed.filter(t => t.pnl > 0);
+    const losses = closed.filter(t => t.pnl < 0);
+    const avgWin  = wins.length   ? wins.reduce((s,t)   => s + t.pnl, 0) / wins.length   : 0;
+    const avgLoss = losses.length ? losses.reduce((s,t) => s + t.pnl, 0) / losses.length : 0;
+    return {
+      total:    closed.length,
+      wins:     wins.length,
+      losses:   losses.length,
+      winRate:  (wins.length / closed.length) * 100,
+      avgWin,
+      avgLoss,
+    };
+  }
+
+  // ── Modal ───────────────────────────────────────────────
+  function setChart(tvSymbol, interval, btn) {
+    document.querySelectorAll("#chart-btns button").forEach(b => {
+      b.style.color = "#8b949e"; b.style.borderColor = "#30363d"; b.classList.remove("active");
+    });
+    btn.style.color = "#e6edf3"; btn.style.borderColor = "#8b949e"; btn.classList.add("active");
+    document.getElementById("chart-frame").src =
+      `https://s.tradingview.com/widgetembed/?symbol=${tvSymbol}&interval=${interval}&theme=dark&style=1&locale=en&hide_top_toolbar=1&hide_legend=1&save_image=0&calendar=0`;
+  }
+
+  function openModal(index) {
+    const t = tradesData[index];
+    if (!t) return;
+
+    const symbol     = t.symbol;
+    const tvSymbol   = toTVSymbol(symbol);
+    const yahooUrl   = `https://finance.yahoo.com/quote/${toYahooTicker(symbol)}/chart/`;
+    const cgUrl      = `https://www.coingecko.com/en/coins/${toCoinGeckoSlug(symbol)}`;
+
+    document.getElementById("modal-ticker").textContent   = symbol;
+    document.getElementById("modal-time").textContent     = t.time;
+    document.getElementById("modal-action-tag").innerHTML =
+      `<span class="tag tag-${t.action}">${t.action.replace(/_/g, " ").toUpperCase()}</span>`;
+    document.getElementById("modal-yahoo-link").href = yahooUrl;
+    document.getElementById("modal-cg-link").href    = cgUrl;
+
+    const pnlHtml = (t.pnl != null)
+      ? `<span class="${cls(t.pnl)}">${sign(t.pnl)}$${fmt(Math.abs(t.pnl))}</span>`
+      : "–";
+
+    const rows = [
+      ["Price",       "$" + fmt(t.price)],
+      ["Amount ($)",  (t.amount_usd > 0) ? "$" + fmt(t.amount_usd) : "–"],
+      ["PnL",         pnlHtml],
+      ["Confidence",  (t.confidence ?? "–") + (t.confidence != null ? "%" : "")],
+      ["Reason",      t.reason || "–"],
+    ];
+
+    document.getElementById("modal-content").innerHTML = rows.map(([label, value]) => `
+      <div class="modal-row">
+        <span class="mlabel">${label}</span>
+        <span class="mvalue">${value}</span>
       </div>
+    `).join("");
 
-      <div id="modal-content"></div>
-      <div id="modal-chart"></div>
-    </div>
-  </div>
-
-  <script>
-    const GITHUB_RAW = "https://raw.githubusercontent.com/thelyricsman01/Trade-agent-2.1-Multitrader-externalhosting/main/";
-
-    const START_BALANCE = 2000;
-    let tradesData = [];
-
-    const LIVE_PRICES = {
-      "BTC":  "BTCUSDT",
-      "ETH":  "ETHUSDT",
-      "SOL":  "SOLUSDT",
-      "BNB":  "BNBUSDT",
-      "XRP":  "XRPUSDT",
-      "DOGE": "DOGEUSDT",
-      "ADA":  "ADAUSDT",
-      "AVAX": "AVAXUSDT",
-      "LINK": "LINKUSDT",
-      "MATIC":"MATICUSDT",
-    };
-
-    const TV_SYMBOLS = {
-      "BTC":  "BINANCE:BTCUSDT",
-      "ETH":  "BINANCE:ETHUSDT",
-      "SOL":  "BINANCE:SOLUSDT",
-      "BNB":  "BINANCE:BNBUSDT",
-      "XRP":  "BINANCE:XRPUSDT",
-      "DOGE": "BINANCE:DOGEUSDT",
-      "ADA":  "BINANCE:ADAUSDT",
-      "AVAX": "BINANCE:AVAXUSDT",
-      "LINK": "BINANCE:LINKUSDT",
-      "MATIC":"BINANCE:MATICUSDT",
-    };
-
-    const YAHOO_TICKERS = {
-      "BTC":  "BTC-USD",
-      "ETH":  "ETH-USD",
-      "SOL":  "SOL-USD",
-      "BNB":  "BNB-USD",
-      "XRP":  "XRP-USD",
-      "DOGE": "DOGE-USD",
-      "ADA":  "ADA-USD",
-      "AVAX": "AVAX-USD",
-      "LINK": "LINK-USD",
-      "MATIC":"MATIC-USD",
-    };
-
-    async function getLivePrices() {
-      const prices = {};
-      await Promise.all(Object.entries(LIVE_PRICES).map(async ([symbol, pair]) => {
-        try {
-          const res  = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${pair}`);
-          const data = await res.json();
-          prices[symbol] = parseFloat(data.price);
-        } catch(e) { prices[symbol] = null; }
-      }));
-      return prices;
-    }
-
-    async function loadPortfolio() {
-      try {
-        const res = await fetch(GITHUB_RAW + "portfolio.json?ts=" + Date.now());
-        return await res.json();
-      } catch(e) { return null; }
-    }
-
-    async function loadTrades() {
-      try {
-        const res = await fetch(GITHUB_RAW + "trades.json?ts=" + Date.now());
-        return await res.json();
-      } catch(e) { return []; }
-    }
-
-    function sign(val)   { return val >= 0 ? "+" : ""; }
-    function cls(val)    { return val > 0 ? "positive" : val < 0 ? "negative" : "neutral"; }
-    function fmt(n, d=2) { return n.toLocaleString(undefined, {minimumFractionDigits: d, maximumFractionDigits: d}); }
-
-    function getKeywords(reason) {
-      const words = reason.split(" ").slice(0, 5).join(" ");
-      return words + (reason.split(" ").length > 5 ? "..." : "");
-    }
-
-    function setChart(symbol, interval, btn) {
-      document.querySelectorAll("#chart-btns button").forEach(b => {
-        b.style.color = "#8b949e"; b.style.borderColor = "#30363d"; b.classList.remove("active");
-      });
-      btn.style.color = "#e6edf3"; btn.style.borderColor = "#8b949e"; btn.classList.add("active");
-      document.getElementById("chart-frame").src =
-        `https://s.tradingview.com/widgetembed/?symbol=${symbol}&interval=${interval}&theme=dark&style=1&locale=en&hide_top_toolbar=1&hide_legend=1&save_image=0&calendar=0`;
-    }
-
-    function openModal(index) {
-      const t = tradesData[index];
-      if (!t) return;
-
-      const symbol     = t.symbol;
-      const tvSymbol   = TV_SYMBOLS[symbol]   || "BINANCE:BTCUSDT";
-      const yahooTicker= YAHOO_TICKERS[symbol] || "BTC-USD";
-
-      document.getElementById("modal-ticker").textContent   = symbol;
-      document.getElementById("modal-time").textContent     = t.time;
-      document.getElementById("modal-action-tag").innerHTML = `<span class="tag tag-${t.action}">${t.action.replace("_", " ").toUpperCase()}</span>`;
-      document.getElementById("modal-yahoo-link").href      = `https://finance.yahoo.com/quote/${yahooTicker}/chart/`;
-
-      const rows = [
-        ["Price",       "$" + fmt(t.price)],
-        ["Amount ($)",  t.amount_usd > 0 ? "$" + fmt(t.amount_usd) : "–"],
-        ["PnL",         t.pnl != null ? `<span class="${cls(t.pnl)}">${sign(t.pnl)}$${fmt(Math.abs(t.pnl))}</span>` : "–"],
-        ["Confidence",  t.confidence + "%"],
-        ["Reason",      t.reason],
-      ];
-
-      document.getElementById("modal-content").innerHTML = rows.map(([label, value]) => `
-        <div class="modal-row">
-          <span class="mlabel">${label}</span>
-          <span class="mvalue">${value}</span>
+    document.getElementById("modal-chart").innerHTML = `
+      <div style="margin-top:16px;">
+        <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;" id="chart-btns">
+          ${[["1H","60"],["4H","240"],["1D","D"],["1W","W"],["1M","M"]].map(([label, interval], i) => `
+            <button onclick="setChart('${tvSymbol}', '${interval}', this)" style="
+              font-size:11px; padding:3px 10px;
+              border:1px solid ${i === 1 ? "#8b949e" : "#30363d"};
+              border-radius:6px; background:#0d1117;
+              color:${i === 1 ? "#e6edf3" : "#8b949e"}; cursor:pointer;
+            " onmouseover="this.style.color='#e6edf3';this.style.borderColor='#8b949e'"
+               onmouseout="if(!this.classList.contains('active')){this.style.color='#8b949e';this.style.borderColor='#30363d'}"
+            >${label}</button>
+          `).join("")}
         </div>
-      `).join("");
-
-      document.getElementById("modal-chart").innerHTML = `
-        <div style="margin-top:16px;">
-          <div style="display:flex; gap:8px; margin-bottom:8px;" id="chart-btns">
-            ${[["1H","60"],["1D","D"],["3D","120"],["1W","W"],["1M","M"],["3M","3M"]].map(([label, interval], i) => `
-              <button onclick="setChart('${tvSymbol}', '${interval}', this)" style="
-                font-size:11px; padding:3px 10px;
-                border:1px solid ${i === 0 ? "#8b949e" : "#30363d"};
-                border-radius:6px; background:#0d1117;
-                color:${i === 0 ? "#e6edf3" : "#8b949e"}; cursor:pointer;
-              " onmouseover="this.style.color='#e6edf3';this.style.borderColor='#8b949e'"
-                 onmouseout="if(!this.classList.contains('active')){this.style.color='#8b949e';this.style.borderColor='#30363d'}"
-              >${label}</button>
-            `).join("")}
-          </div>
-          <div style="border-radius:8px; overflow:hidden;">
-            <iframe id="chart-frame"
-              src="https://s.tradingview.com/widgetembed/?symbol=${tvSymbol}&interval=60&theme=dark&style=1&locale=en&hide_top_toolbar=1&hide_legend=1&save_image=0&calendar=0"
-              width="100%" height="200" frameborder="0" allowtransparency="true" scrolling="no">
-            </iframe>
-          </div>
+        <div style="border-radius:8px; overflow:hidden;">
+          <iframe id="chart-frame"
+            src="https://s.tradingview.com/widgetembed/?symbol=${tvSymbol}&interval=240&theme=dark&style=1&locale=en&hide_top_toolbar=1&hide_legend=1&save_image=0&calendar=0"
+            width="100%" height="220" frameborder="0" allowtransparency="true" scrolling="no">
+          </iframe>
         </div>
-      `;
+      </div>
+    `;
 
-      document.getElementById("modal-overlay").classList.add("open");
-    }
+    document.getElementById("modal-overlay").classList.add("open");
+  }
 
-    function closeModal(e) {
-      if (e.target === document.getElementById("modal-overlay"))
-        document.getElementById("modal-overlay").classList.remove("open");
-    }
-    function closeModalDirect() {
+  function closeModal(e) {
+    if (e.target === document.getElementById("modal-overlay"))
       document.getElementById("modal-overlay").classList.remove("open");
+  }
+  function closeModalDirect() {
+    document.getElementById("modal-overlay").classList.remove("open");
+  }
+
+  // ── Main data load ──────────────────────────────────────
+  async function loadData() {
+    const [portfolio, trades] = await Promise.all([loadPortfolio(), loadTrades()]);
+    if (!portfolio) return;
+
+    tradesData = [...trades].reverse();
+
+    // Collect all symbols we need live prices for
+    const neededSymbols = new Set([
+      ...Object.keys(portfolio.positions || {}),
+    ]);
+    livePricesCache = await getLivePrices([...neededSymbols]);
+
+    // ── Total balance ─────────────────────────────────────
+    let totalBalance = portfolio.cash;
+    for (const [symbol, pos] of Object.entries(portfolio.positions || {})) {
+      const price = livePricesCache[symbol] || pos.entry_price;
+      if (pos.type === "long") {
+        totalBalance += pos.amount * price;
+      } else {
+        totalBalance += pos.amount_usd + (pos.entry_price - price) * pos.amount;
+      }
     }
 
-    async function loadData() {
-      const [portfolio, trades, livePrices] = await Promise.all([
-        loadPortfolio(), loadTrades(), getLivePrices()
-      ]);
+    const pnlUsd = totalBalance - START_BALANCE;
+    const pnlPct = (pnlUsd / START_BALANCE) * 100;
 
-      if (!portfolio) return;
-      tradesData = [...trades].reverse();
+    document.getElementById("balance").textContent        = "$" + fmt(totalBalance);
+    document.getElementById("cash").textContent           = "$" + fmt(portfolio.cash);
+    document.getElementById("open-positions").textContent = Object.keys(portfolio.positions || {}).length;
+    document.getElementById("updated").textContent        = "Last updated: " + new Date().toLocaleTimeString();
 
-      // Total balanse
-      let totalBalance = portfolio.cash;
-      for (const [symbol, pos] of Object.entries(portfolio.positions || {})) {
-        const price = livePrices[symbol] || pos.entry_price;
+    const pnlUsdEl = document.getElementById("pnl-usd");
+    pnlUsdEl.textContent = sign(pnlUsd) + "$" + fmt(Math.abs(pnlUsd));
+    pnlUsdEl.className   = "value " + cls(pnlUsd);
+
+    const pnlPctEl = document.getElementById("pnl-pct");
+    pnlPctEl.textContent = sign(pnlPct) + fmt(pnlPct) + "%";
+    pnlPctEl.className   = "value " + cls(pnlPct);
+
+    // ── Win/Loss stats ────────────────────────────────────
+    const stats = calcStats(trades);
+    if (stats) {
+      const wrEl = document.getElementById("win-rate");
+      wrEl.textContent = fmt(stats.winRate, 1) + "%";
+      wrEl.className   = "value " + (stats.winRate >= 50 ? "positive" : "negative");
+
+      document.getElementById("win-loss").textContent =
+        stats.wins + "W / " + stats.losses + "L";
+      document.getElementById("win-loss").className = "value neutral";
+
+      document.getElementById("avg-win").textContent  = "+$" + fmt(Math.abs(stats.avgWin));
+      document.getElementById("avg-loss").textContent = "-$" + fmt(Math.abs(stats.avgLoss));
+      document.getElementById("total-trades").textContent = stats.total;
+    }
+
+    // ── Holdings table ────────────────────────────────────
+    const holdingsBody = document.getElementById("holdings-body");
+    const positions    = Object.entries(portfolio.positions || {});
+
+    if (!positions.length) {
+      holdingsBody.innerHTML = `<tr><td colspan="8" class="empty">No open positions.</td></tr>`;
+    } else {
+      holdingsBody.innerHTML = positions.map(([symbol, pos]) => {
+        const price = livePricesCache[symbol] || pos.entry_price;
+        let pnlUsdPos, pnlPctPos, marketValue;
         if (pos.type === "long") {
-          totalBalance += pos.amount * price;
+          marketValue = pos.amount * price;
+          pnlUsdPos   = (price - pos.entry_price) * pos.amount;
+          pnlPctPos   = ((price - pos.entry_price) / pos.entry_price) * 100;
         } else {
-          totalBalance += pos.amount_usd + (pos.entry_price - price) * pos.amount;
+          marketValue = pos.amount_usd;
+          pnlUsdPos   = (pos.entry_price - price) * pos.amount;
+          pnlPctPos   = ((pos.entry_price - price) / pos.entry_price) * 100;
         }
-      }
+        return `
+          <tr>
+            <td>${symbol}</td>
+            <td><span class="tag tag-${pos.type}">${pos.type.toUpperCase()}</span></td>
+            <td>${Number(pos.amount).toFixed(6)}</td>
+            <td>$${fmt(pos.entry_price)}</td>
+            <td>$${fmt(price)}</td>
+            <td>$${fmt(marketValue)}</td>
+            <td class="${cls(pnlUsdPos)}">${sign(pnlUsdPos)}$${fmt(Math.abs(pnlUsdPos))}</td>
+            <td class="${cls(pnlPctPos)}">${sign(pnlPctPos)}${fmt(pnlPctPos)}%</td>
+          </tr>
+        `;
+      }).join("");
+    }
 
-      const pnlUsd = totalBalance - START_BALANCE;
-      const pnlPct = (pnlUsd / START_BALANCE) * 100;
+    // ── Transaction log ───────────────────────────────────
+    const logBody = document.getElementById("log-body");
+    if (!trades.length) {
+      logBody.innerHTML = `<tr><td colspan="6" class="empty">No transactions yet.</td></tr>`;
+      return;
+    }
 
-      document.getElementById("balance").textContent       = "$" + fmt(totalBalance);
-      document.getElementById("cash").textContent          = "$" + fmt(portfolio.cash);
-      document.getElementById("open-positions").textContent= Object.keys(portfolio.positions || {}).length;
-      document.getElementById("updated").textContent       = "Last updated: " + new Date().toLocaleTimeString();
-
-      const pnlUsdEl = document.getElementById("pnl-usd");
-      pnlUsdEl.textContent = sign(pnlUsd) + "$" + fmt(Math.abs(pnlUsd));
-      pnlUsdEl.className   = "value " + cls(pnlUsd);
-
-      const pnlPctEl = document.getElementById("pnl-pct");
-      pnlPctEl.textContent = sign(pnlPct) + fmt(pnlPct) + "%";
-      pnlPctEl.className   = "value " + cls(pnlPct);
-
-      // Holdings
-      const holdingsBody = document.getElementById("holdings-body");
-      const positions = Object.entries(portfolio.positions || {});
-
-      if (!positions.length) {
-        holdingsBody.innerHTML = `<tr><td colspan="8" class="empty">No open positions.</td></tr>`;
-      } else {
-        holdingsBody.innerHTML = positions.map(([symbol, pos]) => {
-          const price = livePrices[symbol] || pos.entry_price;
-          let pnlUsdPos, pnlPctPos, marketValue;
-          if (pos.type === "long") {
-            marketValue = pos.amount * price;
-            pnlUsdPos   = (price - pos.entry_price) * pos.amount;
-            pnlPctPos   = ((price - pos.entry_price) / pos.entry_price) * 100;
-          } else {
-            marketValue = pos.amount_usd;
-            pnlUsdPos   = (pos.entry_price - price) * pos.amount;
-            pnlPctPos   = ((pos.entry_price - price) / pos.entry_price) * 100;
-          }
-          return `
-            <tr>
-              <td>${symbol}</td>
-              <td><span class="tag tag-${pos.type}">${pos.type.toUpperCase()}</span></td>
-              <td>${pos.amount.toFixed(6)}</td>
-              <td>$${fmt(pos.entry_price)}</td>
-              <td>$${fmt(price)}</td>
-              <td>$${fmt(marketValue)}</td>
-              <td class="${cls(pnlUsdPos)}">${sign(pnlUsdPos)}$${fmt(Math.abs(pnlUsdPos))}</td>
-              <td class="${cls(pnlPctPos)}">${sign(pnlPctPos)}${fmt(pnlPctPos)}%</td>
-            </tr>
-          `;
-        }).join("");
-      }
-
-      // Transaction log
-      const logBody = document.getElementById("log-body");
-      if (!trades.length) {
-        logBody.innerHTML = `<tr><td colspan="5" class="empty">No transactions yet.</td></tr>`;
-        return;
-      }
-
-      logBody.innerHTML = tradesData.map((t, i) => `
+    logBody.innerHTML = tradesData.map((t, i) => {
+      const pnlCell = (t.action === "close" && t.pnl != null)
+        ? `<td class="${cls(t.pnl)}">${sign(t.pnl)}$${fmt(Math.abs(t.pnl))}</td>`
+        : `<td class="neutral">–</td>`;
+      const shortReason = (t.reason || "").split(" ").slice(0, 5).join(" ")
+        + ((t.reason || "").split(" ").length > 5 ? "…" : "");
+      return `
         <tr class="log-row" onclick="openModal(${i})">
           <td>${t.time}</td>
-          <td><span class="tag tag-${t.action}">${t.action.replace("_", " ").toUpperCase()}</span></td>
+          <td><span class="tag tag-${t.action}">${t.action.replace(/_/g, " ").toUpperCase()}</span></td>
           <td>${t.symbol}</td>
           <td>$${fmt(t.price)}</td>
-          <td class="keywords">${getKeywords(t.reason)}</td>
+          ${pnlCell}
+          <td class="keywords">${shortReason}</td>
         </tr>
-      `).join("");
-    }
+      `;
+    }).join("");
+  }
 
-    loadData();
-    setInterval(loadData, 10000);
-  </script>
+  loadData();
+  setInterval(loadData, 10000);
+</script>
 
 </body>
 </html>
