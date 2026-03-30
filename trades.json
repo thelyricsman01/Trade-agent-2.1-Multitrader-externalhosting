@@ -1645,5 +1645,57 @@
     "amount_usd": 345.79,
     "confidence": 72,
     "reason": "RSI=30.29 (oversold boundary), 24h gain +2.96%, MACD=-1.24 close to signal=-0.42 suggests potential reversal. Sideways consolidation before uptrend. Deploy $600 for bounce trade."
+  },
+  {
+    "time": "2026-03-30 18:06",
+    "symbol": "AVAX",
+    "ticker": "AVAX-USD",
+    "action": "close",
+    "price": 8.842439,
+    "amount_usd": 191.58,
+    "pnl": -1.07,
+    "confidence": 75,
+    "reason": "Position underwater (-$0.49), RSI 27.36 (oversold but no upside momentum), MACD negative. Cut loss to free capital for better opportunities."
+  },
+  {
+    "time": "2026-03-30 18:06",
+    "symbol": "SOL",
+    "ticker": "SOL-USD",
+    "action": "close",
+    "price": 83.226501,
+    "amount_usd": 345.79,
+    "pnl": -2.49,
+    "confidence": 70,
+    "reason": "Position slightly negative, RSI 28.93 near oversold but MACD shows weakness. Underperforming vs portfolio needs. Redeploy capital."
+  },
+  {
+    "time": "2026-03-30 18:06",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "open_long",
+    "price": 2040.775269,
+    "amount_usd": 469.23,
+    "confidence": 78,
+    "reason": "RSI 27.1 (oversold), strongest 24h momentum (+2.94%), MACD turning, sideways trend suggests reversal potential. ETH historically leads recoveries."
+  },
+  {
+    "time": "2026-03-30 18:06",
+    "symbol": "BTC",
+    "ticker": "BTC-USD",
+    "action": "open_long",
+    "price": 66823.0625,
+    "amount_usd": 217.86,
+    "confidence": 65,
+    "reason": "RSI 28.53 (oversold), MACD deeply negative suggesting capitulation, 24h +1.32%. Market-leading asset, good risk/reward entry at these levels."
+  },
+  {
+    "time": "2026-03-30 18:06",
+    "symbol": "XRP",
+    "ticker": "XRP-USD",
+    "action": "open_long",
+    "price": 1.333509,
+    "amount_usd": 98.03,
+    "confidence": 60,
+    "reason": "RSI 18.37 (extreme oversold - strongest signal), sideways trend, potential reversal play. Small allocation for risk management."
   }
 ]
