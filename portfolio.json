@@ -1,5 +1,5 @@
 {
-  "cash": 720.0,
+  "cash": 432.0,
   "positions": {
     "MKR": {
       "type": "long",
@@ -7,7 +7,7 @@
       "amount": 0.4653802102214442,
       "amount_usd": 800.0,
       "opened_at": "2026-03-30 20:01",
-      "peak_price": 1752.33862305,
+      "peak_price": 1753.59460449,
       "target_pct": 12
     },
     "RENDER": {
@@ -16,8 +16,17 @@
       "amount": 283.4030879848445,
       "amount_usd": 480.0,
       "opened_at": "2026-03-30 20:01",
-      "peak_price": 1.73500121,
+      "peak_price": 1.79479837,
       "target_pct": 11
+    },
+    "LTC": {
+      "type": "long",
+      "entry_price": 54.52645111,
+      "amount": 5.281840173661726,
+      "amount_usd": 288.0,
+      "opened_at": "2026-04-01 06:13",
+      "peak_price": 54.52645111,
+      "target_pct": 12
     }
   }
 }
