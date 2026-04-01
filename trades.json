@@ -18,5 +18,15 @@
     "amount_usd": 480.0,
     "confidence": 66,
     "reason": "Weekly sideways (acceptable per rules) + MACD histogram rising from deeply negative (-0.016) + RSI 36.4 (in sweet 35\u201355 zone) + BB% 0.41 (mid-band, near support) + strong 30d +20.4% trend. Vol_ratio 0.63 is weak, but RSI + MACD confluence + daily uptrend compensate. Lower risk position."
+  },
+  {
+    "time": "2026-04-01 06:13",
+    "symbol": "LTC",
+    "ticker": "LTC-USD",
+    "action": "open_long",
+    "price": 54.52645111,
+    "amount_usd": 288.0,
+    "confidence": 68,
+    "reason": "Weekly sideways + daily sideways setup; RSI 37.4 in entry zone; MACD histogram rising from negative; vol_ratio 0.94 borderline but strong 30d momentum +2.4% suggests accumulation; near support in ranging structure"
   }
 ]
