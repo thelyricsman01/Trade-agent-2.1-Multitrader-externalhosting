@@ -23,10 +23,16 @@ START_BALANCE  = 2000.0
 STOP_LOSS_PCT     = 0.07
 TAKE_PROFIT_PCT   = 0.15
 TRAILING_STOP_PCT = 0.05
-MIN_HOLD_HOURS    = 48
+MIN_HOLD_HOURS    = 24          # Reduced from 48 — exit bad trades sooner
 MAX_POSITIONS     = 3
 MAX_POSITION_PCT  = 0.40
 MIN_ENTRY_SCORE   = 65
+
+# ── HARD ENTRY FILTERS (enforced in code, not just prompt) ─
+MIN_VOL_RATIO     = 1.0         # Minimum volume ratio — no exceptions
+MAX_ENTRY_BB_PCT  = 0.45        # Only buy near support, not mid-range
+MAX_ENTRY_RSI     = 55          # Don't buy into momentum, buy the dip
+CASH_RESERVE_PCT  = 0.25        # Always keep 25% cash — never fully invested
 
 # ── ASSET UNIVERSE ───────────────────────────────────────
 # The bot scans ALL of these and picks the best ones itself.
@@ -208,6 +214,13 @@ def get_market_data(symbol, ticker):
 
         avg_vol_usd = float(data["Volume"].rolling(20).mean().iloc[-1]) * price
         if avg_vol_usd < MIN_AVG_VOLUME_USD:
+            return None
+
+        # ── DATA SANITY CHECK — reject bad yfinance data ──────
+        prev_close = float(close.iloc[-2]) if len(close) >= 2 else price
+        price_change_pct = abs(price - prev_close) / prev_close if prev_close > 0 else 0
+        if price_change_pct > 0.40:
+            print(f"  {symbol}: rejected — suspicious price move ({price_change_pct*100:.0f}% vs prev close, likely bad data)")
             return None
 
         macd, signal, hist = get_macd(close)
@@ -394,14 +407,15 @@ def analyze_swing(top_candidates, portfolio, total_balance):
     prompt = f"""You are a disciplined swing trader. Current time: {now}
 
 RULES:
-1. Only open longs in weekly UPTREND or sideways with strong signals. Avoid downtrends.
-2. Entry needs confluence: RSI 35-55 + MACD histogram turning positive + near support + vol_ratio >= 1.2
+1. Only open longs in weekly UPTREND or sideways with strong signals. Never in downtrends.
+2. Entry requires ALL of: RSI <= 55 + MACD histogram rising + BB% <= 0.45 (near support) + vol_ratio >= 1.0
 3. Never open if market_regime is bear or confidence < {MIN_ENTRY_SCORE}
-4. Max {MAX_POSITIONS} open positions. Prefer 1-2 high-conviction over many mediocre
-5. Only suggest CLOSE for: {closeable if closeable else 'none (no positions old enough yet)'}
-6. Do NOT close positions held < {MIN_HOLD_HOURS}h — hard stops handle emergencies
-7. Target +10-15% per trade over days/weeks. Don't chase small moves
-8. You are NOT limited to any specific assets — pick the BEST from the scan below
+4. Max {MAX_POSITIONS} open positions. Prefer 1-2 high-conviction trades over many mediocre ones.
+5. Only suggest CLOSE for positions held >= {MIN_HOLD_HOURS}h: {{closeable if closeable else 'none eligible yet'}}
+6. Do NOT suggest closing positions held < {MIN_HOLD_HOURS}h — hard stops handle emergencies.
+7. Target +10-15% per trade. Do not chase small moves or open positions just because cash is available.
+8. NEVER rationalize around entry rules. If vol_ratio < 1.0, BB% > 0.45, or RSI > 55, skip the entry.
+9. Pick the BEST setup from the scan — it is better to do nothing than to enter a weak setup.
 
 PORTFOLIO:
 - Cash: ${portfolio['cash']:.2f} | Balance: ${total_balance:.2f} | PnL: ${total_balance - START_BALANCE:+.2f}
@@ -473,8 +487,23 @@ def execute_actions(portfolio, analysis, mdmap, trades):
             if md["weekly_trend"] == "downtrend":
                 print(f"  Skip LONG {symbol} — weekly downtrend"); continue
 
+            # ── HARD ENTRY FILTERS — cannot be overridden by Claude ──
+            if md["vol_ratio"] < MIN_VOL_RATIO:
+                print(f"  Skip LONG {symbol} — vol_ratio {md['vol_ratio']:.2f} < {MIN_VOL_RATIO} (hard gate)"); continue
+            if md["pct_b"] > MAX_ENTRY_BB_PCT:
+                print(f"  Skip LONG {symbol} — BB% {md['pct_b']:.2f} > {MAX_ENTRY_BB_PCT} (not near support)"); continue
+            if md["rsi_14"] > MAX_ENTRY_RSI:
+                print(f"  Skip LONG {symbol} — RSI {md['rsi_14']:.1f} > {MAX_ENTRY_RSI} (not a dip)"); continue
+
+            # ── CASH RESERVE — never invest below 25% of total balance ──
+            total_bal   = get_total_balance(portfolio, mdmap)
+            min_cash    = total_bal * CASH_RESERVE_PCT
+            usable_cash = portfolio["cash"] - min_cash
+            if usable_cash < 20:
+                print(f"  Skip LONG {symbol} — cash reserve floor (keeping ${min_cash:.0f})"); continue
+
             invest_pct = min(action.get("invest_pct", 30), MAX_POSITION_PCT * 100)
-            amount_usd = round(portfolio["cash"] * (invest_pct / 100), 2)
+            amount_usd = round(min(portfolio["cash"] * (invest_pct / 100), usable_cash), 2)
             if amount_usd < 20:
                 continue
             amount = amount_usd / price
