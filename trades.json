@@ -31,17 +31,6 @@
   },
   {
     "time": "2026-04-01 20:07",
-    "symbol": "MKR",
-    "ticker": "MKR-USD",
-    "action": "close",
-    "price": 99.43875885,
-    "amount_usd": 800.0,
-    "pnl": -753.72,
-    "confidence": 100,
-    "reason": "Stop-loss: -94.2%"
-  },
-  {
-    "time": "2026-04-01 20:07",
     "symbol": "RENDER",
     "ticker": "RENDER-USD",
     "action": "close",
@@ -60,15 +49,5 @@
     "amount_usd": 393.18,
     "confidence": 68,
     "reason": "Weekly sideways + daily uptrend. RSI 50.6 (mid-range). MACD histogram positive and rising (confluence). BB% 0.62 near support zone. Vol ratio 0.84 borderline acceptable but 30d +9.7% shows momentum. Best available entry after RENDER close."
-  },
-  {
-    "time": "2026-04-02 05:51",
-    "symbol": "MKR",
-    "ticker": "MKR-USD",
-    "action": "open_long",
-    "price": 1718.64379883,
-    "amount_usd": 235.91,
-    "confidence": 72,
-    "reason": "Weekly uptrend + RSI 43.3 (mid-range) + MACD histogram rising from negative + vol_ratio 1.87 (strong) + BB% 0.36 near support. Highest conviction score (83) with clean confluence."
   }
 ]
