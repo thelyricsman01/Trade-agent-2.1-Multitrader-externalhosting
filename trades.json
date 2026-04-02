@@ -49,5 +49,16 @@
     "amount_usd": 393.18,
     "confidence": 68,
     "reason": "Weekly sideways + daily uptrend. RSI 50.6 (mid-range). MACD histogram positive and rising (confluence). BB% 0.62 near support zone. Vol ratio 0.84 borderline acceptable but 30d +9.7% shows momentum. Best available entry after RENDER close."
+  },
+  {
+    "time": "2026-04-02 12:31",
+    "symbol": "MKR",
+    "ticker": "MKR-USD",
+    "action": "close",
+    "price": 1726.69787598,
+    "amount_usd": 800.0,
+    "pnl": 3.56,
+    "confidence": 72,
+    "reason": "Position held 64h with +0.4% gain; MACD histogram deeply negative (-5.54) despite rising flag; weekly uptrend intact but daily sideways with declining momentum suggests mean reversion risk. Lock small gain and redeploy capital to higher-conviction setup."
   }
 ]
