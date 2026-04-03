@@ -70,5 +70,26 @@
     "amount_usd": 538.82,
     "confidence": 78,
     "reason": "Weekly uptrend + sideways daily consolidation. RSI 47.7 (well below 55), MACD histogram rising from negative, BB% 0.45 at exact support threshold, vol_ratio 2.06 strong. 7d +3.6%, 30d +3.9% momentum intact. Only candidate meeting ALL entry criteria."
+  },
+  {
+    "time": "2026-04-03 08:36",
+    "symbol": "MKR",
+    "ticker": "MKR-USD",
+    "action": "close",
+    "price": 95.56920624,
+    "amount_usd": 538.82,
+    "pnl": -509.26,
+    "confidence": 100,
+    "reason": "Stop-loss: -94.5%"
+  },
+  {
+    "time": "2026-04-03 08:36",
+    "symbol": "NEAR",
+    "ticker": "NEAR-USD",
+    "action": "open_long",
+    "price": 1.21636724,
+    "amount_usd": 335.12,
+    "confidence": 71,
+    "reason": "Weekly sideways + RSI 35.6 (well below 55) + MACD histogram rising + BB% 0.36 (near support) + vol_ratio 1.00 (meets minimum). Clean entry setup with risk/reward favorable."
   }
 ]
