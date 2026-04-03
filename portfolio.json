@@ -1,5 +1,5 @@
 {
-  "cash": 808.2349766875606,
+  "cash": 502.6723715927852,
   "positions": {
     "LTC": {
       "type": "long",
@@ -19,13 +19,13 @@
       "peak_price": 0.17066741,
       "target_pct": 12
     },
-    "MKR": {
+    "NEAR": {
       "type": "long",
-      "entry_price": 1742.19006348,
-      "amount": 0.30927739245838354,
-      "amount_usd": 538.82,
-      "opened_at": "2026-04-03 05:51",
-      "peak_price": 1742.19006348,
+      "entry_price": 1.21636724,
+      "amount": 275.50889976287095,
+      "amount_usd": 335.12,
+      "opened_at": "2026-04-03 08:36",
+      "peak_price": 1.21636724,
       "target_pct": 12
     }
   }
