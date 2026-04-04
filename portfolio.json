@@ -1,5 +1,5 @@
 {
-  "cash": 502.6723715927852,
+  "cash": 841.6123686101334,
   "positions": {
     "LTC": {
       "type": "long",
@@ -17,15 +17,6 @@
       "amount_usd": 393.18,
       "opened_at": "2026-04-01 20:07",
       "peak_price": 0.17066741,
-      "target_pct": 12
-    },
-    "NEAR": {
-      "type": "long",
-      "entry_price": 1.21636724,
-      "amount": 275.50889976287095,
-      "amount_usd": 335.12,
-      "opened_at": "2026-04-03 08:36",
-      "peak_price": 1.23150516,
       "target_pct": 12
     }
   }
