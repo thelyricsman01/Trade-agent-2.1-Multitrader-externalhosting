@@ -91,5 +91,16 @@
     "amount_usd": 335.12,
     "confidence": 71,
     "reason": "Weekly sideways + RSI 35.6 (well below 55) + MACD histogram rising + BB% 0.36 (near support) + vol_ratio 1.00 (meets minimum). Clean entry setup with risk/reward favorable."
+  },
+  {
+    "time": "2026-04-04 08:47",
+    "symbol": "NEAR",
+    "ticker": "NEAR-USD",
+    "action": "close",
+    "price": 1.23023248,
+    "amount_usd": 335.12,
+    "pnl": 3.82,
+    "confidence": 72,
+    "reason": ""
   }
 ]
