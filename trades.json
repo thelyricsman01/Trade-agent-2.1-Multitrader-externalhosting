@@ -73,17 +73,6 @@
   },
   {
     "time": "2026-04-03 08:36",
-    "symbol": "MKR",
-    "ticker": "MKR-USD",
-    "action": "close",
-    "price": 95.56920624,
-    "amount_usd": 538.82,
-    "pnl": -509.26,
-    "confidence": 100,
-    "reason": "Stop-loss: -94.5%"
-  },
-  {
-    "time": "2026-04-03 08:36",
     "symbol": "NEAR",
     "ticker": "NEAR-USD",
     "action": "open_long",
@@ -101,6 +90,6 @@
     "amount_usd": 335.12,
     "pnl": 3.82,
     "confidence": 72,
-    "reason": ""
+    "reason": "Take profit â momentum fading."
   }
 ]
