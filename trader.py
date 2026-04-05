@@ -19,24 +19,24 @@ TRADES_FILE    = “trades.json”
 PORTFOLIO_FILE = “portfolio.json”
 START_BALANCE  = 2000.0
 
-# ── SWING TRADING PARAMETERS ─────────────────────────────
+# – SWING TRADING PARAMETERS —————————–
 
 STOP_LOSS_PCT     = 0.07
 TAKE_PROFIT_PCT   = 0.15
 TRAILING_STOP_PCT = 0.05
-MIN_HOLD_HOURS    = 24          # Reduced from 48 — exit bad trades sooner
+MIN_HOLD_HOURS    = 24          # Reduced from 48 – exit bad trades sooner
 MAX_POSITIONS     = 3
 MAX_POSITION_PCT  = 0.40
 MIN_ENTRY_SCORE   = 65
 
-# ── HARD ENTRY FILTERS (enforced in code, not just prompt) ─
+# – HARD ENTRY FILTERS (enforced in code, not just prompt) -
 
-MIN_VOL_RATIO     = 1.0         # Minimum volume ratio — no exceptions
+MIN_VOL_RATIO     = 1.0         # Minimum volume ratio – no exceptions
 MAX_ENTRY_BB_PCT  = 0.45        # Only buy near support, not mid-range
 MAX_ENTRY_RSI     = 55          # Don’t buy into momentum, buy the dip
-CASH_RESERVE_PCT  = 0.25        # Always keep 25% cash — never fully invested
+CASH_RESERVE_PCT  = 0.25        # Always keep 25% cash – never fully invested
 
-# ── ASSET UNIVERSE ───────────────────────────────────────
+# – ASSET UNIVERSE —————————————
 
 # The bot scans ALL of these and picks the best ones itself.
 
@@ -86,7 +86,7 @@ UNIVERSE = {
 
 MIN_AVG_VOLUME_USD = 5_000_000  # Liquidity filter
 
-# ── GITHUB HELPERS ───────────────────────────────────────
+# – GITHUB HELPERS —————————————
 
 def push_to_github(filename):
 try:
@@ -105,7 +105,7 @@ print(f”  Pushed {filename} to GitHub”)
 except Exception as e:
 print(f”  Error pushing {filename}: {e}”)
 
-# ── TECHNICAL INDICATORS ─────────────────────────────────
+# – TECHNICAL INDICATORS ———————————
 
 def get_rsi(series, period=14):
 delta = series.diff()
@@ -222,11 +222,11 @@ return None
     if avg_vol_usd < MIN_AVG_VOLUME_USD:
         return None
 
-    # ── DATA SANITY CHECK — reject bad yfinance data ──────
+    # -- DATA SANITY CHECK -- reject bad yfinance data ------
     prev_close = float(close.iloc[-2]) if len(close) >= 2 else price
     price_change_pct = abs(price - prev_close) / prev_close if prev_close > 0 else 0
     if price_change_pct > 0.40:
-        print(f"  {symbol}: rejected — suspicious price move ({price_change_pct*100:.0f}% vs prev close, likely bad data)")
+        print(f"  {symbol}: rejected -- suspicious price move ({price_change_pct*100:.0f}% vs prev close, likely bad data)")
         return None
 
     macd, signal, hist = get_macd(close)
@@ -284,7 +284,7 @@ except Exception as e:
     return None
 ```
 
-# ── PORTFOLIO HELPERS ────────────────────────────────────
+# – PORTFOLIO HELPERS ————————————
 
 def load_from_github(filename, default):
 try:
@@ -331,13 +331,13 @@ return (datetime.now() - datetime.strptime(pos[“opened_at”], “%Y-%m-%d %H:
 except Exception:
 return 9999
 
-# ── HARD STOP-LOSS / TAKE-PROFIT ─────────────────────────
+# – HARD STOP-LOSS / TAKE-PROFIT ———————––
 
 # MAX_SINGLE_RUN_DROP: if yfinance returns a price more than this %
 
 # below the last known good price, treat it as bad data and skip.
 
-MAX_SINGLE_RUN_DROP = 0.20   # 20% — no real asset drops 20% between daily runs
+MAX_SINGLE_RUN_DROP = 0.20   # 20% – no real asset drops 20% between daily runs
 
 def check_hard_exits(portfolio, mdmap, trades):
 executed  = []
@@ -351,14 +351,14 @@ for symbol, pos in portfolio["positions"].items():
     last_known = pos.get("last_known_price", entry)
     peak       = pos.get("peak_price", entry)
 
-    # ── DATA SANITY GATE ─────────────────────────────────
+    # -- DATA SANITY GATE ---------------------------------
     # If the new price is >20% below the last recorded price in a single
     # run, it is almost certainly a yfinance data error (e.g. MKR migration).
     # Skip the exit check entirely and log a warning.
     drop_from_last = (last_known - price) / last_known if last_known > 0 else 0
     if drop_from_last > MAX_SINGLE_RUN_DROP:
-        print(f"  ⚠️  {symbol}: price ${price:.4f} is {drop_from_last*100:.0f}% below last known "
-              f"${last_known:.4f} — likely bad data, skipping exit check")
+        print(f"  !  {symbol}: price ${price:.4f} is {drop_from_last*100:.0f}% below last known "
+              f"${last_known:.4f} -- likely bad data, skipping exit check")
         continue
 
     # Update last known good price
@@ -396,12 +396,12 @@ for symbol, pos, price, reason in to_close:
                    "action": "close", "price": price, "amount_usd": pos["amount_usd"],
                    "pnl": pnl, "confidence": 100, "reason": reason})
     executed.append(f"AUTO-CLOSE {symbol} PnL=${pnl:+.2f} | {reason}")
-    print(f"    {symbol}: {reason} → PnL ${pnl:+.2f}")
+    print(f"    {symbol}: {reason} -> PnL ${pnl:+.2f}")
 
 return portfolio, executed
 ```
 
-# ── AI SWING ANALYSIS ────────────────────────────────────
+# – AI SWING ANALYSIS ————————————
 
 def analyze_swing(top_candidates, portfolio, total_balance):
 now = datetime.now().strftime(”%Y-%m-%d %H:%M”)
@@ -426,9 +426,9 @@ for m in top_candidates:
         f"\n  {m['symbol']:7s} score:{m['score']:3d} | ${m['price']}"
         f" | W:{m['weekly_trend']:9s} D:{m['daily_trend']:9s}"
         f" | RSI:{m['rsi_14']:5.1f} | MACDhist:{m['macd_hist']:+.6f} rising:{m['macd_rising']}"
-        f" | BB%:{m['pct_b']:.2f} | vol×:{m['vol_ratio']:.2f}"
+        f" | BB%:{m['pct_b']:.2f} | vol:{m['vol_ratio']:.2f}"
         f" | 7d:{m['chg_7d']:+.1f}% 30d:{m['chg_30d']:+.1f}%"
-        f" | {'↑MA200' if m['above_ma200'] else '↓MA200'}"
+        f" | {'^MA200' if m['above_ma200'] else 'vMA200'}"
         f" | ${m['avg_vol_usd_m']:.0f}M/day{tag}"
     )
 
@@ -444,10 +444,10 @@ RULES:
 1. Never open if market_regime is bear or confidence < {MIN_ENTRY_SCORE}
 1. Max {MAX_POSITIONS} open positions. Prefer 1-2 high-conviction trades over many mediocre ones.
 1. Only suggest CLOSE for positions held >= {MIN_HOLD_HOURS}h: {{closeable if closeable else ‘none eligible yet’}}
-1. Do NOT suggest closing positions held < {MIN_HOLD_HOURS}h — hard stops handle emergencies.
+1. Do NOT suggest closing positions held < {MIN_HOLD_HOURS}h – hard stops handle emergencies.
 1. Target +10-15% per trade. Do not chase small moves or open positions just because cash is available.
 1. NEVER rationalize around entry rules. If vol_ratio < 1.0, BB% > 0.45, or RSI > 55, skip the entry.
-1. Pick the BEST setup from the scan — it is better to do nothing than to enter a weak setup.
+1. Pick the BEST setup from the scan – it is better to do nothing than to enter a weak setup.
 
 PORTFOLIO:
 
@@ -475,7 +475,7 @@ Respond ONLY in valid JSON:
 “top_pick”: “SYMBOL”,
 “summary”: “one sentence”
 }}
-Omit assets you want to skip — only include real action decisions.
+Omit assets you want to skip – only include real action decisions.
 “””
 
 ```
@@ -492,7 +492,7 @@ if text.startswith("```"):
 return json.loads(text.strip())
 ```
 
-# ── EXECUTE TRADES ───────────────────────────────────────
+# – EXECUTE TRADES —————————————
 
 def execute_actions(portfolio, analysis, mdmap, trades):
 executed  = []
@@ -506,37 +506,37 @@ for action in analysis.get("actions", []):
     confidence = action.get("confidence", 0)
     md         = mdmap.get(symbol)
     if not md:
-        print(f"  No data for {symbol} — skip")
+        print(f"  No data for {symbol} -- skip")
         continue
     price  = md["price"]
     ticker = UNIVERSE.get(symbol, symbol + "-USD")
 
     if act == "open_long":
         if regime == "bear":
-            print(f"  Skip LONG {symbol} — bear regime"); continue
+            print(f"  Skip LONG {symbol} -- bear regime"); continue
         if len(portfolio["positions"]) >= MAX_POSITIONS:
-            print(f"  Skip LONG {symbol} — max positions"); continue
+            print(f"  Skip LONG {symbol} -- max positions"); continue
         if symbol in portfolio["positions"]:
-            print(f"  Skip LONG {symbol} — already open"); continue
+            print(f"  Skip LONG {symbol} -- already open"); continue
         if confidence < MIN_ENTRY_SCORE:
-            print(f"  Skip LONG {symbol} — confidence {confidence}%"); continue
+            print(f"  Skip LONG {symbol} -- confidence {confidence}%"); continue
         if md["weekly_trend"] == "downtrend":
-            print(f"  Skip LONG {symbol} — weekly downtrend"); continue
+            print(f"  Skip LONG {symbol} -- weekly downtrend"); continue
 
-        # ── HARD ENTRY FILTERS — cannot be overridden by Claude ──
+        # -- HARD ENTRY FILTERS -- cannot be overridden by Claude --
         if md["vol_ratio"] < MIN_VOL_RATIO:
-            print(f"  Skip LONG {symbol} — vol_ratio {md['vol_ratio']:.2f} < {MIN_VOL_RATIO} (hard gate)"); continue
+            print(f"  Skip LONG {symbol} -- vol_ratio {md['vol_ratio']:.2f} < {MIN_VOL_RATIO} (hard gate)"); continue
         if md["pct_b"] > MAX_ENTRY_BB_PCT:
-            print(f"  Skip LONG {symbol} — BB% {md['pct_b']:.2f} > {MAX_ENTRY_BB_PCT} (not near support)"); continue
+            print(f"  Skip LONG {symbol} -- BB% {md['pct_b']:.2f} > {MAX_ENTRY_BB_PCT} (not near support)"); continue
         if md["rsi_14"] > MAX_ENTRY_RSI:
-            print(f"  Skip LONG {symbol} — RSI {md['rsi_14']:.1f} > {MAX_ENTRY_RSI} (not a dip)"); continue
+            print(f"  Skip LONG {symbol} -- RSI {md['rsi_14']:.1f} > {MAX_ENTRY_RSI} (not a dip)"); continue
 
-        # ── CASH RESERVE — never invest below 25% of total balance ──
+        # -- CASH RESERVE -- never invest below 25% of total balance --
         total_bal   = get_total_balance(portfolio, mdmap)
         min_cash    = total_bal * CASH_RESERVE_PCT
         usable_cash = portfolio["cash"] - min_cash
         if usable_cash < 20:
-            print(f"  Skip LONG {symbol} — cash reserve floor (keeping ${min_cash:.0f})"); continue
+            print(f"  Skip LONG {symbol} -- cash reserve floor (keeping ${min_cash:.0f})"); continue
 
         invest_pct = min(action.get("invest_pct", 30), MAX_POSITION_PCT * 100)
         amount_usd = round(min(portfolio["cash"] * (invest_pct / 100), usable_cash), 2)
@@ -561,7 +561,7 @@ for action in analysis.get("actions", []):
         if symbol in portfolio["positions"]: continue
         if confidence < MIN_ENTRY_SCORE: continue
         if md["weekly_trend"] != "downtrend":
-            print(f"  Skip SHORT {symbol} — not weekly downtrend"); continue
+            print(f"  Skip SHORT {symbol} -- not weekly downtrend"); continue
 
         invest_pct = min(action.get("invest_pct", 25), MAX_POSITION_PCT * 100)
         amount_usd = round(portfolio["cash"] * (invest_pct / 100), 2)
@@ -583,7 +583,7 @@ for action in analysis.get("actions", []):
         pos    = portfolio["positions"][symbol]
         held_h = hours_since_open(pos)
         if held_h < MIN_HOLD_HOURS:
-            print(f"  Skip CLOSE {symbol} — only {held_h:.0f}h (min {MIN_HOLD_HOURS}h)"); continue
+            print(f"  Skip CLOSE {symbol} -- only {held_h:.0f}h (min {MIN_HOLD_HOURS}h)"); continue
 
         if pos["type"] == "long":
             pnl = round(pos["amount"] * price - pos["amount_usd"], 2)
@@ -603,10 +603,10 @@ for action in analysis.get("actions", []):
 return portfolio, executed
 ```
 
-# ── MAIN ─────────────────────────────────────────────────
+# – MAIN ———————————————––
 
 print(f”\n{’=’*70}”)
-print(f”[{datetime.now().strftime(’%Y-%m-%d %H:%M’)}] Swing Trader — Dynamic universe scan”)
+print(f”[{datetime.now().strftime(’%Y-%m-%d %H:%M’)}] Swing Trader – Dynamic universe scan”)
 print(f”{’=’*70}”)
 
 # 1. Scan the full universe
@@ -636,12 +636,12 @@ extra_open     = [m for m in all_data if m[“symbol”] in open_symbols and m[�
 top_candidates = all_data[:TOP_N] + extra_open
 
 print(f”\n  Top {TOP_N} by swing score:”)
-print(f”  {‘Sym’:<8} {‘Sc’:>3}  {‘Weekly’:>9}  {‘RSI’:>5}  {‘BB%’:>5}  {‘Vol×’:>5}  {‘7d%’:>7}  {‘MA200’:>6}”)
+print(f”  {‘Sym’:<8} {‘Sc’:>3}  {‘Weekly’:>9}  {‘RSI’:>5}  {‘BB%’:>5}  {‘Vol’:>5}  {‘7d%’:>7}  {‘MA200’:>6}”)
 for m in all_data[:TOP_N]:
-flag = “ ◀” if m[“symbol”] in open_symbols else “”
+flag = “ “ if m[“symbol”] in open_symbols else “”
 print(f”  {m[‘symbol’]:<8} {m[‘score’]:>3}  {m[‘weekly_trend’]:>9}”
 f”  {m[‘rsi_14’]:>5.1f}  {m[‘pct_b’]:>5.2f}  {m[‘vol_ratio’]:>5.2f}”
-f”  {m[‘chg_7d’]:>+6.1f}%  {‘↑’ if m[‘above_ma200’] else ‘↓’}{flag}”)
+f”  {m[‘chg_7d’]:>+6.1f}%  {’^’ if m[‘above_ma200’] else ‘v’}{flag}”)
 
 # 3. Load portfolio
 
@@ -659,7 +659,7 @@ price   = mdmap.get(sym, {}).get(“price”, pos[“entry_price”])
 pnl_pct = (price - pos[“entry_price”]) / pos[“entry_price”] * 100
 held_h  = hours_since_open(pos)
 print(f”    {sym}: {pos[‘type’].upper()} @ ${pos[‘entry_price’]}”
-f” → ${price} | {pnl_pct:+.1f}% | {held_h:.0f}h held”)
+f” -> ${price} | {pnl_pct:+.1f}% | {held_h:.0f}h held”)
 
 # 4. Hard exits (SL / TP / trailing)
 
@@ -692,5 +692,5 @@ print(f”  Balance: ${total_balance:.2f} | Positions open: {len(portfolio[‘po
 if executed:
 for e in executed: print(f”    -> {e}”)
 else:
-print(”  No trades — waiting for quality setups.”)
+print(”  No trades – waiting for quality setups.”)
 print(f”{’=’*70}\n”)
