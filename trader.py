@@ -8,7 +8,6 @@ import base64
 import requests as req
 from datetime import datetime
 
-
 api_key        = os.environ.get(“ANTHROPIC_API_KEY”)
 GITHUB_TOKEN   = os.environ.get(“GITHUB_TOKEN”)
 GITHUB_REPO    = “thelyricsman01/Trade-agent-2.1-Multitrader-externalhosting”
