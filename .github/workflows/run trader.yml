@@ -1,0 +1,36 @@
+name: Run Trader
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  trade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install anthropic yfinance pandas numpy requests python-dotenv
+
+      - name: Fix trader.py
+        run: |
+          sed -i "s/\u201c/\"/g; s/\u201d/\"/g; s/\u2018/'/g; s/\u2019/'/g" trader.py
+          sed -i '/^```/d' trader.py
+          python3 -c "import ast; ast.parse(open('trader.py').read()); print('Syntax OK')"
+
+      - name: Run trader
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python trader.py
