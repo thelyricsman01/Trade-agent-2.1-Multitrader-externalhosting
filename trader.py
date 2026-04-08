@@ -224,12 +224,10 @@ def get_market_data(symbol, ticker):
             return None
 
         macd, signal, hist = get_macd(close)
-        h_today     = hist
-        h_yesterday = float(
-            (close.ewm(span=12).mean() - close.ewm(span=26).mean() -
-             (close.ewm(span=12).mean() - close.ewm(span=26).mean()).ewm(span=9).mean()).iloc[-2]
-        )
-        macd_rising = bool(h_today > h_yesterday)
+        # Compute full histogram series once — consistent and avoids triple ewm recalculation
+        _macd_line   = close.ewm(span=12).mean() - close.ewm(span=26).mean()
+        _hist_series = _macd_line - _macd_line.ewm(span=9).mean()
+        macd_rising  = bool(_hist_series.iloc[-1] > _hist_series.iloc[-2])
 
         pct_b, bb_width = get_bollinger(close)
         ma20  = float(close.rolling(20).mean().iloc[-1])
@@ -295,6 +293,8 @@ def load_portfolio():
     if not p:
         p = {"cash": START_BALANCE, "positions": {}}
         save_portfolio(p)
+        push_to_github(PORTFOLIO_FILE)
+        print("  Created new portfolio and pushed to GitHub.")
     return p
 
 def save_portfolio(p):
@@ -336,6 +336,7 @@ def check_hard_exits(portfolio, mdmap, trades):
         entry = pos["entry_price"]
         peak  = pos.get("peak_price", entry)
 
+        # Always update peak_price so it persists correctly across runs
         if pos["type"] == "long" and price > peak:
             pos["peak_price"] = price
             peak = price
@@ -411,7 +412,7 @@ RULES:
 2. Entry requires ALL of: RSI <= 55 + MACD histogram rising + BB% <= 0.45 (near support) + vol_ratio >= 1.0
 3. Never open if market_regime is bear or confidence < {MIN_ENTRY_SCORE}
 4. Max {MAX_POSITIONS} open positions. Prefer 1-2 high-conviction trades over many mediocre ones.
-5. Only suggest CLOSE for positions held >= {MIN_HOLD_HOURS}h: {{closeable if closeable else 'none eligible yet'}}
+5. Only suggest CLOSE for positions held >= {MIN_HOLD_HOURS}h: {closeable if closeable else 'none eligible yet'}
 6. Do NOT suggest closing positions held < {MIN_HOLD_HOURS}h — hard stops handle emergencies.
 7. Target +10-15% per trade. Do not chase small moves or open positions just because cash is available.
 8. NEVER rationalize around entry rules. If vol_ratio < 1.0, BB% > 0.45, or RSI > 55, skip the entry.
@@ -446,7 +447,7 @@ Omit assets you want to skip — only include real action decisions.
 """
 
     response = client.messages.create(
-        model="claude-haiku-4-5-20251001",
+        model="claude-sonnet-4-20250514",
         max_tokens=1200,
         messages=[{"role": "user", "content": prompt}]
     )
@@ -527,8 +528,21 @@ def execute_actions(portfolio, analysis, mdmap, trades):
             if md["weekly_trend"] != "downtrend":
                 print(f"  Skip SHORT {symbol} — not weekly downtrend"); continue
 
+            # ── HARD ENTRY FILTERS for shorts ──
+            if md["vol_ratio"] < MIN_VOL_RATIO:
+                print(f"  Skip SHORT {symbol} — vol_ratio {md['vol_ratio']:.2f} < {MIN_VOL_RATIO} (hard gate)"); continue
+            if md["rsi_14"] < 45:
+                print(f"  Skip SHORT {symbol} — RSI {md['rsi_14']:.1f} < 45 (not overbought enough)"); continue
+
+            # ── CASH RESERVE ──
+            total_bal   = get_total_balance(portfolio, mdmap)
+            min_cash    = total_bal * CASH_RESERVE_PCT
+            usable_cash = portfolio["cash"] - min_cash
+            if usable_cash < 20:
+                print(f"  Skip SHORT {symbol} — cash reserve floor (keeping ${min_cash:.0f})"); continue
+
             invest_pct = min(action.get("invest_pct", 25), MAX_POSITION_PCT * 100)
-            amount_usd = round(portfolio["cash"] * (invest_pct / 100), 2)
+            amount_usd = round(min(portfolio["cash"] * (invest_pct / 100), usable_cash), 2)
             if amount_usd < 20: continue
             amount = amount_usd / price
             portfolio["cash"] -= amount_usd
@@ -625,6 +639,10 @@ print("\n  Checking stop-loss / take-profit...")
 portfolio, auto_closed = check_hard_exits(portfolio, mdmap, trades)
 if not auto_closed:
     print("    None triggered.")
+else:
+    # Persist updated peak_prices and any auto-closes immediately
+    save_portfolio(portfolio)
+    push_to_github(PORTFOLIO_FILE)
 
 # 5. AI analysis
 print(f"\n  AI analyzing top {len(top_candidates)} candidates...")
