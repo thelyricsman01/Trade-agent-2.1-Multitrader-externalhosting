@@ -90,6 +90,17 @@
     "amount_usd": 335.12,
     "pnl": 3.82,
     "confidence": 72,
-    "reason": "Take profit â momentum fading."
+    "reason": "Take profit \u00e2\u0080\u0094 momentum fading."
+  },
+  {
+    "time": "2026-04-06 21:41",
+    "symbol": "XLM",
+    "ticker": "XLM-USD",
+    "action": "close",
+    "price": 0.15660781,
+    "amount_usd": 393.18,
+    "pnl": -32.39,
+    "confidence": 100,
+    "reason": "Stop-loss: -8.2%"
   }
 ]
