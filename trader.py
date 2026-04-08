@@ -47,13 +47,13 @@ UNIVERSE = {
     "NEAR":   "NEAR-USD",
     "DOT":    "DOT-USD",
     "ATOM":   "ATOM-USD",
-    "APT":    "APT-USD",
+    "APT":    "APT21794-USD",
     "SUI":    "SUI-USD",
     # Exchange tokens
     "BNB":    "BNB-USD",
     # DeFi
     "LINK":   "LINK-USD",
-    "UNI":    "UNI-USD",
+    "UNI":    "UNI1-USD",
     "AAVE":   "AAVE-USD",
     "MKR":    "MKR-USD",
     # Payments
@@ -63,11 +63,12 @@ UNIVERSE = {
     # Meme / high beta
     "DOGE":   "DOGE-USD",
     "SHIB":   "SHIB-USD",
-    "PEPE":   "PEPE-USD",
+    "PEPE":   "PEPE25289-USD",
     # Layer 2
     "ARB":    "ARB-USD",
     "OP":     "OP-USD",
-    "MATIC":  "MATIC-USD",
+    # Payments / Layer 2 (MATIC rebranded to POL)
+    "POL":    "POL28321-USD",
     # AI / infra
     "FET":    "FET-USD",
     "RENDER": "RENDER-USD",
