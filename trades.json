@@ -1,24 +1,41 @@
 {
   "trades": [],
   "last_scan": {
-    "time": "2026-04-12 20:41",
-    "market_regime": "mixed",
-    "btc_weekly_bias": "neutral",
+    "time": "2026-04-12 21:37",
+    "market_regime": "bull",
+    "btc_weekly_bias": "bullish",
     "top_pick": "NONE",
-    "summary": "No setups meet entry criteria; all candidates fail one or more mandatory filters\u2014skip and preserve capital.",
+    "summary": "No valid setups meet disciplined entry criteria; all candidates fail one or more key filters\u2014skip and preserve capital.",
     "filter_snapshot": [
       {
         "symbol": "MKR",
         "score": 43,
-        "price": 1746.06262207,
+        "price": 1751.0411377,
         "weekly_trend": "uptrend",
-        "rsi_14": 58.51,
-        "pct_b": 0.478,
+        "rsi_14": 59.41,
+        "pct_b": 0.506,
         "vol_ratio": 1.0,
-        "chg_7d": 0.02,
+        "chg_7d": 0.31,
         "long": "PASS",
         "short": [
-          "BB0.48",
+          "BB0.51",
+          "notDN"
+        ],
+        "open": false
+      },
+      {
+        "symbol": "LTC",
+        "score": 35,
+        "price": 53.78872299,
+        "weekly_trend": "sideways",
+        "rsi_14": 52.33,
+        "pct_b": 0.408,
+        "vol_ratio": 0.87,
+        "chg_7d": -0.6,
+        "long": "PASS",
+        "short": [
+          "BB0.41",
+          "RSI52",
           "notDN"
         ],
         "open": false
@@ -26,18 +43,18 @@
       {
         "symbol": "JTO",
         "score": 33,
-        "price": 0.30394208,
+        "price": 0.30527806,
         "weekly_trend": "sideways",
-        "rsi_14": 61.09,
-        "pct_b": 0.679,
-        "vol_ratio": 0.59,
-        "chg_7d": 10.65,
+        "rsi_14": 61.56,
+        "pct_b": 0.694,
+        "vol_ratio": 0.6,
+        "chg_7d": 11.14,
         "long": [
-          "vol0.59",
-          "BB0.68"
+          "vol0.60",
+          "BB0.69"
         ],
         "short": [
-          "vol0.59",
+          "vol0.60",
           "notDN"
         ],
         "open": false
@@ -45,15 +62,15 @@
       {
         "symbol": "FET",
         "score": 25,
-        "price": 0.23499121,
+        "price": 0.23530555,
         "weekly_trend": "sideways",
-        "rsi_14": 53.09,
-        "pct_b": 0.411,
+        "rsi_14": 53.25,
+        "pct_b": 0.42,
         "vol_ratio": 1.02,
-        "chg_7d": 0.06,
+        "chg_7d": 0.19,
         "long": "PASS",
         "short": [
-          "BB0.41",
+          "BB0.42",
           "RSI53",
           "notDN"
         ],
@@ -62,15 +79,15 @@
       {
         "symbol": "AVAX",
         "score": 23,
-        "price": 9.08628273,
+        "price": 9.1393919,
         "weekly_trend": "sideways",
-        "rsi_14": 58.16,
-        "pct_b": 0.501,
+        "rsi_14": 59.2,
+        "pct_b": 0.542,
         "vol_ratio": 1.06,
-        "chg_7d": 0.35,
+        "chg_7d": 0.93,
         "long": "PASS",
         "short": [
-          "BB0.50",
+          "BB0.54",
           "notDN"
         ],
         "open": false
@@ -78,34 +95,33 @@
       {
         "symbol": "ADA",
         "score": 23,
-        "price": 0.23821609,
+        "price": 0.23930524,
         "weekly_trend": "downtrend",
-        "rsi_14": 49.22,
-        "pct_b": 0.171,
+        "rsi_14": 49.85,
+        "pct_b": 0.198,
         "vol_ratio": 1.03,
-        "chg_7d": -4.88,
+        "chg_7d": -4.44,
         "long": [
           "dntrd"
         ],
         "short": [
-          "BB0.17",
-          "RSI49"
+          "BB0.20",
+          "RSI50"
         ],
         "open": false
       },
       {
         "symbol": "LINK",
         "score": 23,
-        "price": 8.76060677,
+        "price": 8.81732559,
         "weekly_trend": "sideways",
-        "rsi_14": 57.07,
-        "pct_b": 0.424,
+        "rsi_14": 58.39,
+        "pct_b": 0.473,
         "vol_ratio": 1.1,
-        "chg_7d": -0.58,
+        "chg_7d": 0.06,
         "long": "PASS",
         "short": [
-          "BB0.42",
-          "RSI57",
+          "BB0.47",
           "notDN"
         ],
         "open": false
@@ -113,18 +129,18 @@
       {
         "symbol": "RENDER",
         "score": 23,
-        "price": 1.8889966,
+        "price": 1.89599729,
         "weekly_trend": "sideways",
-        "rsi_14": 63.71,
-        "pct_b": 0.575,
-        "vol_ratio": 1.06,
-        "chg_7d": -0.52,
+        "rsi_14": 64.23,
+        "pct_b": 0.588,
+        "vol_ratio": 1.05,
+        "chg_7d": -0.15,
         "long": [
-          "BB0.57",
+          "BB0.59",
           "RSI64"
         ],
         "short": [
-          "BB0.57",
+          "BB0.59",
           "notDN"
         ],
         "open": false
@@ -132,35 +148,35 @@
       {
         "symbol": "DOGE",
         "score": 18,
-        "price": 0.09105174,
+        "price": 0.09139892,
         "weekly_trend": "downtrend",
-        "rsi_14": 51.79,
-        "pct_b": 0.329,
+        "rsi_14": 52.79,
+        "pct_b": 0.377,
         "vol_ratio": 1.22,
-        "chg_7d": -1.32,
+        "chg_7d": -0.94,
         "long": [
           "dntrd"
         ],
         "short": [
-          "BB0.33",
-          "RSI52"
+          "BB0.38",
+          "RSI53"
         ],
         "open": false
       },
       {
         "symbol": "AAVE",
         "score": 16,
-        "price": 90.66184235,
+        "price": 90.96495819,
         "weekly_trend": "downtrend",
-        "rsi_14": 40.57,
-        "pct_b": 0.239,
+        "rsi_14": 41.07,
+        "pct_b": 0.25,
         "vol_ratio": 1.06,
-        "chg_7d": -3.52,
+        "chg_7d": -3.2,
         "long": [
           "dntrd"
         ],
         "short": [
-          "BB0.24",
+          "BB0.25",
           "RSI41"
         ],
         "open": false
@@ -168,54 +184,36 @@
       {
         "symbol": "SOL",
         "score": 15,
-        "price": 82.21598816,
+        "price": 82.63731384,
         "weekly_trend": "downtrend",
-        "rsi_14": 51.65,
-        "pct_b": 0.411,
+        "rsi_14": 52.56,
+        "pct_b": 0.441,
         "vol_ratio": 1.6,
-        "chg_7d": 0.44,
+        "chg_7d": 0.96,
         "long": [
           "dntrd"
         ],
         "short": [
-          "BB0.41",
-          "RSI52"
+          "BB0.44",
+          "RSI53"
         ],
         "open": false
       },
       {
         "symbol": "DOT",
         "score": 13,
-        "price": 1.23850119,
+        "price": 1.24240875,
         "weekly_trend": "downtrend",
-        "rsi_14": 46.73,
-        "pct_b": 0.278,
+        "rsi_14": 47.35,
+        "pct_b": 0.298,
         "vol_ratio": 1.04,
-        "chg_7d": -0.36,
+        "chg_7d": -0.05,
         "long": [
           "dntrd"
         ],
         "short": [
-          "BB0.28",
+          "BB0.30",
           "RSI47"
-        ],
-        "open": false
-      },
-      {
-        "symbol": "BNB",
-        "score": 13,
-        "price": 594.11254883,
-        "weekly_trend": "downtrend",
-        "rsi_14": 45.36,
-        "pct_b": 0.266,
-        "vol_ratio": 1.15,
-        "chg_7d": -1.23,
-        "long": [
-          "dntrd"
-        ],
-        "short": [
-          "BB0.27",
-          "RSI45"
         ],
         "open": false
       }
