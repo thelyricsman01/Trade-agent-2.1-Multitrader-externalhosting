@@ -284,10 +284,11 @@ def get_market_data(symbol, ticker):
         print(f"  {symbol}: skipped ({e})")
         return None
 
-# -- DEBUG: show why top assets are blocked ----------------------------
+# -- DEBUG: show why top assets are blocked + return snapshot object ---
 def print_filter_debug(all_data, open_symbols, n=12):
     print(f"\n  [DEBUG] Entry filter check for top {n} candidates:")
     print(f"  {'Sym':<7} {'Score':>5} {'vol':>5} {'BB%':>5} {'RSI':>5} {'Weekly':>9}  LONG  SHORT")
+    snapshot = []
     for m in all_data[:n]:
         tag = "[OPEN]" if m["symbol"] in open_symbols else ""
 
@@ -317,6 +318,21 @@ def print_filter_debug(all_data, open_symbols, n=12):
         print(f"  {m['symbol']:<7} {m['score']:>5} {m['vol_ratio']:>5.2f} {m['pct_b']:>5.2f}"
               f" {m['rsi_14']:>5.1f} {m['weekly_trend']:>9}  {long_str:<28} {short_str} {tag}")
 
+        snapshot.append({
+            "symbol":       m["symbol"],
+            "score":        m["score"],
+            "price":        m["price"],
+            "weekly_trend": m["weekly_trend"],
+            "rsi_14":       m["rsi_14"],
+            "pct_b":        m["pct_b"],
+            "vol_ratio":    m["vol_ratio"],
+            "chg_7d":       m["chg_7d"],
+            "long":         "PASS" if not long_blocks  else long_blocks,
+            "short":        "PASS" if not short_blocks else short_blocks,
+            "open":         m["symbol"] in open_symbols,
+        })
+    return snapshot
+
 # -- PORTFOLIO HELPERS --------------------------------------------------
 def load_from_github(filename, default):
     try:
@@ -341,7 +357,11 @@ def save_portfolio(p):
         json.dump(p, f, indent=2)
 
 def load_trades():
-    return load_from_github(TRADES_FILE, [])
+    data = load_from_github(TRADES_FILE, [])
+    # Handle both old format (list) and new format (dict with "trades" key)
+    if isinstance(data, dict):
+        return data.get("trades", [])
+    return data
 
 def save_trades(t):
     with open(TRADES_FILE, "w") as f:
@@ -672,8 +692,8 @@ for m in all_data[:TOP_N]:
           f" {m['rsi_14']:>5.1f} {m['pct_b']:>5.2f} {m['vol_ratio']:>5.2f}"
           f" {m['chg_7d']:>+6.1f}% {'^' if m['above_ma200'] else 'v'}{flag}")
 
-# 2b. DEBUG: show filter status for top candidates
-print_filter_debug(all_data, open_symbols, n=12)
+# 2b. DEBUG: show filter status for top candidates, capture snapshot
+debug_snapshot = print_filter_debug(all_data, open_symbols, n=12)
 
 # 3. Load portfolio
 portfolio = load_portfolio()
@@ -703,8 +723,21 @@ portfolio, executed = execute_actions(portfolio, analysis, mdmap, trades)
 total_balance = get_total_balance(portfolio, mdmap)
 
 # 6. Save & push
+# Inject latest scan snapshot so it's visible in trades.json
+trades_with_snapshot = {
+    "trades": trades,
+    "last_scan": {
+        "time": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "market_regime": analysis.get("market_regime", "?"),
+        "btc_weekly_bias": analysis.get("btc_weekly_bias", "?"),
+        "top_pick": analysis.get("top_pick", "?"),
+        "summary": analysis.get("summary", ""),
+        "filter_snapshot": debug_snapshot,
+    }
+}
+with open(TRADES_FILE, "w") as f:
+    json.dump(trades_with_snapshot, f, indent=2)
 save_portfolio(portfolio)
-save_trades(trades)
 push_to_github(TRADES_FILE)
 push_to_github(PORTFOLIO_FILE)
 
