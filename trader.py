@@ -209,8 +209,19 @@ def score_asset(m):
     return max(0, min(100, score))
 
 def get_market_data(symbol, ticker):
+    data = None
+    for attempt in range(3):
+        try:
+            data = yf.download(ticker, period="6mo", interval="1d", progress=False,
+                               auto_adjust=True, timeout=20)
+            if data is not None and len(data) >= 50:
+                break
+        except Exception:
+            if attempt < 2:
+                import time; time.sleep(3)
     try:
-        data = yf.download(ticker, period="6mo", interval="1d", progress=False, auto_adjust=True)
+        if data is None or len(data) < 50:
+            return None
         if isinstance(data.columns, pd.MultiIndex):
             data.columns = data.columns.get_level_values(0)
         if len(data) < 50:
@@ -300,9 +311,11 @@ def load_from_github(filename, default):
 
 def load_portfolio():
     p = load_from_github(PORTFOLIO_FILE, None)
-    if not p:
+    if not p or not isinstance(p, dict):
         p = {"cash": START_BALANCE, "positions": {}}
         save_portfolio(p)
+    if not isinstance(p.get("positions"), dict):
+        p["positions"] = {}
     return p
 
 def save_portfolio(p):
@@ -310,7 +323,10 @@ def save_portfolio(p):
         json.dump(p, f, indent=2)
 
 def load_trades():
-    return load_from_github(TRADES_FILE, [])
+    result = load_from_github(TRADES_FILE, [])
+    if not isinstance(result, list):
+        return []
+    return result
 
 def save_trades(t):
     with open(TRADES_FILE, "w") as f:
@@ -425,7 +441,8 @@ def analyze_swing(top_candidates, portfolio, total_balance):
 
 RULES:
 1. Only open longs in weekly UPTREND or sideways with strong signals. Never in downtrends.
-2. Entry requires ALL of: RSI <= {MAX_ENTRY_RSI} + BB% <= {MAX_ENTRY_BB_PCT} + vol_ratio >= {MIN_VOL_RATIO}. MACD histogram rising is strongly preferred but NOT a hard veto — a flat or slightly declining histogram is acceptable if RSI and BB% are compelling.
+2. Entry hard gates (enforced by code): RSI <= {MAX_ENTRY_RSI}, BB% <= {MAX_ENTRY_BB_PCT}, vol_ratio >= {MIN_VOL_RATIO}, weekly trend not downtrend, confidence >= {MIN_ENTRY_SCORE}.
+3. MACD is a BONUS signal only. A declining MACD histogram is NOT a reason to skip a trade. Do NOT veto entries based on MACD alone. If RSI, BB%, and vol_ratio pass, the setup qualifies.
 3. Never open if market_regime is bear or confidence < {MIN_ENTRY_SCORE}
 4. Max {MAX_POSITIONS} open positions. Prefer 1-2 high-conviction trades over many mediocre ones.
 5. Only suggest CLOSE for positions held >= {MIN_HOLD_HOURS}h: {closeable if closeable else 'none eligible yet'}
