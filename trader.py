@@ -43,7 +43,7 @@ MIN_ENTRY_SCORE = 60  # Relaxed from 65
 
 # -- HARD ENTRY FILTERS (enforced in code, not just prompt) -----------------
 MIN_VOL_RATIO = 0.8        # Relaxed from 1.0
-MAX_ENTRY_BB_PCT = 0.55    # Relaxed from 0.45
+MAX_ENTRY_BB_PCT = 0.65    # Relaxed from 0.55
 MAX_ENTRY_RSI = 62         # Relaxed from 55
 CASH_RESERVE_PCT = 0.25    # Always keep 25% cash
 
@@ -59,8 +59,6 @@ UNIVERSE = {
     "NEAR": "NEAR-USD",
     "DOT": "DOT-USD",
     "ATOM": "ATOM-USD",
-    "APT": "APT-USD",
-    "SUI": "SUI-USD",
     # Exchange tokens
     "BNB": "BNB-USD",
     # DeFi
