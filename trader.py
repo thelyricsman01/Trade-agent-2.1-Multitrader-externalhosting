@@ -32,32 +32,27 @@ PORTFOLIO_FILE = "portfolio.json"
 
 START_BALANCE = 2000.0
 
-# -- SWING TRADING PARAMETERS -------------------------------------------
+# -- SWING TRADING PARAMETERS -----------------------------------------------
 STOP_LOSS_PCT = 0.07
 TAKE_PROFIT_PCT = 0.15
 TRAILING_STOP_PCT = 0.05
 MIN_HOLD_HOURS = 24
 MAX_POSITIONS = 3
 MAX_POSITION_PCT = 0.40
-MIN_ENTRY_SCORE = 55          # was 65 -- relaxed
+MIN_ENTRY_SCORE = 60  # Relaxed from 65
 
-# -- HARD ENTRY FILTERS (enforced in code, not just prompt) -------------
-# LONG filters
-MIN_VOL_RATIO = 0.8           # was 1.0 -- relaxed
-MAX_ENTRY_BB_PCT = 0.55       # was 0.45 -- relaxed
-MAX_ENTRY_RSI = 62            # was 55  -- relaxed
+# -- HARD ENTRY FILTERS (enforced in code, not just prompt) -----------------
+MIN_VOL_RATIO = 0.8        # Relaxed from 1.0
+MAX_ENTRY_BB_PCT = 0.55    # Relaxed from 0.45
+MAX_ENTRY_RSI = 62         # Relaxed from 55
+CASH_RESERVE_PCT = 0.25    # Always keep 25% cash
 
-# SHORT filters (mirror of long, but reversed)
-MIN_SHORT_VOL_RATIO = 0.8     # same liquidity requirement
-MIN_SHORT_BB_PCT = 0.60       # only short near resistance (upper BB)
-MIN_SHORT_RSI = 58            # don't short oversold assets
-
-CASH_RESERVE_PCT = 0.25
-
-# -- ASSET UNIVERSE -----------------------------------------------------
+# -- ASSET UNIVERSE ---------------------------------------------------------
 UNIVERSE = {
+    # Large cap
     "BTC": "BTC-USD",
     "ETH": "ETH-USD",
+    # Layer 1s
     "SOL": "SOL-USD",
     "AVAX": "AVAX-USD",
     "ADA": "ADA-USD",
@@ -66,22 +61,29 @@ UNIVERSE = {
     "ATOM": "ATOM-USD",
     "APT": "APT-USD",
     "SUI": "SUI-USD",
+    # Exchange tokens
     "BNB": "BNB-USD",
+    # DeFi
     "LINK": "LINK-USD",
     "UNI": "UNI-USD",
     "AAVE": "AAVE-USD",
     "MKR": "MKR-USD",
+    # Payments
     "XRP": "XRP-USD",
     "LTC": "LTC-USD",
     "XLM": "XLM-USD",
+    # Meme / high beta
     "DOGE": "DOGE-USD",
     "SHIB": "SHIB-USD",
     "PEPE": "PEPE-USD",
+    # Layer 2
     "ARB": "ARB-USD",
     "OP": "OP-USD",
     "MATIC": "MATIC-USD",
+    # AI / infra
     "FET": "FET-USD",
     "RENDER": "RENDER-USD",
+    # Momentum alts
     "INJ": "INJ-USD",
     "SEI": "SEI-USD",
     "WIF": "WIF-USD",
@@ -92,7 +94,7 @@ UNIVERSE = {
 
 MIN_AVG_VOLUME_USD = 5_000_000
 
-# -- GITHUB HELPERS -----------------------------------------------------
+# -- GITHUB HELPERS ---------------------------------------------------------
 def push_to_github(filename):
     try:
         url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{filename}"
@@ -110,7 +112,7 @@ def push_to_github(filename):
     except Exception as e:
         print(f"  Error pushing {filename}: {e}")
 
-# -- TECHNICAL INDICATORS -----------------------------------------------
+# -- TECHNICAL INDICATORS ---------------------------------------------------
 def get_rsi(series, period=14):
     delta = series.diff()
     gain = delta.where(delta > 0, 0).rolling(period).mean()
@@ -180,10 +182,10 @@ def score_asset(m):
     else: score -= 20
 
     rsi = m["rsi_14"]
-    if 35 <= rsi <= 55: score += 20
+    if 35 <= rsi <= 60: score += 20    # Relaxed upper bound from 55 to 60
     elif 30 <= rsi < 35: score += 12
-    elif 55 < rsi <= 65: score += 8
-    elif rsi > 70: score -= 15
+    elif 60 < rsi <= 68: score += 8    # Slightly extended range
+    elif rsi > 72: score -= 15         # Relaxed overbought threshold from 70 to 72
     elif rsi < 25: score -= 5
 
     if m["macd_rising"] and m["macd_hist"] > 0: score += 20
@@ -193,11 +195,13 @@ def score_asset(m):
     pb = m["pct_b"]
     if pb < 0.2: score += 15
     elif pb < 0.4: score += 8
+    elif pb < 0.55: score += 4         # New: small bonus for midrange (was 0 points before)
     elif pb > 0.8: score -= 10
 
     if m["vol_ratio"] >= 1.5: score += 10
     elif m["vol_ratio"] >= 1.2: score += 5
-    elif m["vol_ratio"] < 0.7: score -= 5
+    elif m["vol_ratio"] >= 0.8: score += 2  # New: small credit for near-avg volume
+    elif m["vol_ratio"] < 0.6: score -= 5   # Only penalise very low volume
 
     chg7 = m["chg_7d"]
     if -10 <= chg7 <= -3: score += 8
@@ -205,7 +209,6 @@ def score_asset(m):
     elif chg7 > 15: score -= 10
 
     if m.get("above_ma200"): score += 5
-
     return max(0, min(100, score))
 
 def get_market_data(symbol, ticker):
@@ -222,11 +225,11 @@ def get_market_data(symbol, ticker):
         if avg_vol_usd < MIN_AVG_VOLUME_USD:
             return None
 
-        # -- DATA SANITY CHECK --
+        # -- DATA SANITY CHECK -- reject bad yfinance data
         prev_close = float(close.iloc[-2]) if len(close) >= 2 else price
         price_change_pct = abs(price - prev_close) / prev_close if prev_close > 0 else 0
         if price_change_pct > 0.40:
-            print(f"  {symbol}: rejected -- suspicious price move ({price_change_pct*100:.0f}% vs prev close)")
+            print(f"  {symbol}: rejected -- suspicious price move ({price_change_pct*100:.0f}% vs prev close, likely bad data)")
             return None
 
         macd, signal, hist = get_macd(close)
@@ -279,61 +282,11 @@ def get_market_data(symbol, ticker):
         }
         m["score"] = score_asset(m)
         return m
-
     except Exception as e:
         print(f"  {symbol}: skipped ({e})")
         return None
 
-# -- DEBUG: show why top assets are blocked + return snapshot object ---
-def print_filter_debug(all_data, open_symbols, n=12):
-    print(f"\n  [DEBUG] Entry filter check for top {n} candidates:")
-    print(f"  {'Sym':<7} {'Score':>5} {'vol':>5} {'BB%':>5} {'RSI':>5} {'Weekly':>9}  LONG  SHORT")
-    snapshot = []
-    for m in all_data[:n]:
-        tag = "[OPEN]" if m["symbol"] in open_symbols else ""
-
-        long_blocks = []
-        if m["vol_ratio"] < MIN_VOL_RATIO:
-            long_blocks.append(f"vol{m['vol_ratio']:.2f}")
-        if m["pct_b"] > MAX_ENTRY_BB_PCT:
-            long_blocks.append(f"BB{m['pct_b']:.2f}")
-        if m["rsi_14"] > MAX_ENTRY_RSI:
-            long_blocks.append(f"RSI{m['rsi_14']:.0f}")
-        if m["weekly_trend"] == "downtrend":
-            long_blocks.append("dntrd")
-
-        short_blocks = []
-        if m["vol_ratio"] < MIN_SHORT_VOL_RATIO:
-            short_blocks.append(f"vol{m['vol_ratio']:.2f}")
-        if m["pct_b"] < MIN_SHORT_BB_PCT:
-            short_blocks.append(f"BB{m['pct_b']:.2f}")
-        if m["rsi_14"] < MIN_SHORT_RSI:
-            short_blocks.append(f"RSI{m['rsi_14']:.0f}")
-        if m["weekly_trend"] != "downtrend":
-            short_blocks.append("notDN")
-
-        long_str  = "PASS" if not long_blocks  else f"BLOCK({','.join(long_blocks)})"
-        short_str = "PASS" if not short_blocks else f"BLOCK({','.join(short_blocks)})"
-
-        print(f"  {m['symbol']:<7} {m['score']:>5} {m['vol_ratio']:>5.2f} {m['pct_b']:>5.2f}"
-              f" {m['rsi_14']:>5.1f} {m['weekly_trend']:>9}  {long_str:<28} {short_str} {tag}")
-
-        snapshot.append({
-            "symbol":       m["symbol"],
-            "score":        m["score"],
-            "price":        m["price"],
-            "weekly_trend": m["weekly_trend"],
-            "rsi_14":       m["rsi_14"],
-            "pct_b":        m["pct_b"],
-            "vol_ratio":    m["vol_ratio"],
-            "chg_7d":       m["chg_7d"],
-            "long":         "PASS" if not long_blocks  else long_blocks,
-            "short":        "PASS" if not short_blocks else short_blocks,
-            "open":         m["symbol"] in open_symbols,
-        })
-    return snapshot
-
-# -- PORTFOLIO HELPERS --------------------------------------------------
+# -- PORTFOLIO HELPERS ------------------------------------------------------
 def load_from_github(filename, default):
     try:
         url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{filename}"
@@ -357,11 +310,7 @@ def save_portfolio(p):
         json.dump(p, f, indent=2)
 
 def load_trades():
-    data = load_from_github(TRADES_FILE, [])
-    # Handle both old format (list) and new format (dict with "trades" key)
-    if isinstance(data, dict):
-        return data.get("trades", [])
-    return data
+    return load_from_github(TRADES_FILE, [])
 
 def save_trades(t):
     with open(TRADES_FILE, "w") as f:
@@ -383,7 +332,7 @@ def hours_since_open(pos):
     except Exception:
         return 9999
 
-# -- HARD STOP-LOSS / TAKE-PROFIT ---------------------------------------
+# -- HARD STOP-LOSS / TAKE-PROFIT -------------------------------------------
 MAX_SINGLE_RUN_DROP = 0.20
 
 def check_hard_exits(portfolio, mdmap, trades):
@@ -404,6 +353,7 @@ def check_hard_exits(portfolio, mdmap, trades):
             continue
 
         pos["last_known_price"] = price
+
         if pos["type"] == "long" and price > peak:
             pos["peak_price"] = price
             peak = price
@@ -412,12 +362,12 @@ def check_hard_exits(portfolio, mdmap, trades):
         if pos["type"] == "long":
             pnl_pct = (price - entry) / entry
             trail = (peak - price) / peak if peak > entry else 0
-            if pnl_pct <= -STOP_LOSS_PCT:   reason = f"Stop-loss: {pnl_pct*100:.1f}%"
+            if pnl_pct <= -STOP_LOSS_PCT: reason = f"Stop-loss: {pnl_pct*100:.1f}%"
             elif pnl_pct >= TAKE_PROFIT_PCT: reason = f"Take-profit: +{pnl_pct*100:.1f}%"
             elif trail >= TRAILING_STOP_PCT and pnl_pct > 0.02: reason = f"Trailing stop: -{trail*100:.1f}% from peak"
         else:
             pnl_pct = (entry - price) / entry
-            if pnl_pct <= -STOP_LOSS_PCT:   reason = f"Stop-loss: {pnl_pct*100:.1f}%"
+            if pnl_pct <= -STOP_LOSS_PCT: reason = f"Stop-loss: {pnl_pct*100:.1f}%"
             elif pnl_pct >= TAKE_PROFIT_PCT: reason = f"Take-profit: +{pnl_pct*100:.1f}%"
 
         if reason:
@@ -440,7 +390,7 @@ def check_hard_exits(portfolio, mdmap, trades):
 
     return portfolio, executed
 
-# -- AI SWING ANALYSIS --------------------------------------------------
+# -- AI SWING ANALYSIS ------------------------------------------------------
 def analyze_swing(top_candidates, portfolio, total_balance):
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -474,22 +424,21 @@ def analyze_swing(top_candidates, portfolio, total_balance):
     prompt = f"""You are a disciplined swing trader. Current time: {now}
 
 RULES:
-1. LONG: requires weekly uptrend or sideways + RSI <= {MAX_ENTRY_RSI} + MACD hist rising + BB% <= {MAX_ENTRY_BB_PCT} + vol_ratio >= {MIN_VOL_RATIO}
-2. SHORT: requires weekly downtrend + RSI >= {MIN_SHORT_RSI} + MACD hist falling (not rising) + BB% >= {MIN_SHORT_BB_PCT} + vol_ratio >= {MIN_SHORT_VOL_RATIO}
-3. Never open if market_regime is bear (for longs) or bull (for shorts) unless very strong signal
-4. Confidence must be >= {MIN_ENTRY_SCORE} for any trade
-5. Max {MAX_POSITIONS} open positions total (longs + shorts combined)
-6. Only suggest CLOSE for positions held >= {MIN_HOLD_HOURS}h: {closeable if closeable else 'none eligible yet'}
-7. Do NOT suggest closing positions held < {MIN_HOLD_HOURS}h -- hard stops handle emergencies
-8. Target +10-15% per trade. Do not chase small moves.
-9. NEVER rationalize around entry rules. If filters don't pass, skip the entry.
-10. It is better to do nothing than to enter a weak setup.
+1. Only open longs in weekly UPTREND or sideways with strong signals. Never in downtrends.
+2. Entry requires ALL of: RSI <= {MAX_ENTRY_RSI} + MACD histogram rising + BB% <= {MAX_ENTRY_BB_PCT} (near/mid support) + vol_ratio >= {MIN_VOL_RATIO}
+3. Never open if market_regime is bear or confidence < {MIN_ENTRY_SCORE}
+4. Max {MAX_POSITIONS} open positions. Prefer 1-2 high-conviction trades over many mediocre ones.
+5. Only suggest CLOSE for positions held >= {MIN_HOLD_HOURS}h: {closeable if closeable else 'none eligible yet'}
+6. Do NOT suggest closing positions held < {MIN_HOLD_HOURS}h – hard stops handle emergencies.
+7. Target +10-15% per trade. Do not chase small moves or open positions just because cash is available.
+8. NEVER rationalize around entry rules. If vol_ratio < {MIN_VOL_RATIO}, BB% > {MAX_ENTRY_BB_PCT}, or RSI > {MAX_ENTRY_RSI}, skip the entry.
+9. Pick the BEST setup from the scan – it is better to do nothing than to enter a weak setup.
 
 PORTFOLIO:
 - Cash: ${portfolio['cash']:.2f} | Balance: ${total_balance:.2f} | PnL: ${total_balance - START_BALANCE:+.2f}
 - Open ({len(portfolio['positions'])}): {positions_summary if portfolio['positions'] else 'None'}
 
-TOP CANDIDATES (scored from universe scan, sorted by swing score):
+TOP CANDIDATES (scored from {len(top_candidates)}-asset scan, sorted by swing score):
 {candidates_text}
 
 Respond ONLY in valid JSON:
@@ -511,7 +460,7 @@ Respond ONLY in valid JSON:
   "summary": "one sentence"
 }}
 
-Omit assets you want to skip -- only include real action decisions.
+Omit assets you want to skip – only include real action decisions.
 """
 
     response = client.messages.create(
@@ -526,7 +475,7 @@ Omit assets you want to skip -- only include real action decisions.
             text = text[4:]
     return json.loads(text.strip())
 
-# -- EXECUTE TRADES -----------------------------------------------------
+# -- EXECUTE TRADES ---------------------------------------------------------
 def execute_actions(portfolio, analysis, mdmap, trades):
     executed = []
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -555,13 +504,13 @@ def execute_actions(portfolio, analysis, mdmap, trades):
             if md["weekly_trend"] == "downtrend":
                 print(f"  Skip LONG {symbol} -- weekly downtrend"); continue
 
-            # -- HARD LONG ENTRY FILTERS --
+            # -- HARD ENTRY FILTERS --
             if md["vol_ratio"] < MIN_VOL_RATIO:
-                print(f"  Skip LONG {symbol} -- vol_ratio {md['vol_ratio']:.2f} < {MIN_VOL_RATIO}"); continue
+                print(f"  Skip LONG {symbol} -- vol_ratio {md['vol_ratio']:.2f} < {MIN_VOL_RATIO} (hard gate)"); continue
             if md["pct_b"] > MAX_ENTRY_BB_PCT:
-                print(f"  Skip LONG {symbol} -- BB% {md['pct_b']:.2f} > {MAX_ENTRY_BB_PCT}"); continue
+                print(f"  Skip LONG {symbol} -- BB% {md['pct_b']:.2f} > {MAX_ENTRY_BB_PCT} (not near support)"); continue
             if md["rsi_14"] > MAX_ENTRY_RSI:
-                print(f"  Skip LONG {symbol} -- RSI {md['rsi_14']:.1f} > {MAX_ENTRY_RSI}"); continue
+                print(f"  Skip LONG {symbol} -- RSI {md['rsi_14']:.1f} > {MAX_ENTRY_RSI} (not a dip)"); continue
 
             # -- CASH RESERVE --
             total_bal = get_total_balance(portfolio, mdmap)
@@ -590,37 +539,15 @@ def execute_actions(portfolio, analysis, mdmap, trades):
             print(f"  LONG {symbol} | ${amount_usd:.0f} @ ${price} | conf {confidence}%")
 
         elif act == "open_short":
-            if regime == "bull":
-                print(f"  Skip SHORT {symbol} -- bull regime"); continue
-            if len(portfolio["positions"]) >= MAX_POSITIONS:
-                print(f"  Skip SHORT {symbol} -- max positions"); continue
-            if symbol in portfolio["positions"]:
-                print(f"  Skip SHORT {symbol} -- already open"); continue
-            if confidence < MIN_ENTRY_SCORE:
-                print(f"  Skip SHORT {symbol} -- confidence {confidence}%"); continue
+            if len(portfolio["positions"]) >= MAX_POSITIONS: continue
+            if symbol in portfolio["positions"]: continue
+            if confidence < MIN_ENTRY_SCORE: continue
             if md["weekly_trend"] != "downtrend":
                 print(f"  Skip SHORT {symbol} -- not weekly downtrend"); continue
 
-            # -- HARD SHORT ENTRY FILTERS --
-            if md["vol_ratio"] < MIN_SHORT_VOL_RATIO:
-                print(f"  Skip SHORT {symbol} -- vol_ratio {md['vol_ratio']:.2f} < {MIN_SHORT_VOL_RATIO}"); continue
-            if md["pct_b"] < MIN_SHORT_BB_PCT:
-                print(f"  Skip SHORT {symbol} -- BB% {md['pct_b']:.2f} < {MIN_SHORT_BB_PCT} (not near resistance)"); continue
-            if md["rsi_14"] < MIN_SHORT_RSI:
-                print(f"  Skip SHORT {symbol} -- RSI {md['rsi_14']:.1f} < {MIN_SHORT_RSI} (already oversold)"); continue
-
-            # -- CASH RESERVE --
-            total_bal = get_total_balance(portfolio, mdmap)
-            min_cash = total_bal * CASH_RESERVE_PCT
-            usable_cash = portfolio["cash"] - min_cash
-            if usable_cash < 20:
-                print(f"  Skip SHORT {symbol} -- cash reserve floor"); continue
-
             invest_pct = min(action.get("invest_pct", 25), MAX_POSITION_PCT * 100)
-            amount_usd = round(min(portfolio["cash"] * (invest_pct / 100), usable_cash), 2)
-            if amount_usd < 20:
-                continue
-
+            amount_usd = round(portfolio["cash"] * (invest_pct / 100), 2)
+            if amount_usd < 20: continue
             amount = amount_usd / price
             portfolio["cash"] -= amount_usd
             portfolio["positions"][symbol] = {
@@ -646,7 +573,6 @@ def execute_actions(portfolio, analysis, mdmap, trades):
             else:
                 pnl = round((pos["entry_price"] - price) * pos["amount"], 2)
                 portfolio["cash"] += pos["amount_usd"] + pnl
-
             del portfolio["positions"][symbol]
             trades.append({"time": timestamp, "symbol": symbol, "ticker": ticker,
                             "action": "close", "price": price, "amount_usd": pos["amount_usd"],
@@ -657,13 +583,13 @@ def execute_actions(portfolio, analysis, mdmap, trades):
 
     return portfolio, executed
 
-# -- MAIN ---------------------------------------------------------------
+# -- MAIN -------------------------------------------------------------------
 print(f"\n{'='*70}")
-print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Swing Trader -- Dynamic universe scan")
+print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Swing Trader – Dynamic universe scan")
 print(f"{'='*70}")
 
 # 1. Scan the full universe
-print(f"\n  Scanning {len(UNIVERSE)} assets...")
+print(f"\n  Scanning {len(UNIVERSE)} assets…")
 all_data = []
 mdmap = {}
 for symbol, ticker in UNIVERSE.items():
@@ -671,6 +597,7 @@ for symbol, ticker in UNIVERSE.items():
     if m:
         all_data.append(m)
         mdmap[symbol] = m
+
 print(f"  Valid: {len(all_data)} assets")
 
 # 2. Score and rank
@@ -679,7 +606,6 @@ TOP_N = 15
 
 portfolio_peek = load_from_github(PORTFOLIO_FILE, {"cash": START_BALANCE, "positions": {}})
 open_symbols = set(portfolio_peek.get("positions", {}).keys())
-
 top_set = {m["symbol"] for m in all_data[:TOP_N]}
 extra_open = [m for m in all_data if m["symbol"] in open_symbols and m["symbol"] not in top_set]
 top_candidates = all_data[:TOP_N] + extra_open
@@ -687,18 +613,16 @@ top_candidates = all_data[:TOP_N] + extra_open
 print(f"\n  Top {TOP_N} by swing score:")
 print(f"  {'Sym':<8} {'Sc':>3} {'Weekly':>9} {'RSI':>5} {'BB%':>5} {'Vol':>5} {'7d%':>7} {'MA200':>6}")
 for m in all_data[:TOP_N]:
-    flag = " *" if m["symbol"] in open_symbols else ""
+    flag = " ★" if m["symbol"] in open_symbols else ""
     print(f"  {m['symbol']:<8} {m['score']:>3} {m['weekly_trend']:>9}"
           f" {m['rsi_14']:>5.1f} {m['pct_b']:>5.2f} {m['vol_ratio']:>5.2f}"
           f" {m['chg_7d']:>+6.1f}% {'^' if m['above_ma200'] else 'v'}{flag}")
-
-# 2b. DEBUG: show filter status for top candidates, capture snapshot
-debug_snapshot = print_filter_debug(all_data, open_symbols, n=12)
 
 # 3. Load portfolio
 portfolio = load_portfolio()
 trades = load_trades()
 total_balance = get_total_balance(portfolio, mdmap)
+
 print(f"\n  Cash: ${portfolio['cash']:.2f} | Balance: ${total_balance:.2f}"
       f" | PnL: ${total_balance - START_BALANCE:+.2f}"
       f" | Positions: {len(portfolio['positions'])}")
@@ -711,33 +635,20 @@ if portfolio["positions"]:
               f" -> ${price} | {pnl_pct:+.1f}% | {held_h:.0f}h held")
 
 # 4. Hard exits (SL / TP / trailing)
-print("\n  Checking stop-loss / take-profit...")
+print("\n  Checking stop-loss / take-profit…")
 portfolio, auto_closed = check_hard_exits(portfolio, mdmap, trades)
 if not auto_closed:
     print("  None triggered.")
 
 # 5. AI analysis
-print(f"\n  AI analyzing top {len(top_candidates)} candidates...")
+print(f"\n  AI analyzing top {len(top_candidates)} candidates…")
 analysis = analyze_swing(top_candidates, portfolio, total_balance)
 portfolio, executed = execute_actions(portfolio, analysis, mdmap, trades)
 total_balance = get_total_balance(portfolio, mdmap)
 
 # 6. Save & push
-# Inject latest scan snapshot so it's visible in trades.json
-trades_with_snapshot = {
-    "trades": trades,
-    "last_scan": {
-        "time": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "market_regime": analysis.get("market_regime", "?"),
-        "btc_weekly_bias": analysis.get("btc_weekly_bias", "?"),
-        "top_pick": analysis.get("top_pick", "?"),
-        "summary": analysis.get("summary", ""),
-        "filter_snapshot": debug_snapshot,
-    }
-}
-with open(TRADES_FILE, "w") as f:
-    json.dump(trades_with_snapshot, f, indent=2)
 save_portfolio(portfolio)
+save_trades(trades)
 push_to_github(TRADES_FILE)
 push_to_github(PORTFOLIO_FILE)
 
@@ -750,5 +661,5 @@ print(f"  Balance: ${total_balance:.2f} | Positions open: {len(portfolio['positi
 if executed:
     for e in executed: print(f"  -> {e}")
 else:
-    print("  No trades -- waiting for quality setups.")
+    print("  No trades – waiting for quality setups.")
 print(f"{'='*70}\n")
