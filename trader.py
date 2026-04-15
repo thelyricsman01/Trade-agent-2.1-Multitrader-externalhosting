@@ -97,13 +97,16 @@ def push_to_github(filename):
         with open(filename, "r") as f:
             content = f.read()
         encoded = base64.b64encode(content.encode()).decode()
-        response = req.get(url, headers=headers)
-        sha = response.json().get("sha") if response.status_code == 200 else None
+        get_resp = req.get(url, headers=headers)
+        sha = get_resp.json().get("sha") if get_resp.status_code == 200 else None
         data = {"message": f"Update {filename}", "content": encoded, "branch": GITHUB_BRANCH}
         if sha:
             data["sha"] = sha
-        req.put(url, headers=headers, json=data)
-        print(f"  Pushed {filename} to GitHub")
+        put_resp = req.put(url, headers=headers, json=data)
+        if put_resp.status_code in (200, 201):
+            print(f"  Pushed {filename} to GitHub (HTTP {put_resp.status_code})")
+        else:
+            print(f"  Push FAILED for {filename}: HTTP {put_resp.status_code} - {put_resp.text[:200]}")
     except Exception as e:
         print(f"  Error pushing {filename}: {e}")
 
