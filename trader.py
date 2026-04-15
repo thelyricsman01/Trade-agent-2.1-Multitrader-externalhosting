@@ -65,7 +65,6 @@ UNIVERSE = {
     "BNB": "BNB-USD",
     # DeFi
     "LINK": "LINK-USD",
-    "UNI": "UNI-USD",
     "AAVE": "AAVE-USD",
     "MKR": "MKR-USD",
     # Payments
@@ -75,11 +74,9 @@ UNIVERSE = {
     # Meme / high beta
     "DOGE": "DOGE-USD",
     "SHIB": "SHIB-USD",
-    "PEPE": "PEPE-USD",
     # Layer 2
     "ARB": "ARB-USD",
     "OP": "OP-USD",
-    "MATIC": "MATIC-USD",
     # AI / infra
     "FET": "FET-USD",
     "RENDER": "RENDER-USD",
@@ -234,10 +231,13 @@ def get_market_data(symbol, ticker):
 
         macd, signal, hist = get_macd(close)
         h_today = hist
-        h_yesterday = float(
-            (close.ewm(span=12).mean() - close.ewm(span=26).mean() -
-             (close.ewm(span=12).mean() - close.ewm(span=26).mean()).ewm(span=9).mean()).iloc[-2]
-        )
+        try:
+            macd_line = close.ewm(span=12).mean() - close.ewm(span=26).mean()
+            signal_line = macd_line.ewm(span=9).mean()
+            hist_series = macd_line - signal_line
+            h_yesterday = float(hist_series.iloc[-2])
+        except Exception:
+            h_yesterday = h_today  # fallback: treat as flat
         macd_rising = bool(h_today > h_yesterday)
 
         pct_b, bb_width = get_bollinger(close)
@@ -425,7 +425,7 @@ def analyze_swing(top_candidates, portfolio, total_balance):
 
 RULES:
 1. Only open longs in weekly UPTREND or sideways with strong signals. Never in downtrends.
-2. Entry requires ALL of: RSI <= {MAX_ENTRY_RSI} + MACD histogram rising + BB% <= {MAX_ENTRY_BB_PCT} (near/mid support) + vol_ratio >= {MIN_VOL_RATIO}
+2. Entry requires ALL of: RSI <= {MAX_ENTRY_RSI} + BB% <= {MAX_ENTRY_BB_PCT} + vol_ratio >= {MIN_VOL_RATIO}. MACD histogram rising is strongly preferred but NOT a hard veto — a flat or slightly declining histogram is acceptable if RSI and BB% are compelling.
 3. Never open if market_regime is bear or confidence < {MIN_ENTRY_SCORE}
 4. Max {MAX_POSITIONS} open positions. Prefer 1-2 high-conviction trades over many mediocre ones.
 5. Only suggest CLOSE for positions held >= {MIN_HOLD_HOURS}h: {closeable if closeable else 'none eligible yet'}
