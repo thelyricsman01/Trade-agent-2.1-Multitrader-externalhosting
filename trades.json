@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "time": "2026-04-15 17:25",
+    "symbol": "RENDER",
+    "ticker": "RENDER-USD",
+    "action": "open_long",
+    "price": 1.89600003,
+    "amount_usd": 800.0,
+    "confidence": 68,
+    "reason": "Weekly uptrend + daily uptrend with RSI 57.0 (well below 62), BB% 0.56 (well below 0.65), vol_ratio 1.13 (above 0.8). MACD histogram declining but entry gates all pass\u2014bonus signal ignored per rules. Strong liquidity ($114M/day). High-conviction setup."
+  }
+]
