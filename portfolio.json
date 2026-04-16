@@ -1,5 +1,5 @@
 {
-  "cash": 720.0,
+  "cash": 497.1,
   "positions": {
     "RENDER": {
       "type": "long",
@@ -9,7 +9,7 @@
       "opened_at": "2026-04-15 17:25",
       "peak_price": 1.90400004,
       "target_pct": 12,
-      "last_known_price": 1.87899995
+      "last_known_price": 1.829
     },
     "XLM": {
       "type": "long",
@@ -17,9 +17,18 @@
       "amount": 3036.8791005776397,
       "amount_usd": 480.0,
       "opened_at": "2026-04-15 20:32",
-      "peak_price": 0.160734,
+      "peak_price": 0.16354001,
       "target_pct": 12,
-      "last_known_price": 0.160734
+      "last_known_price": 0.16354001
+    },
+    "FET": {
+      "type": "long",
+      "entry_price": 0.23289999,
+      "amount": 957.0631583109987,
+      "amount_usd": 222.9,
+      "opened_at": "2026-04-16 16:57",
+      "peak_price": 0.23289999,
+      "target_pct": 12
     }
   }
 }
