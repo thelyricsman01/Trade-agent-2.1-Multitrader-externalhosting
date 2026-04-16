@@ -9,7 +9,7 @@
       "opened_at": "2026-04-15 17:25",
       "peak_price": 1.90400004,
       "target_pct": 12,
-      "last_known_price": 1.90400004
+      "last_known_price": 1.87899995
     },
     "XLM": {
       "type": "long",
@@ -17,8 +17,9 @@
       "amount": 3036.8791005776397,
       "amount_usd": 480.0,
       "opened_at": "2026-04-15 20:32",
-      "peak_price": 0.158057,
-      "target_pct": 12
+      "peak_price": 0.160734,
+      "target_pct": 12,
+      "last_known_price": 0.160734
     }
   }
 }
