@@ -49,5 +49,16 @@
     "amount_usd": 517.32,
     "confidence": 72,
     "reason": "Weekly uptrend + sideways daily, RSI 48.7 (well below 62), BB% 0.45 (well below 0.65), vol_ratio 1.24 (above 0.8). Strong momentum setup with room to run. Rising MACD histogram is bonus confirmation."
+  },
+  {
+    "time": "2026-04-17 15:42",
+    "symbol": "XLM",
+    "ticker": "XLM-USD",
+    "action": "close",
+    "price": 0.17435899,
+    "amount_usd": 480.0,
+    "pnl": 49.51,
+    "confidence": 85,
+    "reason": "Position held 43h, target +10.3% achieved. BB% at 1.02 (overbought), RSI 59.9 approaching resistance. Lock in gains and reduce portfolio concentration."
   }
 ]
