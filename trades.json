@@ -39,5 +39,15 @@
     "pnl": -3.8,
     "confidence": 72,
     "reason": "Position held 27h (>24h gate met). RENDER shows -7.5% weekly performance, declining MACD histogram, and is now overbought relative to entry. XLM and FET are outperforming (+6.4% and +4.3%). Secure small loss to redeploy capital into higher-conviction setup."
+  },
+  {
+    "time": "2026-04-17 06:24",
+    "symbol": "RENDER",
+    "ticker": "RENDER-USD",
+    "action": "open_long",
+    "price": 1.84399998,
+    "amount_usd": 517.32,
+    "confidence": 72,
+    "reason": "Weekly uptrend + sideways daily, RSI 48.7 (well below 62), BB% 0.45 (well below 0.65), vol_ratio 1.24 (above 0.8). Strong momentum setup with room to run. Rising MACD histogram is bonus confirmation."
   }
 ]
