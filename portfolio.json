@@ -1,15 +1,4 @@
 {
-  "cash": 1509.9183559432154,
-  "positions": {
-    "RENDER": {
-      "type": "long",
-      "entry_price": 1.84399998,
-      "amount": 280.542302391999,
-      "amount_usd": 517.32,
-      "opened_at": "2026-04-17 06:24",
-      "peak_price": 1.91799998,
-      "target_pct": 12,
-      "last_known_price": 1.801
-    }
-  }
+  "cash": 2000.0,
+  "positions": {}
 }

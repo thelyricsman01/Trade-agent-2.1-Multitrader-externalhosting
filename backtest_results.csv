@@ -1,0 +1,4 @@
+symbol,date,score,rsi,pct_b,vol_ratio,pnl_pct,win,reason
+AVAX,2025-05-25,71,44.5,0.53,1.09,-12.32,False,stop-loss
+NEAR,2025-03-01,67,46.0,0.51,1.22,-9.17,False,stop-loss
+DOT,2025-07-24,67,54.3,0.51,1.44,-7.95,False,stop-loss

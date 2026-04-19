@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import pandas as pd; df = pd.read_csv\\('backtest_results.csv'\\); print\\(df.to_string\\(\\)\\)\")"
+    ]
+  }
+}

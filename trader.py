@@ -4,8 +4,6 @@ import json
 
 import os
 
-import yfinance as yf
-
 import pandas as pd
 
 import numpy as np
@@ -14,7 +12,7 @@ import base64
 
 import requests as req
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 api_key = os.environ.get("ANTHROPIC_API_KEY")
 
@@ -32,20 +30,17 @@ PORTFOLIO_FILE = "portfolio.json"
 
 START_BALANCE = 2000.0
 
-# -- SWING TRADING PARAMETERS -----------------------------------------------
+# -- RISK MANAGEMENT (enforced in code) -------------------------------------
 STOP_LOSS_PCT = 0.07
 TAKE_PROFIT_PCT = 0.15
 TRAILING_STOP_PCT = 0.05
 MIN_HOLD_HOURS = 24
 MAX_POSITIONS = 3
 MAX_POSITION_PCT = 0.40
-MIN_ENTRY_SCORE = 60  # Relaxed from 65
-
-# -- HARD ENTRY FILTERS (enforced in code, not just prompt) -----------------
-MIN_VOL_RATIO = 0.8        # Relaxed from 1.0
-MAX_ENTRY_BB_PCT = 0.65    # Relaxed from 0.55
-MAX_ENTRY_RSI = 62         # Relaxed from 55
-CASH_RESERVE_PCT = 0.25    # Always keep 25% cash
+CASH_RESERVE_PCT = 0.25
+STOP_LOSS_COOLDOWN_HOURS = 72
+MIN_CONFIDENCE = 70           # Claude must be >= 70% confident to enter
+MAX_SINGLE_RUN_DROP = 0.20
 
 # -- ASSET UNIVERSE ---------------------------------------------------------
 UNIVERSE = {
@@ -89,6 +84,8 @@ UNIVERSE = {
 
 MIN_AVG_VOLUME_USD = 5_000_000
 
+BINANCE_BASE = "https://api.binance.com"
+
 # -- GITHUB HELPERS ---------------------------------------------------------
 def push_to_github(filename):
     try:
@@ -109,6 +106,30 @@ def push_to_github(filename):
             print(f"  Push FAILED for {filename}: HTTP {put_resp.status_code} - {put_resp.text[:200]}")
     except Exception as e:
         print(f"  Error pushing {filename}: {e}")
+
+# -- BINANCE HELPERS --------------------------------------------------------
+def to_binance_symbol(ticker):
+    return ticker.replace("-USD", "USDT")
+
+def binance_klines(binance_symbol, interval="1d", limit=200):
+    try:
+        url = f"{BINANCE_BASE}/api/v3/klines"
+        r = req.get(url, params={"symbol": binance_symbol, "interval": interval, "limit": limit}, timeout=15)
+        if r.status_code != 200:
+            return None
+        raw = r.json()
+        if not raw:
+            return None
+        df = pd.DataFrame(raw, columns=[
+            "Open_time", "Open", "High", "Low", "Close", "Volume",
+            "Close_time", "Quote_vol", "Trades", "Taker_base", "Taker_quote", "Ignore"
+        ])
+        df.index = pd.to_datetime(df["Open_time"], unit="ms")
+        for col in ["Open", "High", "Low", "Close", "Volume"]:
+            df[col] = pd.to_numeric(df[col])
+        return df[["Open", "High", "Low", "Close", "Volume"]]
+    except Exception:
+        return None
 
 # -- TECHNICAL INDICATORS ---------------------------------------------------
 def get_rsi(series, period=14):
@@ -156,10 +177,9 @@ def get_volume_ratio(data):
 
 def get_weekly_trend(ticker):
     try:
-        w = yf.download(ticker, period="6mo", interval="1wk", progress=False, auto_adjust=True)
-        if isinstance(w.columns, pd.MultiIndex):
-            w.columns = w.columns.get_level_values(0)
-        if len(w) < 8:
+        bs = to_binance_symbol(ticker)
+        w = binance_klines(bs, "1w", 30)
+        if w is None or len(w) < 8:
             return "unknown"
         close = w["Close"]
         ma8 = close.rolling(8).mean().iloc[-1]
@@ -171,61 +191,20 @@ def get_weekly_trend(ticker):
     except Exception:
         return "unknown"
 
-def score_asset(m):
-    """Heuristic swing-entry score 0-100. Higher = better setup right now."""
-    score = 0
-
-    if m["weekly_trend"] == "uptrend": score += 30
-    elif m["weekly_trend"] == "sideways": score += 10
-    else: score -= 20
-
-    rsi = m["rsi_14"]
-    if 35 <= rsi <= 60: score += 20    # Relaxed upper bound from 55 to 60
-    elif 30 <= rsi < 35: score += 12
-    elif 60 < rsi <= 68: score += 8    # Slightly extended range
-    elif rsi > 72: score -= 15         # Relaxed overbought threshold from 70 to 72
-    elif rsi < 25: score -= 5
-
-    if m["macd_rising"] and m["macd_hist"] > 0: score += 20
-    elif m["macd_rising"]: score += 10
-    elif m["macd_hist"] < 0 and not m["macd_rising"]: score -= 10
-
-    pb = m["pct_b"]
-    if pb < 0.2: score += 15
-    elif pb < 0.4: score += 8
-    elif pb < 0.55: score += 4         # New: small bonus for midrange (was 0 points before)
-    elif pb > 0.8: score -= 10
-
-    if m["vol_ratio"] >= 1.5: score += 10
-    elif m["vol_ratio"] >= 1.2: score += 5
-    elif m["vol_ratio"] >= 0.8: score += 2  # New: small credit for near-avg volume
-    elif m["vol_ratio"] < 0.6: score -= 5   # Only penalise very low volume
-
-    chg7 = m["chg_7d"]
-    if -10 <= chg7 <= -3: score += 8
-    elif -3 < chg7 <= 2: score += 5
-    elif chg7 > 15: score -= 10
-
-    if m.get("above_ma200"): score += 5
-    return max(0, min(100, score))
-
 def get_market_data(symbol, ticker):
+    bs = to_binance_symbol(ticker)
     data = None
     for attempt in range(3):
         try:
-            data = yf.download(ticker, period="6mo", interval="1d", progress=False,
-                               auto_adjust=True, timeout=20)
+            data = binance_klines(bs, "1d", 200)
             if data is not None and len(data) >= 50:
                 break
+            data = None
         except Exception:
             if attempt < 2:
                 import time; time.sleep(3)
     try:
         if data is None or len(data) < 50:
-            return None
-        if isinstance(data.columns, pd.MultiIndex):
-            data.columns = data.columns.get_level_values(0)
-        if len(data) < 50:
             return None
 
         close = data["Close"]
@@ -234,23 +213,21 @@ def get_market_data(symbol, ticker):
         if avg_vol_usd < MIN_AVG_VOLUME_USD:
             return None
 
-        # -- DATA SANITY CHECK -- reject bad yfinance data
         prev_close = float(close.iloc[-2]) if len(close) >= 2 else price
         price_change_pct = abs(price - prev_close) / prev_close if prev_close > 0 else 0
         if price_change_pct > 0.40:
-            print(f"  {symbol}: rejected -- suspicious price move ({price_change_pct*100:.0f}% vs prev close, likely bad data)")
+            print(f"  {symbol}: rejected -- suspicious price move ({price_change_pct*100:.0f}%)")
             return None
 
         macd, signal, hist = get_macd(close)
-        h_today = hist
         try:
             macd_line = close.ewm(span=12).mean() - close.ewm(span=26).mean()
             signal_line = macd_line.ewm(span=9).mean()
             hist_series = macd_line - signal_line
             h_yesterday = float(hist_series.iloc[-2])
         except Exception:
-            h_yesterday = h_today  # fallback: treat as flat
-        macd_rising = bool(h_today > h_yesterday)
+            h_yesterday = hist
+        macd_rising = bool(hist > h_yesterday)
 
         pct_b, bb_width = get_bollinger(close)
         ma20 = float(close.rolling(20).mean().iloc[-1])
@@ -263,37 +240,48 @@ def get_market_data(symbol, ticker):
 
         weekly_trend = get_weekly_trend(ticker)
 
-        chg_7d = round(float((close.iloc[-1] - close.iloc[-8]) / close.iloc[-8] * 100), 2) if len(close) >= 8 else 0.0
+        chg_1d  = round(float((close.iloc[-1] - close.iloc[-2]) / close.iloc[-2] * 100), 2) if len(close) >= 2 else 0.0
+        chg_7d  = round(float((close.iloc[-1] - close.iloc[-8]) / close.iloc[-8] * 100), 2) if len(close) >= 8 else 0.0
         chg_30d = round(float((close.iloc[-1] - close.iloc[-31]) / close.iloc[-31] * 100), 2) if len(close) >= 31 else 0.0
+        chg_90d = round(float((close.iloc[-1] - close.iloc[-91]) / close.iloc[-91] * 100), 2) if len(close) >= 91 else 0.0
 
-        m = {
+        # Distance from key levels
+        dist_from_ma200 = round((price - ma200) / ma200 * 100, 1) if ma200 else None
+        dist_from_ma50  = round((price - ma50) / ma50 * 100, 1)
+        support_30d = round(float(close.iloc[-30:].min()), 8)
+        resistance_30d = round(float(close.iloc[-30:].max()), 8)
+
+        # Recent candle structure: last 3 closes
+        last3 = [round(float(close.iloc[i]), 8) for i in [-3, -2, -1]]
+
+        return {
             "symbol": symbol,
-            "ticker": ticker,
             "price": price,
+            "chg_1d": chg_1d,
+            "chg_7d": chg_7d,
+            "chg_30d": chg_30d,
+            "chg_90d": chg_90d,
             "rsi_14": get_rsi(close, 14),
             "rsi_7": get_rsi(close, 7),
-            "macd": macd,
-            "macd_signal": signal,
             "macd_hist": hist,
             "macd_rising": macd_rising,
             "pct_b": pct_b,
             "bb_width": bb_width,
             "atr_pct": get_atr_pct(data),
             "vol_ratio": get_volume_ratio(data),
+            "avg_vol_usd_m": round(avg_vol_usd / 1_000_000, 1),
             "weekly_trend": weekly_trend,
             "daily_trend": daily_trend,
             "ma20": round(ma20, 6),
             "ma50": round(ma50, 6),
             "ma200": round(ma200, 6) if ma200 else None,
+            "dist_from_ma50_pct": dist_from_ma50,
+            "dist_from_ma200_pct": dist_from_ma200,
             "above_ma200": bool(price > ma200) if ma200 else False,
-            "support": round(float(close.iloc[-30:].min()), 8),
-            "resistance": round(float(close.iloc[-30:].max()), 8),
-            "chg_7d": chg_7d,
-            "chg_30d": chg_30d,
-            "avg_vol_usd_m": round(avg_vol_usd / 1_000_000, 1),
+            "support_30d": support_30d,
+            "resistance_30d": resistance_30d,
+            "last3_closes": last3,
         }
-        m["score"] = score_asset(m)
-        return m
     except Exception as e:
         print(f"  {symbol}: skipped ({e})")
         return None
@@ -349,9 +337,32 @@ def hours_since_open(pos):
     except Exception:
         return 9999
 
-# -- HARD STOP-LOSS / TAKE-PROFIT -------------------------------------------
-MAX_SINGLE_RUN_DROP = 0.20
+def recent_stop_loss(symbol, trades):
+    """Returns True if symbol hit a stop-loss within STOP_LOSS_COOLDOWN_HOURS."""
+    cutoff = datetime.now() - timedelta(hours=STOP_LOSS_COOLDOWN_HOURS)
+    for t in reversed(trades):
+        if t.get("symbol") == symbol and "Stop-loss" in t.get("reason", ""):
+            try:
+                if datetime.strptime(t["time"], "%Y-%m-%d %H:%M") > cutoff:
+                    return True
+            except Exception:
+                pass
+    return False
 
+def recent_trade_history(trades, n=10):
+    """Returns last n closed trades as summary text for context."""
+    closed = [t for t in trades if t.get("pnl") is not None][-n:]
+    if not closed:
+        return "No closed trades yet."
+    lines = []
+    for t in closed:
+        lines.append(
+            f"  {t['time']} {t['symbol']:7s} {t['action']:10s} "
+            f"PnL: {t.get('pnl', 0):+.2f} | {t.get('reason','')[:60]}"
+        )
+    return "\n".join(lines)
+
+# -- HARD STOP-LOSS / TAKE-PROFIT -------------------------------------------
 def check_hard_exits(portfolio, mdmap, trades):
     executed = []
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -407,84 +418,118 @@ def check_hard_exits(portfolio, mdmap, trades):
 
     return portfolio, executed
 
-# -- AI SWING ANALYSIS ------------------------------------------------------
-def analyze_swing(top_candidates, portfolio, total_balance):
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+# -- AI ANALYSIS ------------------------------------------------------------
+SYSTEM_PROMPT = """You are an expert cryptocurrency swing trader managing a real portfolio.
 
-    positions_summary = ""
-    for symbol, pos in portfolio["positions"].items():
-        md = next((m for m in top_candidates if m["symbol"] == symbol), None)
-        price = md["price"] if md else pos["entry_price"]
+Your job is to analyze the full market snapshot provided and make high-conviction trading decisions.
+You have complete freedom to reason about what you see — trust your analysis over rigid rules.
+
+HARD LIMITS (enforced by code after your response — you cannot override these):
+- Max 3 open positions at once
+- 25% of balance always kept as cash reserve
+- Stop-loss: 7% | Take-profit: 15% | Trailing stop: 5% from peak
+- Minimum hold: 24h before AI-initiated close (hard stops trigger anytime)
+- 72h cooldown on re-entry after a stop-loss on the same symbol
+
+YOUR ANALYTICAL PROCESS:
+1. Read BTC and ETH first — they set the macro tone for all alts
+2. Assess overall market regime (bull / bear / mixed / ranging)
+3. Look for assets showing genuine strength or high-probability reversal setups
+4. Consider: trend structure, momentum, volume confirmation, distance from key levels
+5. Be selective — 0 trades is better than a forced trade
+6. For open positions: assess whether the thesis still holds or if it's time to exit
+
+WHAT MAKES A GOOD SETUP:
+- Asset in weekly uptrend or convincing weekly base/reversal
+- Pulling back to meaningful support (MA, BB lower band, prior structure)
+- RSI cooling off but not in freefall
+- Volume showing accumulation or at least not distribution
+- BTC not in active breakdown
+
+WHAT TO AVOID:
+- Chasing momentum after a big move (high RSI + high BB%)
+- Entering against the weekly trend
+- Adding to a losing thesis
+- Low-liquidity setups (low vol_ratio)
+
+Respond ONLY in valid JSON. Be honest in your reasoning — if nothing looks good, return an empty actions array."""
+
+def format_asset_block(m, is_open=False, pos=None, mdmap=None):
+    tag = " [OPEN POSITION]" if is_open else ""
+    pnl_line = ""
+    if is_open and pos:
+        price = m["price"]
         pnl_pct = (price - pos["entry_price"]) / pos["entry_price"] * 100
         held_h = hours_since_open(pos)
-        positions_summary += (
-            f"\n  - {symbol}: {pos['type'].upper()} entry ${pos['entry_price']}"
-            f" | now ${price} | PnL {pnl_pct:+.1f}% | held {held_h:.0f}h"
-        )
+        pnl_line = f"\n    Position: entry ${pos['entry_price']} | now ${price} | PnL {pnl_pct:+.1f}% | held {held_h:.0f}h"
 
-    candidates_text = ""
+    return (
+        f"\n{m['symbol']}{tag}"
+        f"\n  Price: ${m['price']} | 1d: {m['chg_1d']:+.1f}% | 7d: {m['chg_7d']:+.1f}% | 30d: {m['chg_30d']:+.1f}% | 90d: {m['chg_90d']:+.1f}%"
+        f"\n  Trend: weekly={m['weekly_trend']} daily={m['daily_trend']}"
+        f"\n  RSI(14): {m['rsi_14']} | RSI(7): {m['rsi_7']} | MACD hist: {m['macd_hist']:+.6f} ({'rising' if m['macd_rising'] else 'falling'})"
+        f"\n  BB%: {m['pct_b']:.2f} (width {m['bb_width']:.1f}%) | ATR%: {m['atr_pct']:.2f}%"
+        f"\n  Vol ratio (5d/20d avg): {m['vol_ratio']:.2f} | Avg daily vol: ${m['avg_vol_usd_m']:.0f}M"
+        f"\n  MA50 dist: {m['dist_from_ma50_pct']:+.1f}% | MA200 dist: {m['dist_from_ma200_pct']:+.1f}% ({'above' if m['above_ma200'] else 'below'} MA200)"
+        f"\n  Support(30d): ${m['support_30d']} | Resistance(30d): ${m['resistance_30d']}"
+        f"\n  Last 3 closes: {m['last3_closes']}"
+        f"{pnl_line}"
+    )
+
+def analyze_swing(all_market_data, portfolio, total_balance, trades):
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
     open_syms = set(portfolio["positions"].keys())
-    for m in top_candidates:
-        tag = " [OPEN]" if m["symbol"] in open_syms else ""
-        candidates_text += (
-            f"\n  {m['symbol']:7s} score:{m['score']:3d} | ${m['price']}"
-            f" | W:{m['weekly_trend']:9s} D:{m['daily_trend']:9s}"
-            f" | RSI:{m['rsi_14']:5.1f} | MACDhist:{m['macd_hist']:+.6f} rising:{m['macd_rising']}"
-            f" | BB%:{m['pct_b']:.2f} | vol:{m['vol_ratio']:.2f}"
-            f" | 7d:{m['chg_7d']:+.1f}% 30d:{m['chg_30d']:+.1f}%"
-            f" | {'^MA200' if m['above_ma200'] else 'vMA200'}"
-            f" | ${m['avg_vol_usd_m']:.0f}M/day{tag}"
-        )
-
     closeable = [s for s, p in portfolio["positions"].items() if hours_since_open(p) >= MIN_HOLD_HOURS]
 
-    prompt = f"""You are a disciplined swing trader. Current time: {now}
+    # BTC and ETH always first for macro context
+    priority = ["BTC", "ETH"]
+    ordered = [m for m in all_market_data if m["symbol"] in priority] + \
+              [m for m in all_market_data if m["symbol"] not in priority]
 
-RULES:
-1. Only open longs in weekly UPTREND or sideways with strong signals. Never in downtrends.
-2. Entry hard gates (enforced by code): RSI <= {MAX_ENTRY_RSI}, BB% <= {MAX_ENTRY_BB_PCT}, vol_ratio >= {MIN_VOL_RATIO}, weekly trend not downtrend, confidence >= {MIN_ENTRY_SCORE}.
-3. MACD is a BONUS signal only. A declining MACD histogram is NOT a reason to skip a trade. Do NOT veto entries based on MACD alone. If RSI, BB%, and vol_ratio pass, the setup qualifies.
-3. Never open if market_regime is bear or confidence < {MIN_ENTRY_SCORE}
-4. Max {MAX_POSITIONS} open positions. Prefer 1-2 high-conviction trades over many mediocre ones.
-5. Only suggest CLOSE for positions held >= {MIN_HOLD_HOURS}h: {closeable if closeable else 'none eligible yet'}
-6. Do NOT suggest closing positions held < {MIN_HOLD_HOURS}h – hard stops handle emergencies.
-7. Target +10-15% per trade. Do not chase small moves or open positions just because cash is available.
-8. NEVER rationalize around entry rules. If vol_ratio < {MIN_VOL_RATIO}, BB% > {MAX_ENTRY_BB_PCT}, or RSI > {MAX_ENTRY_RSI}, skip the entry.
-9. Pick the BEST setup from the scan – it is better to do nothing than to enter a weak setup.
+    market_text = ""
+    for m in ordered:
+        is_open = m["symbol"] in open_syms
+        pos = portfolio["positions"].get(m["symbol"])
+        market_text += format_asset_block(m, is_open=is_open, pos=pos)
+
+    user_prompt = f"""Current time: {now}
 
 PORTFOLIO:
-- Cash: ${portfolio['cash']:.2f} | Balance: ${total_balance:.2f} | PnL: ${total_balance - START_BALANCE:+.2f}
-- Open ({len(portfolio['positions'])}): {positions_summary if portfolio['positions'] else 'None'}
+  Cash: ${portfolio['cash']:.2f} | Total balance: ${total_balance:.2f} | PnL vs start: ${total_balance - START_BALANCE:+.2f} ({(total_balance/START_BALANCE - 1)*100:+.1f}%)
+  Open positions ({len(portfolio['positions'])}/{MAX_POSITIONS}): {list(open_syms) if open_syms else 'none'}
+  Eligible for AI close (>={MIN_HOLD_HOURS}h held): {closeable if closeable else 'none'}
 
-TOP CANDIDATES (scored from {len(top_candidates)}-asset scan, sorted by swing score):
-{candidates_text}
+RECENT TRADE HISTORY (last 10 closed):
+{recent_trade_history(trades)}
 
-Respond ONLY in valid JSON:
+FULL MARKET SNAPSHOT ({len(all_market_data)} assets):
+{market_text}
+
+Based on the above, decide what actions to take (if any). Respond ONLY in this JSON format:
 {{
+  "market_regime": "bull | bear | mixed | ranging",
+  "btc_assessment": "one sentence on BTC structure and what it means for alts",
+  "reasoning": "2-3 sentences explaining your overall read and why you are or aren't trading",
   "actions": [
     {{
       "symbol": "ETH",
       "action": "open_long | open_short | close",
-      "invest_pct": 35,
-      "confidence": 78,
-      "entry_reason": "specific technical confluence",
-      "target_pct": 13,
-      "invalidation": "what would prove this trade wrong"
+      "invest_pct": 30,
+      "confidence": 75,
+      "entry_reason": "specific technical and structural reasoning",
+      "target_pct": 12,
+      "invalidation": "what price action would prove this wrong"
     }}
   ],
-  "market_regime": "bull | bear | mixed | ranging",
-  "btc_weekly_bias": "bullish | bearish | neutral",
-  "top_pick": "SYMBOL",
-  "summary": "one sentence"
-}}
-
-Omit assets you want to skip – only include real action decisions.
-"""
+  "top_watch": ["SYMBOL1", "SYMBOL2"],
+  "avoid": ["SYMBOL3"]
+}}"""
 
     response = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=1200,
-        messages=[{"role": "user", "content": prompt}]
+        model="claude-sonnet-4-6",
+        max_tokens=2000,
+        system=[{"type": "text", "text": SYSTEM_PROMPT, "cache_control": {"type": "ephemeral"}}],
+        messages=[{"role": "user", "content": user_prompt}]
     )
     text = response.content[0].text.strip()
     if text.startswith("```"):
@@ -517,20 +562,13 @@ def execute_actions(portfolio, analysis, mdmap, trades):
                 print(f"  Skip LONG {symbol} -- max positions"); continue
             if symbol in portfolio["positions"]:
                 print(f"  Skip LONG {symbol} -- already open"); continue
-            if confidence < MIN_ENTRY_SCORE:
-                print(f"  Skip LONG {symbol} -- confidence {confidence}%"); continue
+            if confidence < MIN_CONFIDENCE:
+                print(f"  Skip LONG {symbol} -- confidence {confidence}% < {MIN_CONFIDENCE}%"); continue
             if md["weekly_trend"] == "downtrend":
                 print(f"  Skip LONG {symbol} -- weekly downtrend"); continue
+            if recent_stop_loss(symbol, trades):
+                print(f"  Skip LONG {symbol} -- stop-loss cooldown ({STOP_LOSS_COOLDOWN_HOURS}h)"); continue
 
-            # -- HARD ENTRY FILTERS --
-            if md["vol_ratio"] < MIN_VOL_RATIO:
-                print(f"  Skip LONG {symbol} -- vol_ratio {md['vol_ratio']:.2f} < {MIN_VOL_RATIO} (hard gate)"); continue
-            if md["pct_b"] > MAX_ENTRY_BB_PCT:
-                print(f"  Skip LONG {symbol} -- BB% {md['pct_b']:.2f} > {MAX_ENTRY_BB_PCT} (not near support)"); continue
-            if md["rsi_14"] > MAX_ENTRY_RSI:
-                print(f"  Skip LONG {symbol} -- RSI {md['rsi_14']:.1f} > {MAX_ENTRY_RSI} (not a dip)"); continue
-
-            # -- CASH RESERVE --
             total_bal = get_total_balance(portfolio, mdmap)
             min_cash = total_bal * CASH_RESERVE_PCT
             usable_cash = portfolio["cash"] - min_cash
@@ -559,12 +597,18 @@ def execute_actions(portfolio, analysis, mdmap, trades):
         elif act == "open_short":
             if len(portfolio["positions"]) >= MAX_POSITIONS: continue
             if symbol in portfolio["positions"]: continue
-            if confidence < MIN_ENTRY_SCORE: continue
+            if confidence < MIN_CONFIDENCE: continue
             if md["weekly_trend"] != "downtrend":
                 print(f"  Skip SHORT {symbol} -- not weekly downtrend"); continue
+            if recent_stop_loss(symbol, trades):
+                print(f"  Skip SHORT {symbol} -- stop-loss cooldown"); continue
+
+            total_bal = get_total_balance(portfolio, mdmap)
+            usable_cash = portfolio["cash"] - total_bal * CASH_RESERVE_PCT
+            if usable_cash < 20: continue
 
             invest_pct = min(action.get("invest_pct", 25), MAX_POSITION_PCT * 100)
-            amount_usd = round(portfolio["cash"] * (invest_pct / 100), 2)
+            amount_usd = round(min(portfolio["cash"] * (invest_pct / 100), usable_cash), 2)
             if amount_usd < 20: continue
             amount = amount_usd / price
             portfolio["cash"] -= amount_usd
@@ -603,10 +647,10 @@ def execute_actions(portfolio, analysis, mdmap, trades):
 
 # -- MAIN -------------------------------------------------------------------
 print(f"\n{'='*70}")
-print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Swing Trader – Dynamic universe scan")
+print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Swing Trader – Full market scan")
 print(f"{'='*70}")
 
-# 1. Scan the full universe
+# 1. Scan full universe
 print(f"\n  Scanning {len(UNIVERSE)} assets…")
 all_data = []
 mdmap = {}
@@ -618,25 +662,7 @@ for symbol, ticker in UNIVERSE.items():
 
 print(f"  Valid: {len(all_data)} assets")
 
-# 2. Score and rank
-all_data.sort(key=lambda x: x["score"], reverse=True)
-TOP_N = 15
-
-portfolio_peek = load_from_github(PORTFOLIO_FILE, {"cash": START_BALANCE, "positions": {}})
-open_symbols = set(portfolio_peek.get("positions", {}).keys())
-top_set = {m["symbol"] for m in all_data[:TOP_N]}
-extra_open = [m for m in all_data if m["symbol"] in open_symbols and m["symbol"] not in top_set]
-top_candidates = all_data[:TOP_N] + extra_open
-
-print(f"\n  Top {TOP_N} by swing score:")
-print(f"  {'Sym':<8} {'Sc':>3} {'Weekly':>9} {'RSI':>5} {'BB%':>5} {'Vol':>5} {'7d%':>7} {'MA200':>6}")
-for m in all_data[:TOP_N]:
-    flag = " ★" if m["symbol"] in open_symbols else ""
-    print(f"  {m['symbol']:<8} {m['score']:>3} {m['weekly_trend']:>9}"
-          f" {m['rsi_14']:>5.1f} {m['pct_b']:>5.2f} {m['vol_ratio']:>5.2f}"
-          f" {m['chg_7d']:>+6.1f}% {'^' if m['above_ma200'] else 'v'}{flag}")
-
-# 3. Load portfolio
+# 2. Load portfolio and trades
 portfolio = load_portfolio()
 trades = load_trades()
 total_balance = get_total_balance(portfolio, mdmap)
@@ -652,29 +678,30 @@ if portfolio["positions"]:
         print(f"    {sym}: {pos['type'].upper()} @ ${pos['entry_price']}"
               f" -> ${price} | {pnl_pct:+.1f}% | {held_h:.0f}h held")
 
-# 4. Hard exits (SL / TP / trailing)
+# 3. Hard exits (SL / TP / trailing)
 print("\n  Checking stop-loss / take-profit…")
 portfolio, auto_closed = check_hard_exits(portfolio, mdmap, trades)
 if not auto_closed:
     print("  None triggered.")
 
-# 5. AI analysis
-print(f"\n  AI analyzing top {len(top_candidates)} candidates…")
-analysis = analyze_swing(top_candidates, portfolio, total_balance)
+# 4. AI analysis — full market, no pre-filtering
+print(f"\n  AI analyzing full {len(all_data)}-asset market…")
+analysis = analyze_swing(all_data, portfolio, total_balance, trades)
 portfolio, executed = execute_actions(portfolio, analysis, mdmap, trades)
 total_balance = get_total_balance(portfolio, mdmap)
 
-# 6. Save & push
+# 5. Save & push
 save_portfolio(portfolio)
 save_trades(trades)
 push_to_github(TRADES_FILE)
 push_to_github(PORTFOLIO_FILE)
 
-# 7. Summary
-print(f"\n  Regime: {analysis.get('market_regime','?').upper()}"
-      f" | BTC bias: {analysis.get('btc_weekly_bias','?')}"
-      f" | Top pick: {analysis.get('top_pick','?')}")
-print(f"  {analysis.get('summary','')}")
+# 6. Summary
+print(f"\n  Regime: {analysis.get('market_regime','?').upper()}")
+print(f"  BTC:    {analysis.get('btc_assessment','')}")
+print(f"  Read:   {analysis.get('reasoning','')}")
+print(f"  Watch:  {analysis.get('top_watch', [])}")
+print(f"  Avoid:  {analysis.get('avoid', [])}")
 print(f"  Balance: ${total_balance:.2f} | Positions open: {len(portfolio['positions'])}")
 if executed:
     for e in executed: print(f"  -> {e}")
