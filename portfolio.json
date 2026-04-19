@@ -1,16 +1,6 @@
 {
-  "cash": 1305.4896748986175,
+  "cash": 1509.9183559432154,
   "positions": {
-    "FET": {
-      "type": "long",
-      "entry_price": 0.23289999,
-      "amount": 957.0631583109987,
-      "amount_usd": 222.9,
-      "opened_at": "2026-04-16 16:57",
-      "peak_price": 0.2429,
-      "target_pct": 12,
-      "last_known_price": 0.21969999
-    },
     "RENDER": {
       "type": "long",
       "entry_price": 1.84399998,
@@ -19,7 +9,7 @@
       "opened_at": "2026-04-17 06:24",
       "peak_price": 1.91799998,
       "target_pct": 12,
-      "last_known_price": 1.78400004
+      "last_known_price": 1.755
     }
   }
 }
