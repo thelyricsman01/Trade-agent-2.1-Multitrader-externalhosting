@@ -60,5 +60,16 @@
     "pnl": 49.51,
     "confidence": 85,
     "reason": "Position held 43h, target +10.3% achieved. BB% at 1.02 (overbought), RSI 59.9 approaching resistance. Lock in gains and reduce portfolio concentration."
+  },
+  {
+    "time": "2026-04-19 06:19",
+    "symbol": "FET",
+    "ticker": "FET-USD",
+    "action": "close",
+    "price": 0.21359999,
+    "amount_usd": 222.9,
+    "pnl": -18.47,
+    "confidence": 100,
+    "reason": "Stop-loss: -8.3%"
   }
 ]
