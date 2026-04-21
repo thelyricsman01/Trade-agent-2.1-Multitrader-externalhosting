@@ -525,18 +525,22 @@ Based on the above, decide what actions to take (if any). Respond ONLY in this J
   "avoid": ["SYMBOL3"]
 }}"""
 
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=2000,
-        system=[{"type": "text", "text": SYSTEM_PROMPT, "cache_control": {"type": "ephemeral"}}],
-        messages=[{"role": "user", "content": user_prompt}]
-    )
-    text = response.content[0].text.strip()
-    if text.startswith("```"):
-        text = text.split("```")[1]
-        if text.startswith("json"):
-            text = text[4:]
-    return json.loads(text.strip())
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=2000,
+            system=[{"type": "text", "text": SYSTEM_PROMPT, "cache_control": {"type": "ephemeral"}}],
+            messages=[{"role": "user", "content": user_prompt}]
+        )
+        text = response.content[0].text.strip()
+        if text.startswith("```"):
+            text = text.split("```")[1]
+            if text.startswith("json"):
+                text = text[4:]
+        return json.loads(text.strip())
+    except Exception as e:
+        print(f"  AI analysis failed: {e}")
+        return None
 
 # -- EXECUTE TRADES ---------------------------------------------------------
 def execute_actions(portfolio, analysis, mdmap, trades):
@@ -687,6 +691,11 @@ if not auto_closed:
 # 4. AI analysis — full market, no pre-filtering
 print(f"\n  AI analyzing full {len(all_data)}-asset market…")
 analysis = analyze_swing(all_data, portfolio, total_balance, trades)
+if analysis is None:
+    print("  Aborting run — portfolio unchanged.")
+    print(f"{'='*70}\n")
+    exit(1)
+
 portfolio, executed = execute_actions(portfolio, analysis, mdmap, trades)
 total_balance = get_total_balance(portfolio, mdmap)
 
