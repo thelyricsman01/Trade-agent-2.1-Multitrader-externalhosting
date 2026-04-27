@@ -39,6 +39,7 @@ MAX_POSITIONS = 3
 MAX_POSITION_PCT = 0.40
 CASH_RESERVE_PCT = 0.25
 STOP_LOSS_COOLDOWN_HOURS = 72
+CLOSE_COOLDOWN_HOURS = 24     # min hours before re-entering any recently closed symbol
 MIN_CONFIDENCE = 70           # Claude must be >= 70% confident to enter
 MAX_SINGLE_RUN_DROP = 0.20
 
@@ -349,6 +350,18 @@ def recent_stop_loss(symbol, trades):
                 pass
     return False
 
+def recent_any_close(symbol, trades):
+    """Returns True if symbol was closed (for any reason) within CLOSE_COOLDOWN_HOURS."""
+    cutoff = datetime.now() - timedelta(hours=CLOSE_COOLDOWN_HOURS)
+    for t in reversed(trades):
+        if t.get("symbol") == symbol and t.get("action") == "close":
+            try:
+                if datetime.strptime(t["time"], "%Y-%m-%d %H:%M") > cutoff:
+                    return True
+            except Exception:
+                pass
+    return False
+
 def recent_trade_history(trades, n=10):
     """Returns last n closed trades as summary text for context."""
     closed = [t for t in trades if t.get("pnl") is not None][-n:]
@@ -570,8 +583,12 @@ def execute_actions(portfolio, analysis, mdmap, trades):
                 print(f"  Skip LONG {symbol} -- confidence {confidence}% < {MIN_CONFIDENCE}%"); continue
             if md["weekly_trend"] == "downtrend":
                 print(f"  Skip LONG {symbol} -- weekly downtrend"); continue
+            if not md["macd_rising"]:
+                print(f"  Skip LONG {symbol} -- MACD histogram not rising"); continue
             if recent_stop_loss(symbol, trades):
                 print(f"  Skip LONG {symbol} -- stop-loss cooldown ({STOP_LOSS_COOLDOWN_HOURS}h)"); continue
+            if recent_any_close(symbol, trades):
+                print(f"  Skip LONG {symbol} -- re-entry cooldown ({CLOSE_COOLDOWN_HOURS}h after close)"); continue
 
             total_bal = get_total_balance(portfolio, mdmap)
             min_cash = total_bal * CASH_RESERVE_PCT
@@ -606,6 +623,8 @@ def execute_actions(portfolio, analysis, mdmap, trades):
                 print(f"  Skip SHORT {symbol} -- not weekly downtrend"); continue
             if recent_stop_loss(symbol, trades):
                 print(f"  Skip SHORT {symbol} -- stop-loss cooldown"); continue
+            if recent_any_close(symbol, trades):
+                print(f"  Skip SHORT {symbol} -- re-entry cooldown ({CLOSE_COOLDOWN_HOURS}h after close)"); continue
 
             total_bal = get_total_balance(portfolio, mdmap)
             usable_cash = portfolio["cash"] - total_bal * CASH_RESERVE_PCT
