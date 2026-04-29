@@ -44,48 +44,48 @@ MIN_CONFIDENCE = 70           # Claude must be >= 70% confident to enter
 MAX_SINGLE_RUN_DROP = 0.20
 
 # -- ASSET UNIVERSE ---------------------------------------------------------
-UNIVERSE = {
-    # Large cap
-    "BTC": "BTC-USD",
-    "ETH": "ETH-USD",
-    # Layer 1s
-    "SOL": "SOL-USD",
-    "AVAX": "AVAX-USD",
-    "ADA": "ADA-USD",
-    "NEAR": "NEAR-USD",
-    "DOT": "DOT-USD",
-    "ATOM": "ATOM-USD",
-    # Exchange tokens
-    "BNB": "BNB-USD",
-    # DeFi
-    "LINK": "LINK-USD",
-    "AAVE": "AAVE-USD",
-    "MKR": "MKR-USD",
-    # Payments
-    "XRP": "XRP-USD",
-    "LTC": "LTC-USD",
-    "XLM": "XLM-USD",
-    # Meme / high beta
-    "DOGE": "DOGE-USD",
-    "SHIB": "SHIB-USD",
-    # Layer 2
-    "ARB": "ARB-USD",
-    "OP": "OP-USD",
-    # AI / infra
-    "FET": "FET-USD",
-    "RENDER": "RENDER-USD",
-    # Momentum alts
-    "INJ": "INJ-USD",
-    "SEI": "SEI-USD",
-    "WIF": "WIF-USD",
-    "BONK": "BONK-USD",
-    "JTO": "JTO-USD",
-    "TIA": "TIA-USD",
+UNIVERSE_MAX_ASSETS = 60
+MIN_AVG_VOLUME_USD = 10_000_000
+
+STABLECOIN_PREFIXES = {
+    "USDT", "USDC", "BUSD", "DAI", "TUSD", "FDUSD", "USDP", "GUSD",
+    "PYUSD", "USDD", "FRAX", "LUSD", "SUSD", "CUSD", "EURC", "EURT",
+    "PAXG", "XAUT",
 }
 
-MIN_AVG_VOLUME_USD = 5_000_000
-
 BINANCE_BASE = "https://api.binance.com"
+
+def fetch_dynamic_universe(top_n=UNIVERSE_MAX_ASSETS):
+    """Fetch top N USDT pairs from Binance by 24h volume, excluding stablecoins and leveraged tokens."""
+    try:
+        r = req.get(f"{BINANCE_BASE}/api/v3/ticker/24hr", timeout=15)
+        if r.status_code != 200:
+            return None
+        tickers = r.json()
+        usdt_pairs = []
+        for t in tickers:
+            sym = t["symbol"]
+            if not sym.endswith("USDT"):
+                continue
+            base = sym[:-4]
+            if base in STABLECOIN_PREFIXES:
+                continue
+            if any(x in base for x in ("UP", "DOWN", "BULL", "BEAR", "3L", "3S")):
+                continue
+            try:
+                vol = float(t["quoteVolume"])
+            except Exception:
+                continue
+            usdt_pairs.append((base, vol))
+
+        usdt_pairs.sort(key=lambda x: x[1], reverse=True)
+        result = {}
+        for base, _ in usdt_pairs[:top_n]:
+            result[base] = f"{base}-USD"
+        return result
+    except Exception as e:
+        print(f"  fetch_dynamic_universe failed: {e}")
+        return None
 
 # -- GITHUB HELPERS ---------------------------------------------------------
 def push_to_github(filename):
@@ -573,8 +573,6 @@ def execute_actions(portfolio, analysis, mdmap, trades):
         ticker = UNIVERSE.get(symbol, symbol + "-USD")
 
         if act == "open_long":
-            if regime == "bear":
-                print(f"  Skip LONG {symbol} -- bear regime"); continue
             if len(portfolio["positions"]) >= MAX_POSITIONS:
                 print(f"  Skip LONG {symbol} -- max positions"); continue
             if symbol in portfolio["positions"]:
@@ -583,8 +581,6 @@ def execute_actions(portfolio, analysis, mdmap, trades):
                 print(f"  Skip LONG {symbol} -- confidence {confidence}% < {MIN_CONFIDENCE}%"); continue
             if md["weekly_trend"] == "downtrend":
                 print(f"  Skip LONG {symbol} -- weekly downtrend"); continue
-            if not md["macd_rising"]:
-                print(f"  Skip LONG {symbol} -- MACD histogram not rising"); continue
             if recent_stop_loss(symbol, trades):
                 print(f"  Skip LONG {symbol} -- stop-loss cooldown ({STOP_LOSS_COOLDOWN_HOURS}h)"); continue
             if recent_any_close(symbol, trades):
@@ -597,6 +593,9 @@ def execute_actions(portfolio, analysis, mdmap, trades):
                 print(f"  Skip LONG {symbol} -- cash reserve floor (keeping ${min_cash:.0f})"); continue
 
             invest_pct = min(action.get("invest_pct", 30), MAX_POSITION_PCT * 100)
+            if regime == "bear":
+                invest_pct = min(invest_pct, 20)
+                print(f"  Bear regime: capping {symbol} position at 20%")
             amount_usd = round(min(portfolio["cash"] * (invest_pct / 100), usable_cash), 2)
             if amount_usd < 20:
                 continue
@@ -673,8 +672,21 @@ print(f"\n{'='*70}")
 print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Swing Trader – Full market scan")
 print(f"{'='*70}")
 
-# 1. Scan full universe
-print(f"\n  Scanning {len(UNIVERSE)} assets…")
+# 1. Build dynamic universe
+print(f"\n  Fetching dynamic universe (top {UNIVERSE_MAX_ASSETS} by volume)…")
+UNIVERSE = fetch_dynamic_universe(UNIVERSE_MAX_ASSETS)
+if not UNIVERSE:
+    print("  Warning: dynamic fetch failed, using fallback universe")
+    UNIVERSE = {
+        "BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD",
+        "BNB": "BNB-USD", "XRP": "XRP-USD", "DOGE": "DOGE-USD",
+        "ADA": "ADA-USD", "AVAX": "AVAX-USD", "LINK": "LINK-USD",
+        "DOT": "DOT-USD",
+    }
+print(f"  Universe: {len(UNIVERSE)} tokens")
+
+# Scan universe
+print(f"  Scanning market data…")
 all_data = []
 mdmap = {}
 for symbol, ticker in UNIVERSE.items():
