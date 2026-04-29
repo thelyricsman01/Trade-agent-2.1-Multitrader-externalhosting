@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trading Dashboard</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,11 +22,12 @@ h1 { font-size: 20px; color: #e6edf3; margin-bottom: 20px; letter-spacing: 1px; 
 .negative { color: #f85149; }
 .neutral { color: #8b949e; }
 .main { display: flex; gap: 24px; align-items: flex-start; }
-.panel { flex: 1; }
+.panel { flex: 1; min-width: 0; }
 .panel h2 {
   font-size: 12px; color: #8b949e;
   text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
 }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 th {
   background: #161b22; color: #8b949e;
@@ -71,6 +73,20 @@ tr:hover td { background: #161b22; }
 .modal-row:last-child { border-bottom: none; }
 .modal-row .mlabel { color: #8b949e; }
 .modal-row .mvalue { text-align: right; max-width: 340px; line-height: 1.5; }
+
+@media (max-width: 700px) {
+  body { padding: 12px; }
+  h1 { font-size: 17px; margin-bottom: 14px; }
+  .topbar { gap: 18px; padding: 14px 16px; margin-bottom: 16px; }
+  .topbar .value { font-size: 18px; }
+  .topbar .updated { margin-left: 0; width: 100%; }
+  .main { flex-direction: column; gap: 20px; }
+  .modal { padding: 18px 14px; width: 96%; }
+  .modal-row { flex-direction: column; gap: 2px; }
+  .modal-row .mvalue { text-align: left; max-width: 100%; }
+  .keywords { display: none; }
+  th.hide-mobile, td.hide-mobile { display: none; }
+}
 </style>
 </head>
 <body>
@@ -86,29 +102,33 @@ tr:hover td { background: #161b22; }
 <div class="main">
   <div class="panel" style="flex:1.3">
     <h2>Holdings</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Symbol</th><th>Position</th><th>Amount</th>
-          <th>Avg. Entry</th><th>Current Price</th>
-          <th>Market Value</th><th>PnL ($)</th><th>PnL (%)</th>
-        </tr>
-      </thead>
-      <tbody id="holdings-body">
-        <tr><td colspan="8" class="empty">No open positions.</td></tr>
-      </tbody>
-    </table>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th><th>Position</th><th class="hide-mobile">Amount</th>
+            <th class="hide-mobile">Avg. Entry</th><th>Current Price</th>
+            <th class="hide-mobile">Market Value</th><th>PnL ($)</th><th>PnL (%)</th>
+          </tr>
+        </thead>
+        <tbody id="holdings-body">
+          <tr><td colspan="8" class="empty">No open positions.</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   <div class="panel" style="flex:1">
     <h2>Transaction Log</h2>
-    <table>
-      <thead>
-        <tr><th>Time</th><th>Type</th><th>Symbol</th><th>Price</th><th>Keywords</th></tr>
-      </thead>
-      <tbody id="log-body">
-        <tr><td colspan="5" class="empty">No transactions yet.</td></tr>
-      </tbody>
-    </table>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Time</th><th>Type</th><th>Symbol</th><th>Price</th><th class="keywords">Keywords</th></tr>
+        </thead>
+        <tbody id="log-body">
+          <tr><td colspan="5" class="empty">No transactions yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -318,10 +338,10 @@ async function loadData() {
         <tr>
           <td>${symbol}</td>
           <td><span class="tag tag-${pos.type}">${pos.type.toUpperCase()}</span></td>
-          <td>${pos.amount.toFixed(6)}</td>
-          <td>$${fmt(pos.entry_price)}</td>
+          <td class="hide-mobile">${pos.amount.toFixed(6)}</td>
+          <td class="hide-mobile">$${fmt(pos.entry_price)}</td>
           <td>$${fmt(price)}</td>
-          <td>$${fmt(marketValue)}</td>
+          <td class="hide-mobile">$${fmt(marketValue)}</td>
           <td class="${cls(pnlUsdPos)}">${sign(pnlUsdPos)}$${fmt(Math.abs(pnlUsdPos))}</td>
           <td class="${cls(pnlPctPos)}">${sign(pnlPctPos)}${fmt(pnlPctPos)}%</td>
         </tr>`;
