@@ -6,7 +6,8 @@
       "Bash(git -C \"C:\\\\Users\\\\danie\\\\OneDrive\\\\Kodeprosjekter\\\\Trade-agent 2.1 Multitrader external hosting\" diff)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
