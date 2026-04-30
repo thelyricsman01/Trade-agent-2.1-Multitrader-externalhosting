@@ -42,7 +42,7 @@ MAX_POSITION_PCT = 0.40
 CASH_RESERVE_PCT = 0.25
 STOP_LOSS_COOLDOWN_HOURS = 72
 CLOSE_COOLDOWN_HOURS = 24     # min hours before re-entering any recently closed symbol
-MIN_CONFIDENCE = 70           # Claude must be >= 70% confident to enter
+MIN_CONFIDENCE = 65           # Claude must be >= 65% confident to enter
 MAX_SINGLE_RUN_DROP = 0.20
 
 # -- ASSET UNIVERSE ---------------------------------------------------------
