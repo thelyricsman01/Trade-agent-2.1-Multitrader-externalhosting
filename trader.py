@@ -488,7 +488,7 @@ def format_asset_block(m, is_open=False, pos=None, mdmap=None):
         f"\n  RSI(14): {m['rsi_14']} | RSI(7): {m['rsi_7']} | MACD hist: {m['macd_hist']:+.6f} ({'rising' if m['macd_rising'] else 'falling'})"
         f"\n  BB%: {m['pct_b']:.2f} (width {m['bb_width']:.1f}%) | ATR%: {m['atr_pct']:.2f}%"
         f"\n  Vol ratio (5d/20d avg): {m['vol_ratio']:.2f} | Avg daily vol: ${m['avg_vol_usd_m']:.0f}M"
-        f"\n  MA50 dist: {m['dist_from_ma50_pct']:+.1f}% | MA200 dist: {m['dist_from_ma200_pct']:+.1f}% ({'above' if m['above_ma200'] else 'below'} MA200)"
+        f"\n  MA50 dist: {m['dist_from_ma50_pct']:+.1f}% | MA200 dist: {f\"{m['dist_from_ma200_pct']:+.1f}%\" if m['dist_from_ma200_pct'] is not None else 'N/A'} ({'above' if m['above_ma200'] else 'below'} MA200)"
         f"\n  Support(30d): ${m['support_30d']} | Resistance(30d): ${m['resistance_30d']}"
         f"\n  Last 3 closes: {m['last3_closes']}"
         f"{pnl_line}"
