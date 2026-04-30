@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "time": "2026-04-30 23:12",
+    "symbol": "TRX",
+    "ticker": "TRX-USD",
+    "action": "open_long",
+    "price": 0.32645985,
+    "amount_usd": 600.0,
+    "confidence": 68,
+    "reason": "Only asset in weekly uptrend AND above MA200 (+10%) with moderate RSI(14)=49 cooling from highs, MACD histogram turning up, low ATR (1.37%) meaning the 7% stop is relatively wide in percentage terms but tight in dollar volatility. Consolidating in a tight Bollinger Band (width 4.4%) near midpoint \u2014 classic compression before expansion. Price holding above 30d support with no distribution signal."
+  }
+]
