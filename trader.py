@@ -53,15 +53,18 @@ STABLECOIN_PREFIXES = {
     "PAXG", "XAUT",
 }
 
-BINANCE_BASE = "https://api.binance.com"
+BYBIT_BASE = "https://api.bybit.com"
 
 def fetch_dynamic_universe(top_n=UNIVERSE_MAX_ASSETS):
-    """Fetch top N USDT pairs from Binance by 24h volume, excluding stablecoins and leveraged tokens."""
+    """Fetch top N USDT spot pairs from Bybit by 24h volume, excluding stablecoins and leveraged tokens."""
     try:
-        r = req.get(f"{BINANCE_BASE}/api/v3/ticker/24hr", timeout=15)
+        r = req.get(f"{BYBIT_BASE}/v5/market/tickers?category=spot", timeout=15)
         if r.status_code != 200:
             return None
-        tickers = r.json()
+        data = r.json()
+        if data.get("retCode") != 0:
+            return None
+        tickers = data["result"]["list"]
         usdt_pairs = []
         for t in tickers:
             sym = t["symbol"]
@@ -73,7 +76,7 @@ def fetch_dynamic_universe(top_n=UNIVERSE_MAX_ASSETS):
             if any(x in base for x in ("UP", "DOWN", "BULL", "BEAR", "3L", "3S")):
                 continue
             try:
-                vol = float(t["quoteVolume"])
+                vol = float(t["turnover24h"])
             except Exception:
                 continue
             usdt_pairs.append((base, vol))
@@ -109,23 +112,32 @@ def push_to_github(filename):
         print(f"  Error pushing {filename}: {e}")
 
 # -- BINANCE HELPERS --------------------------------------------------------
+BYBIT_INTERVAL_MAP = {"1d": "D", "1w": "W"}
+
 def to_binance_symbol(ticker):
     return ticker.replace("-USD", "USDT")
 
-def binance_klines(binance_symbol, interval="1d", limit=200):
+def binance_klines(symbol, interval="1d", limit=200):
+    """Fetch OHLCV data from Bybit (drop-in replacement for Binance klines)."""
     try:
-        url = f"{BINANCE_BASE}/api/v3/klines"
-        r = req.get(url, params={"symbol": binance_symbol, "interval": interval, "limit": limit}, timeout=15)
+        bybit_interval = BYBIT_INTERVAL_MAP.get(interval, interval)
+        url = f"{BYBIT_BASE}/v5/market/kline"
+        r = req.get(url, params={
+            "category": "spot", "symbol": symbol,
+            "interval": bybit_interval, "limit": limit
+        }, timeout=15)
         if r.status_code != 200:
             return None
-        raw = r.json()
+        data = r.json()
+        if data.get("retCode") != 0:
+            return None
+        raw = data["result"]["list"]
         if not raw:
             return None
-        df = pd.DataFrame(raw, columns=[
-            "Open_time", "Open", "High", "Low", "Close", "Volume",
-            "Close_time", "Quote_vol", "Trades", "Taker_base", "Taker_quote", "Ignore"
-        ])
-        df.index = pd.to_datetime(df["Open_time"], unit="ms")
+        # Bybit returns newest-first; reverse to oldest-first
+        raw = list(reversed(raw))
+        df = pd.DataFrame(raw, columns=["Open_time", "Open", "High", "Low", "Close", "Volume", "Turnover"])
+        df.index = pd.to_datetime(df["Open_time"].astype(float), unit="ms")
         for col in ["Open", "High", "Low", "Close", "Volume"]:
             df[col] = pd.to_numeric(df[col])
         return df[["Open", "High", "Low", "Close", "Volume"]]

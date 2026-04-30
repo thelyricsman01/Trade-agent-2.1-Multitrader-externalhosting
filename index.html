@@ -98,6 +98,11 @@ tr:hover td { background: #161b22; }
   <div class="item"><div class="label">Open Positions</div><div class="value" id="open-positions">–</div></div>
   <div class="item"><div class="label">Cash</div><div class="value" id="cash">–</div></div>
   <div class="updated" id="updated">Last updated: –</div>
+  <button id="run-btn" onclick="runBot()" style="
+    margin-left:auto; padding:8px 18px; font-family:monospace; font-size:13px;
+    background:#1a3a24; color:#3fb950; border:1px solid #3fb950;
+    border-radius:8px; cursor:pointer; white-space:nowrap;
+  ">▶ Run Bot</button>
 </div>
 <div class="main">
   <div class="panel" style="flex:1.3">
@@ -366,6 +371,67 @@ async function loadData() {
 
 loadData();
 setInterval(loadData, 10000);
+
+const WORKFLOW_URL = "https://api.github.com/repos/thelyricsman01/Trade-agent-2.1-Multitrader-externalhosting/actions/workflows/trader.yml/dispatches";
+
+async function runBot() {
+  const btn = document.getElementById("run-btn");
+
+  let token = localStorage.getItem("gh_pat");
+  if (!token) {
+    token = prompt("Enter your GitHub Personal Access Token (workflow scope):\nThis is stored only in your browser's localStorage.");
+    if (!token) return;
+    localStorage.setItem("gh_pat", token.trim());
+    token = token.trim();
+  }
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Starting…";
+  btn.style.color = "#8b949e";
+  btn.style.borderColor = "#8b949e";
+
+  try {
+    const res = await fetch(WORKFLOW_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `token ${token}`,
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ref: "main" }),
+    });
+
+    if (res.status === 204) {
+      btn.textContent = "✓ Bot triggered";
+      btn.style.color = "#3fb950";
+      btn.style.borderColor = "#3fb950";
+      btn.style.background = "#1a3a24";
+    } else if (res.status === 401) {
+      localStorage.removeItem("gh_pat");
+      btn.textContent = "✗ Invalid token";
+      btn.style.color = "#f85149";
+      btn.style.borderColor = "#f85149";
+      btn.style.background = "#3a1a1a";
+    } else {
+      btn.textContent = `✗ Error ${res.status}`;
+      btn.style.color = "#f85149";
+      btn.style.borderColor = "#f85149";
+      btn.style.background = "#3a1a1a";
+    }
+  } catch(e) {
+    btn.textContent = "✗ Network error";
+    btn.style.color = "#f85149";
+    btn.style.borderColor = "#f85149";
+  }
+
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.textContent = "▶ Run Bot";
+    btn.style.color = "#3fb950";
+    btn.style.borderColor = "#3fb950";
+    btn.style.background = "#1a3a24";
+  }, 5000);
+}
 </script>
 </body>
 </html>
