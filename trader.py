@@ -481,14 +481,17 @@ def format_asset_block(m, is_open=False, pos=None, mdmap=None):
         held_h = hours_since_open(pos)
         pnl_line = f"\n    Position: entry ${pos['entry_price']} | now ${price} | PnL {pnl_pct:+.1f}% | held {held_h:.0f}h"
 
+    ma200_dist = f"{m['dist_from_ma200_pct']:+.1f}%" if m['dist_from_ma200_pct'] is not None else "N/A"
+    ma200_side = "above" if m['above_ma200'] else "below"
+    macd_dir = "rising" if m['macd_rising'] else "falling"
     return (
         f"\n{m['symbol']}{tag}"
         f"\n  Price: ${m['price']} | 1d: {m['chg_1d']:+.1f}% | 7d: {m['chg_7d']:+.1f}% | 30d: {m['chg_30d']:+.1f}% | 90d: {m['chg_90d']:+.1f}%"
         f"\n  Trend: weekly={m['weekly_trend']} daily={m['daily_trend']}"
-        f"\n  RSI(14): {m['rsi_14']} | RSI(7): {m['rsi_7']} | MACD hist: {m['macd_hist']:+.6f} ({'rising' if m['macd_rising'] else 'falling'})"
+        f"\n  RSI(14): {m['rsi_14']} | RSI(7): {m['rsi_7']} | MACD hist: {m['macd_hist']:+.6f} ({macd_dir})"
         f"\n  BB%: {m['pct_b']:.2f} (width {m['bb_width']:.1f}%) | ATR%: {m['atr_pct']:.2f}%"
         f"\n  Vol ratio (5d/20d avg): {m['vol_ratio']:.2f} | Avg daily vol: ${m['avg_vol_usd_m']:.0f}M"
-        f"\n  MA50 dist: {m['dist_from_ma50_pct']:+.1f}% | MA200 dist: {f\"{m['dist_from_ma200_pct']:+.1f}%\" if m['dist_from_ma200_pct'] is not None else 'N/A'} ({'above' if m['above_ma200'] else 'below'} MA200)"
+        f"\n  MA50 dist: {m['dist_from_ma50_pct']:+.1f}% | MA200 dist: {ma200_dist} ({ma200_side} MA200)"
         f"\n  Support(30d): ${m['support_30d']} | Resistance(30d): ${m['resistance_30d']}"
         f"\n  Last 3 closes: {m['last3_closes']}"
         f"{pnl_line}"
