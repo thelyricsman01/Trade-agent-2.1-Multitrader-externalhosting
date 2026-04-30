@@ -12,6 +12,8 @@ import base64
 
 import requests as req
 
+import yfinance as yf
+
 from datetime import datetime, timedelta
 
 api_key = os.environ.get("ANTHROPIC_API_KEY")
@@ -53,39 +55,37 @@ STABLECOIN_PREFIXES = {
     "PAXG", "XAUT",
 }
 
-BYBIT_BASE = "https://api.bybit.com"
+COINGECKO_BASE = "https://api.coingecko.com/api/v3"
 
 def fetch_dynamic_universe(top_n=UNIVERSE_MAX_ASSETS):
-    """Fetch top N USDT spot pairs from Bybit by 24h volume, excluding stablecoins and leveraged tokens."""
+    """Fetch top N coins from CoinGecko by 24h volume."""
     try:
-        r = req.get(f"{BYBIT_BASE}/v5/market/tickers?category=spot", timeout=15)
+        r = req.get(f"{COINGECKO_BASE}/coins/markets", params={
+            "vs_currency": "usd",
+            "order": "volume_desc",
+            "per_page": min(top_n * 3, 250),
+            "page": 1,
+            "sparkline": False,
+        }, timeout=15)
         if r.status_code != 200:
+            print(f"  fetch_dynamic_universe failed: HTTP {r.status_code}")
             return None
-        data = r.json()
-        if data.get("retCode") != 0:
-            return None
-        tickers = data["result"]["list"]
-        usdt_pairs = []
-        for t in tickers:
-            sym = t["symbol"]
-            if not sym.endswith("USDT"):
-                continue
-            base = sym[:-4]
-            if base in STABLECOIN_PREFIXES:
-                continue
-            if any(x in base for x in ("UP", "DOWN", "BULL", "BEAR", "3L", "3S")):
-                continue
-            try:
-                vol = float(t["turnover24h"])
-            except Exception:
-                continue
-            usdt_pairs.append((base, vol))
-
-        usdt_pairs.sort(key=lambda x: x[1], reverse=True)
+        coins = r.json()
         result = {}
-        for base, _ in usdt_pairs[:top_n]:
-            result[base] = f"{base}-USD"
-        return result
+        for coin in coins:
+            symbol = coin.get("symbol", "").upper()
+            if not symbol:
+                continue
+            if symbol in STABLECOIN_PREFIXES:
+                continue
+            if any(x in symbol for x in ("UP", "DOWN", "BULL", "BEAR", "3L", "3S")):
+                continue
+            if coin.get("total_volume", 0) < MIN_AVG_VOLUME_USD:
+                continue
+            result[symbol] = f"{symbol}-USD"
+            if len(result) >= top_n:
+                break
+        return result if result else None
     except Exception as e:
         print(f"  fetch_dynamic_universe failed: {e}")
         return None
@@ -111,36 +111,29 @@ def push_to_github(filename):
     except Exception as e:
         print(f"  Error pushing {filename}: {e}")
 
-# -- BINANCE HELPERS --------------------------------------------------------
-BYBIT_INTERVAL_MAP = {"1d": "D", "1w": "W"}
-
+# -- DATA HELPERS -----------------------------------------------------------
 def to_binance_symbol(ticker):
     return ticker.replace("-USD", "USDT")
 
 def binance_klines(symbol, interval="1d", limit=200):
-    """Fetch OHLCV data from Bybit (drop-in replacement for Binance klines)."""
+    """Fetch OHLCV data via yfinance (Yahoo Finance)."""
     try:
-        bybit_interval = BYBIT_INTERVAL_MAP.get(interval, interval)
-        url = f"{BYBIT_BASE}/v5/market/kline"
-        r = req.get(url, params={
-            "category": "spot", "symbol": symbol,
-            "interval": bybit_interval, "limit": limit
-        }, timeout=15)
-        if r.status_code != 200:
+        yf_symbol = symbol[:-4] + "-USD" if symbol.endswith("USDT") else symbol
+        yf_interval = "1wk" if interval == "1w" else "1d"
+        extra_days = limit * 7 + 30 if interval == "1w" else limit + 30
+        start = (datetime.now() - timedelta(days=extra_days)).strftime("%Y-%m-%d")
+
+        df = yf.download(yf_symbol, start=start, interval=yf_interval,
+                         progress=False, auto_adjust=True)
+        if df is None or df.empty or len(df) < 10:
             return None
-        data = r.json()
-        if data.get("retCode") != 0:
-            return None
-        raw = data["result"]["list"]
-        if not raw:
-            return None
-        # Bybit returns newest-first; reverse to oldest-first
-        raw = list(reversed(raw))
-        df = pd.DataFrame(raw, columns=["Open_time", "Open", "High", "Low", "Close", "Volume", "Turnover"])
-        df.index = pd.to_datetime(df["Open_time"].astype(float), unit="ms")
-        for col in ["Open", "High", "Low", "Close", "Volume"]:
-            df[col] = pd.to_numeric(df[col])
-        return df[["Open", "High", "Low", "Close", "Volume"]]
+
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = df.columns.droplevel(1)
+        df = df[["Open", "High", "Low", "Close", "Volume"]].copy()
+        if df.index.tz is not None:
+            df.index = df.index.tz_localize(None)
+        return df.tail(limit)
     except Exception:
         return None
 
