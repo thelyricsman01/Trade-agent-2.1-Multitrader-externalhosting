@@ -1,4 +1,14 @@
 {
-  "cash": 2000.0,
-  "positions": {}
+  "cash": 1400.0,
+  "positions": {
+    "TRX": {
+      "type": "long",
+      "entry_price": 0.32645985,
+      "amount": 1837.898289789694,
+      "amount_usd": 600.0,
+      "opened_at": "2026-04-30 23:12",
+      "peak_price": 0.32645985,
+      "target_pct": 15
+    }
+  }
 }
