@@ -8,5 +8,15 @@
     "amount_usd": 600.0,
     "confidence": 68,
     "reason": "Only asset in weekly uptrend AND above MA200 (+10%) with moderate RSI(14)=49 cooling from highs, MACD histogram turning up, low ATR (1.37%) meaning the 7% stop is relatively wide in percentage terms but tight in dollar volatility. Consolidating in a tight Bollinger Band (width 4.4%) near midpoint \u2014 classic compression before expansion. Price holding above 30d support with no distribution signal."
+  },
+  {
+    "time": "2026-05-02 13:27",
+    "symbol": "WBT",
+    "ticker": "WBT-USD",
+    "action": "open_long",
+    "price": 58.4493866,
+    "amount_usd": 420.0,
+    "confidence": 68,
+    "reason": "WBT is in weekly+daily uptrend, above MA200 (+8.9%), positive 90d return (+19.3%), RSI(14) at 65 \u2014 elevated but not overextended, vol ratio 1.11 confirms participation. Price is at 30d resistance but has been making higher closes consecutively. The broader uptrend structure and relative strength vs the market make this a high-quality setup compared to available alternatives."
   }
 ]
