@@ -7,9 +7,9 @@
       "amount": 1837.898289789694,
       "amount_usd": 600.0,
       "opened_at": "2026-04-30 23:12",
-      "peak_price": 0.33108944,
+      "peak_price": 0.33117014,
       "target_pct": 15,
-      "last_known_price": 0.33108944
+      "last_known_price": 0.33117014
     },
     "WBT": {
       "type": "long",
@@ -18,7 +18,8 @@
       "amount_usd": 420.0,
       "opened_at": "2026-05-02 13:27",
       "peak_price": 58.4493866,
-      "target_pct": 12
+      "target_pct": 12,
+      "last_known_price": 58.4493866
     }
   }
 }
