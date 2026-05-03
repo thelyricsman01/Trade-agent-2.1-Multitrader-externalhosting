@@ -18,5 +18,16 @@
     "amount_usd": 420.0,
     "confidence": 68,
     "reason": "WBT is in weekly+daily uptrend, above MA200 (+8.9%), positive 90d return (+19.3%), RSI(14) at 65 \u2014 elevated but not overextended, vol ratio 1.11 confirms participation. Price is at 30d resistance but has been making higher closes consecutively. The broader uptrend structure and relative strength vs the market make this a high-quality setup compared to available alternatives."
+  },
+  {
+    "time": "2026-05-03 08:09",
+    "symbol": "TRX",
+    "ticker": "TRX-USD",
+    "action": "close",
+    "price": 0.33768344,
+    "amount_usd": 600.0,
+    "pnl": 20.63,
+    "confidence": 72,
+    "reason": "TRX is printing above its 30d resistance at $0.3377, RSI(7) at 88 signals short-term exhaustion, BB% at 1.19 means price is significantly extended above upper band, and MACD hist is only marginally positive. With +3.4% PnL banked and no clear continuation catalyst, locking in gains before a potential mean-reversion is prudent."
   }
 ]
