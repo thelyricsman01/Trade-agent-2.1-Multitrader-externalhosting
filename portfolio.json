@@ -1,16 +1,6 @@
 {
-  "cash": 980.0,
+  "cash": 1600.6278168663007,
   "positions": {
-    "TRX": {
-      "type": "long",
-      "entry_price": 0.32645985,
-      "amount": 1837.898289789694,
-      "amount_usd": 600.0,
-      "opened_at": "2026-04-30 23:12",
-      "peak_price": 0.33117014,
-      "target_pct": 15,
-      "last_known_price": 0.32999822
-    },
     "WBT": {
       "type": "long",
       "entry_price": 58.4493866,
