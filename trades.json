@@ -29,5 +29,26 @@
     "pnl": 20.63,
     "confidence": 72,
     "reason": "TRX is printing above its 30d resistance at $0.3377, RSI(7) at 88 signals short-term exhaustion, BB% at 1.19 means price is significantly extended above upper band, and MACD hist is only marginally positive. With +3.4% PnL banked and no clear continuation catalyst, locking in gains before a potential mean-reversion is prudent."
+  },
+  {
+    "time": "2026-05-04 11:49",
+    "symbol": "WBT",
+    "ticker": "WBT-USD",
+    "action": "close",
+    "price": 58.7723999,
+    "amount_usd": 420.0,
+    "pnl": 2.32,
+    "confidence": 60,
+    "reason": "WBT is at 30d resistance ($58.77) with RSI(7) at 86 and BB% at 0.96 \u2014 momentum is extended and price has stalled over 3 consecutive nearly flat closes. The risk/reward of holding at resistance with only +0.6% PnL and a 5% trailing stop in play is asymmetric to the downside. Taking profit here and freeing up capital for better setups."
+  },
+  {
+    "time": "2026-05-04 11:49",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "open_long",
+    "price": 9.40799999,
+    "amount_usd": 708.03,
+    "confidence": 65,
+    "reason": "LINK is in a daily uptrend with RSI(14) at 54 and RSI(7) at 57 \u2014 momentum cooling from recent +3% daily move but not overbought. BB% at 0.67 with room to resistance at $9.63 (~2.4% away), and a healthy MACD histogram rising. Weekly sideways trend aligns with BTC's current structure. Low ATR% (2.59%) and average vol ratio (0.87) suggest measured positioning. Support at $8.74 provides a clean invalidation level."
   }
 ]
