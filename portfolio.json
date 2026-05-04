@@ -1,15 +1,14 @@
 {
-  "cash": 1600.6278168663007,
+  "cash": 1314.9188948774085,
   "positions": {
-    "WBT": {
+    "LINK": {
       "type": "long",
-      "entry_price": 58.4493866,
-      "amount": 7.185704152453844,
-      "amount_usd": 420.0,
-      "opened_at": "2026-05-02 13:27",
-      "peak_price": 59.71552658,
-      "target_pct": 12,
-      "last_known_price": 59.37063217
+      "entry_price": 9.40799999,
+      "amount": 75.25829089632046,
+      "amount_usd": 708.03,
+      "opened_at": "2026-05-04 11:49",
+      "peak_price": 9.40799999,
+      "target_pct": 15
     }
   }
 }
