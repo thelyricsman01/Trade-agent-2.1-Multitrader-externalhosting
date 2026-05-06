@@ -1,15 +1,4 @@
 {
-  "cash": 1314.9188948774085,
-  "positions": {
-    "LINK": {
-      "type": "long",
-      "entry_price": 9.40799999,
-      "amount": 75.25829089632046,
-      "amount_usd": 708.03,
-      "opened_at": "2026-05-04 11:49",
-      "peak_price": 9.74300003,
-      "target_pct": 15,
-      "last_known_price": 9.74300003
-    }
-  }
+  "cash": 2055.535705484782,
+  "positions": {}
 }
