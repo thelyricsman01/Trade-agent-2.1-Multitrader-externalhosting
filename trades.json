@@ -50,5 +50,16 @@
     "amount_usd": 708.03,
     "confidence": 65,
     "reason": "LINK is in a daily uptrend with RSI(14) at 54 and RSI(7) at 57 \u2014 momentum cooling from recent +3% daily move but not overbought. BB% at 0.67 with room to resistance at $9.63 (~2.4% away), and a healthy MACD histogram rising. Weekly sideways trend aligns with BTC's current structure. Low ATR% (2.59%) and average vol ratio (0.87) suggest measured positioning. Support at $8.74 provides a clean invalidation level."
+  },
+  {
+    "time": "2026-05-06 03:49",
+    "symbol": "LINK",
+    "ticker": "LINK-USD",
+    "action": "close",
+    "price": 9.8409996,
+    "amount_usd": 708.03,
+    "pnl": 32.59,
+    "confidence": 72,
+    "reason": "LINK has reached its 30d resistance at $9.84 with RSI(7) at 80.65 and BB% at 1.15 \u2014 the position is +4.6% and the setup's upside from here is limited without a healthy consolidation. Locking gains before a potential reversal at resistance makes sense given BTC is also overbought."
   }
 ]
