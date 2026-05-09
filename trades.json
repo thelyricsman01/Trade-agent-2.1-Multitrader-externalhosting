@@ -61,5 +61,15 @@
     "pnl": 32.59,
     "confidence": 72,
     "reason": "LINK has reached its 30d resistance at $9.84 with RSI(7) at 80.65 and BB% at 1.15 \u2014 the position is +4.6% and the setup's upside from here is limited without a healthy consolidation. Locking gains before a potential reversal at resistance makes sense given BTC is also overbought."
+  },
+  {
+    "time": "2026-05-09 03:40",
+    "symbol": "XLM",
+    "ticker": "XLM-USD",
+    "action": "open_long",
+    "price": 0.16650499,
+    "amount_usd": 719.44,
+    "confidence": 68,
+    "reason": "XLM is the cleanest setup in a field of overbought assets: RSI(14) at 41 (not overbought), RSI(7) at 68 (momentum building), BB% 0.53 (mid-band, not stretched), bouncing off support at $0.150 toward resistance at $0.179 \u2014 roughly 7.5% upside to resistance with 15% TP available. MACD histogram rising, daily uptrend intact, vol ratio 1.14 confirms mild accumulation. BTC stability provides a supportive macro environment."
   }
 ]
