@@ -7,8 +7,9 @@
       "amount": 0.30560373800986324,
       "amount_usd": 711.69,
       "opened_at": "2026-05-10 08:19",
-      "peak_price": 2328.80004883,
-      "target_pct": 15
+      "peak_price": 2328.9699707,
+      "target_pct": 15,
+      "last_known_price": 2328.9699707
     }
   }
 }
