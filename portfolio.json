@@ -1,15 +1,4 @@
 {
-  "cash": 1336.0957054847818,
-  "positions": {
-    "XLM": {
-      "type": "long",
-      "entry_price": 0.16650499,
-      "amount": 4320.831465771687,
-      "amount_usd": 719.44,
-      "opened_at": "2026-05-09 03:40",
-      "peak_price": 0.16650499,
-      "target_pct": 15,
-      "last_known_price": 0.162576
-    }
-  }
+  "cash": 2033.4087707568797,
+  "positions": {}
 }
