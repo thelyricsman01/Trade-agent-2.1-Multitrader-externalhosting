@@ -71,5 +71,16 @@
     "amount_usd": 719.44,
     "confidence": 68,
     "reason": "XLM is the cleanest setup in a field of overbought assets: RSI(14) at 41 (not overbought), RSI(7) at 68 (momentum building), BB% 0.53 (mid-band, not stretched), bouncing off support at $0.150 toward resistance at $0.179 \u2014 roughly 7.5% upside to resistance with 15% TP available. MACD histogram rising, daily uptrend intact, vol ratio 1.14 confirms mild accumulation. BTC stability provides a supportive macro environment."
+  },
+  {
+    "time": "2026-05-10 03:57",
+    "symbol": "XLM",
+    "ticker": "XLM-USD",
+    "action": "close",
+    "price": 0.161384,
+    "amount_usd": 719.44,
+    "pnl": -22.13,
+    "confidence": 70,
+    "reason": "XLM has been held 24h, is down -3.1%, trend is sideways/sideways, RSI(14) at 37 shows weakness, MACD negative, and no catalyst visible. With BTC at resistance and alts broadly extended or weak, holding a losing sideways position in a low-momentum asset is not justified. Closing to preserve capital and optionality."
   }
 ]
