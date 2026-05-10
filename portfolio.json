@@ -1,5 +1,5 @@
 {
-  "cash": 1321.7187707568796,
+  "cash": 925.1987707568796,
   "positions": {
     "ETH": {
       "type": "long",
@@ -7,9 +7,18 @@
       "amount": 0.30560373800986324,
       "amount_usd": 711.69,
       "opened_at": "2026-05-10 08:19",
-      "peak_price": 2328.9699707,
+      "peak_price": 2358.37011719,
       "target_pct": 15,
-      "last_known_price": 2328.9699707
+      "last_known_price": 2358.37011719
+    },
+    "BCH": {
+      "type": "long",
+      "entry_price": 461.45999146,
+      "amount": 0.8592727589350958,
+      "amount_usd": 396.52,
+      "opened_at": "2026-05-10 19:15",
+      "peak_price": 461.45999146,
+      "target_pct": 15
     }
   }
 }
