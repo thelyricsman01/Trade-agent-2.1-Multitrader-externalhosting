@@ -102,5 +102,16 @@
     "amount_usd": 396.52,
     "confidence": 68,
     "reason": "BCH is one of the rare assets not overbought \u2014 RSI(14) at 53.66, RSI(7) 68, BB% 0.83, vol ratio 1.19 showing healthy accumulation. Price is pulling back within a daily uptrend, sitting well below 30d resistance at $465.63, with solid support at $421. MA50 only +2.3% away, low risk of being extended. Fits the 'pullback to structure in a bull market' template well."
+  },
+  {
+    "time": "2026-05-11 19:57",
+    "symbol": "BCH",
+    "ticker": "BCH-USD",
+    "action": "close",
+    "price": 450.35998535,
+    "amount_usd": 396.52,
+    "pnl": -9.54,
+    "confidence": 70,
+    "reason": "BCH has failed to hold above entry ($461.46), now -2.4% with daily trend sideways, MACD histogram falling, and price pulling back from resistance ($465.63). The position is draining capital with no clear catalyst to reverse. Closing to preserve the position slot and cash for better opportunities."
   }
 ]
