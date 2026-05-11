@@ -9,7 +9,7 @@
       "opened_at": "2026-05-10 08:19",
       "peak_price": 2358.37011719,
       "target_pct": 15,
-      "last_known_price": 2358.37011719
+      "last_known_price": 2330.32006836
     },
     "BCH": {
       "type": "long",
@@ -18,7 +18,8 @@
       "amount_usd": 396.52,
       "opened_at": "2026-05-10 19:15",
       "peak_price": 461.45999146,
-      "target_pct": 15
+      "target_pct": 15,
+      "last_known_price": 452.51998901
     }
   }
 }
