@@ -113,5 +113,16 @@
     "pnl": -9.54,
     "confidence": 70,
     "reason": "BCH has failed to hold above entry ($461.46), now -2.4% with daily trend sideways, MACD histogram falling, and price pulling back from resistance ($465.63). The position is draining capital with no clear catalyst to reverse. Closing to preserve the position slot and cash for better opportunities."
+  },
+  {
+    "time": "2026-05-12 03:52",
+    "symbol": "ETH",
+    "ticker": "ETH-USD",
+    "action": "close",
+    "price": 2307.56005859,
+    "amount_usd": 711.69,
+    "pnl": -6.49,
+    "confidence": 65,
+    "reason": "ETH has been held 44h, is down -0.9%, weekly trend is sideways, daily trend is sideways, MACD is falling, RSI(7) at 41 and declining, and price is trending below the recent close sequence. No technical reason to hold with BTC showing weakness and ETH below MA200 by 13%. Exiting to free up capital and avoid further drawdown."
   }
 ]
