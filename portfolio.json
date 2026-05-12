@@ -1,15 +1,4 @@
 {
-  "cash": 1312.1808378825435,
-  "positions": {
-    "ETH": {
-      "type": "long",
-      "entry_price": 2328.80004883,
-      "amount": 0.30560373800986324,
-      "amount_usd": 711.69,
-      "opened_at": "2026-05-10 08:19",
-      "peak_price": 2358.37011719,
-      "target_pct": 15,
-      "last_known_price": 2339.47998047
-    }
-  }
+  "cash": 2017.3798174699066,
+  "positions": {}
 }
